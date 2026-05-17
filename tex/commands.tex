@@ -1,0 +1,770 @@
+\newcommand{\dfonc}[1]{\mathscr{D}_{[#1]}}
+%\newcommand{\operator}[1]{\hat{\bm{#1}}} % pour les operaeur vecteur
+\newcommand{\operator}[1]{\hat{\boldsymbol{#1}}}
+
+\definecolor{Prune}{RGB}{99,0,60} % l14-33 :
+
+% --- Bois (palette principale)
+\definecolor{woodNoyer}{HTML}{3A2A1F}
+\definecolor{woodChene}{HTML}{4A3628}
+\definecolor{woodAcajou}{HTML}{5B2C2C}
+
+% --- Verts profonds
+\definecolor{greenForet}{HTML}{0B3D2E}
+\definecolor{greenSapin}{HTML}{0F4C3A}
+
+% --- Neutres
+\definecolor{grayPierre}{HTML}{4A4A4A}
+\definecolor{grayBrume}{HTML}{7A7A7A}
+
+% --- Custom colors
+\definecolor{cvred}{HTML}{B71C1C}
+\definecolor{headerblue}{HTML}{1565C0}
+\definecolor{cvgreen}{HTML}{2E7D32}
+
+\definecolor{titleblue}{HTML}{4a7aa4}
+
+\definecolor{colorStitre}{RGB}{140,0,0}
+\definecolor{colorSStitre}{RGB}{190,140,140}
+\definecolor{colorSSStitre}{RGB}{140,140,140}
+\def\colorStitre{colorStitre}
+\def\colorSStitre{colorSStitre}
+\def\colorSSStitre{colorSSStitre}
+
+\definecolor{colorOne}{HTML}{443E46}
+%\definecolor{colorTwo}{HTML}{F6DEB8}
+\definecolor{colorTwo}{HTML}{FFFFFF}
+\definecolor{colorThree}{HTML}{908CA4}
+\definecolor{colorFour}{HTML}{57659E}
+\definecolor{colorFive}{HTML}{C57284}
+\definecolor{colorSix}{HTML}{FF5B69}
+\definecolor{colorGold}{HTML}{FFD700}
+
+% Raccourcis pour les couleurs
+\def\colorOne{colorOne}
+\def\colorTwo{colorTwo}
+\def\colorThree{colorThree}
+\def\colorFour{colorFour}
+\def\colorFive{colorFive}
+\def\colorSix{colorSix}
+\def\colorGold{colorGold}
+
+\makeglossaries
+
+\newacronym{LL}{LL}{Lieb–Liniger}
+\newacronym{NS}{NLS}{Nonlinear Schrödinger}
+\newacronym{GP}{GP}{Gross–Pitaevskii}
+\newacronym{GGE}{GGE}{Generalized Gibbs Ensemble}
+\newacronym{GE}{GE}{Gibbs Ensemble}
+\newacronym{BA}{BA}{Bethe Ansatz}
+\newacronym{FBA}{FBA}{Fermionic Bethe Ansatz}
+\newacronym{TBA}{TBA}{Thermodynamic Bethe Ansatz}
+\newacronym{qBEC}{qBEC}{quasi Bose–Einstein Condensate}
+\newacronym{GHD}{GHD}{Generalized Hydrodynamics}
+\newacronym{LDA}{LDA}{Local Density Approximation}
+\newacronym{DMD}{DMD}{Dispositif de Micromirroirs Digitaux}
+\newacronym{PMO}{PMO}{Piège Magnéto-Optique}
+\newacronym{DC}{DC}{Direct Current}
+\newacronym{AC}{AC}{Alternating Current}
+\newacronym{SYRTE}{SYRTE}{Systèmes de Référence Temps-Espace}
+\newacronym{DFB}{DFB}{Distributed Feedback}
+\newacronym{DBR}{DBR}{Distributed Bragg Reflector}
+\newacronym{TA}{TA}{Tapered Amplifier}
+\newacronym{AOM}{AOM}{Acousto-Optic Modulator}
+\newacronym{PBS}{PBS}{Polarizing Beam Splitter}
+\newacronym{LCF}{LCF}{Laboratoire Charles Fabry}
+\newacronym{C2N}{C2N}{Centre de nanosciences et de nanotechnologies}
+\newacronym{BCB}{BCB}{benzocyclobuténe}
+\newacronym{SiC}{SiC}{silicon carbide}
+\newacronym{Au}{Au}{aurum}
+%\newacronym{AOM}{AOM}{modulateur acousto-optique}
+\newacronym{CCD}{CCD}{Charge-Coupled Device}
+\newacronym{TF}{TF}{Thomas-Fermi}
+\newacronym{CESQ}{CESQ}{Centre européen de sciences quantiques}
+\newacronym{QED}{QED}{Quantum Electrodynamics}
+\newacronym{BCS}{BCS}{Bardeen–Cooper–Schrieffer}
+\newacronym{YY}{YY}{Yang–Yang}
+\newacronym{TG}{TG}{Tonks-Girardeau}
+\newacronym{MFT}{MFT}{Macroscopic Fluctuation Theory}
+\newacronym{GOE}{GOE}{Gaussian Orthogonal Ensemble}
+\newacronym{GUE}{GUE}{Gaussian Unitary Ensemble}
+\newacronym{RMT}{RMT}{Random Matrix Theory}
+\newacronym{ABA}{ABA}{Algebraic Bethe Ansatz}
+
+%\usepackage[french]{babel}
+%\usetikzlibrary{babel}
+\tikzset{
+  every picture/.style={
+      execute at begin picture={\shorthandoff{:;!?}}
+    }
+}
+
+\tikzstyle{every picture}+=[remember picture]
+\tikzstyle{na} = [shape=ellipse,inner sep=0pt]
+
+% \newcommand{\sectiontikz}[1]{
+
+%   \noindent
+%   \begin{tikzpicture}[baseline=(title.base)]
+
+%     \node[
+%       inner sep=2pt
+%     ] (title)
+%     {
+%       \fontsize{24}{24}\selectfont
+%       \bfseries
+%       #1
+%     };
+
+%     \draw[titre, line width=5pt]
+%     ([xshift=-6cm]title.west) --
+%     ([xshift=-0.7cm]title.west);
+
+%     \draw[titre, line width=5pt]
+%     ([xshift=0.7cm]title.east) --
+%     ([xshift=6cm]title.east);
+
+%   \end{tikzpicture}
+
+% }
+
+% \newcommand{\sectiontikz}[1]{
+%   \vspace{-0.5cm}
+%   \noindent
+%   \begin{tikzpicture}
+
+%     % Titre centré
+%     \node[
+%       inner sep=2pt,
+%       %text width=0.7\linewidth,
+%       %align=justify,
+%       align=center, text width=min(0.7\linewidth,\widthof{
+%         \fontsize{15}{10}\selectfont \bfseries {\Roman{section}}\ -\ #1}),
+%       font=\fontsize{15}{10}\selectfont \bfseries, ] (title) at (\linewidth/2,0) {
+%       {\Roman{section}}\ -\ #1 };%color = colorStitre 
+
+%     % Ligne gauche
+%     \draw[colorStitre, line width=5pt]
+%     (0,0) --
+%     ([xshift=-0.7cm]title.west);
+
+%     % Ligne droite
+%     \draw[colorStitre, line width=5pt]
+%     ([xshift=0.7cm]title.east) --
+%     (\linewidth,0);
+
+%   \end{tikzpicture}
+
+% }
+
+\newcommand{\sectiontikz}[1]{
+  %\vspace{-0.5cm}
+  \noindent
+  \begin{tikzpicture}
+
+    \node[
+      inner sep=0pt,
+      %text width=0.7\linewidth,
+      %align=justify,
+      align=center, font=\fontsize{15}{10}\selectfont \bfseries, color = colorStitre
+    ] (title) at (\linewidth/2,0) {
+      \begin{varwidth}{0.7\linewidth}
+        \centering
+        {\Roman{section}}\ -\ #1
+      \end{varwidth}
+    };
+
+    \draw[colorStitre,line width=0.3cm]
+    (0,0)
+    --
+    ([xshift=-0.5cm]title.west);
+
+    \draw[colorStitre,line width=0.3cm]
+    ([xshift=0.5cm]title.east)
+    --
+    (\linewidth,0);
+
+  \end{tikzpicture}
+
+}
+
+\titleformat{\section}
+{\normalfont}
+{}
+{-1.8mm}
+{\sectiontikz}
+[\vspace{-1.0cm}]
+
+%
+
+%\titleformat{\section}{FORMAT}{LABEL}{SEP}{CODE}
+%\titleformat{commande}[forme]{format}{label}{sep}{before-code}[after-code]\thesection
+
+%\titlespacing*{\section}{0pt}{1cm}{0.7cm}
+
+\newcommand{\subsectiontikz}[1]{
+  %\vspace{-0.5cm}
+  \noindent
+  \begin{tikzpicture}
+
+    \node[
+      inner sep=0pt,
+      %text width=0.7\linewidth,
+      %align=justify,
+      align=center, font=\fontsize{12}{10}\selectfont \bfseries, color = colorSStitre
+    ] (title) at (\linewidth/2,0) {
+      \begin{varwidth}{0.7\linewidth}
+        \centering
+        \thesubsection\ -\ #1
+      \end{varwidth}
+    };
+
+    \draw[colorSStitre,line width=0.15cm]
+    (0,0)
+    --
+    ([xshift=-0.3cm]title.west);
+
+    \draw[colorSStitre,line width=0.15cm]
+    ([xshift=0.3cm]title.east)
+    --
+    (\linewidth,0);
+
+  \end{tikzpicture}
+
+}
+
+\titleformat{\subsection}
+{\normalfont}
+{}
+{0pt}
+{\subsectiontikz}
+[\vspace{-1.0cm}]
+
+\newcommand{\subsubsectiontikz}[1]{
+  %\vspace{-0.5cm}
+  \noindent
+  \begin{tikzpicture}
+
+    \node[
+      inner sep=0pt,
+      %text width=0.7\linewidth,
+      %align=justify,
+      align=center, font=\fontsize{10}{10}\selectfont \bfseries, color =
+      colorSSStitre ] (title) at (\linewidth/2,0) {
+      \begin{varwidth}{0.7\linewidth}
+        \centering
+        \thesubsubsection\ -\ #1
+      \end{varwidth}
+    };
+
+    \draw[colorSSStitre,line width=0.10cm]
+    (0,0)
+    --
+    ([xshift=-0.2cm]title.west);
+
+    \draw[colorSSStitre,line width=0.10cm]
+    ([xshift=0.2cm]title.east)
+    --
+    (\linewidth,0);
+
+  \end{tikzpicture}
+
+}
+
+\titleformat{\subsubsection}
+{\normalfont}
+{}
+{0pt}
+{\subsubsectiontikz}
+[\vspace{-1.0cm}]
+
+%\newcommand{\ptFleche}[2]{		% Déclaration d'une extrémité de flèche
+%    \shorthandoff{:;!?}% <- désactive les shorthands
+%    \tikz[baseline=(#1.base)]\node[na](#1){#2};
+%  }
+
+\newcommand{\ptFleche}[2]{%
+  \tikz[baseline=(#1.base)]{
+    \shorthandoff{:;!?}
+    \node[na](#1){#2};
+  }%
+}
+
+\newcommand{\Fleche}[5][thick]{%
+  \begin{tikzpicture}[overlay]
+    \path[->,#1](#2) edge [out=#4, in=#5] (#3);
+  \end{tikzpicture}
+}
+
+% --- Commande FlecheEllipse ---
+% #1 = nœud source (nom)
+% #2 = angle sortie du nœud source
+% #3 = angle entrée du nœud cible
+% #4 = décalage dx, dy sous forme (dx,dy) en cm
+% #5 = couleur ellipses et flèche
+% #6 = texte du nœud cible B
+\newcommand{\FlecheEllipseo}[6]{%
+  \begin{tikzpicture}[overlay, remember picture]
+    % Coordonnées source
+    \path let \p1 = (#1) in
+    coordinate (Acoord) at (\x1,\y1);
+
+    % Coordonnées cible
+    \pgfmathsetmacro{\dx}{#4}
+    \pgfmathsetmacro{\dy}{#5} % ici on sépare les deux pour le calcul
+
+    \coordinate (B) at ([shift={(#4)}]#1);
+
+    % Nœud A entouré d'ellipse
+    \node[draw,#5,ellipse,inner sep=2pt] (#1-node) at (#1) {#1};
+    % Nœud B entouré d'ellipse
+    \node[draw,#5,ellipse,inner sep=2pt] (B-node) at (B) {#6};
+    % Flèche de A vers B
+    \draw[->,#5,thick] (#1-node) edge [out=#2,in=#3] (B-node);
+  \end{tikzpicture}%
+}
+
+% --- Commande FlecheEllipse finale ---
+% #1 = nom du nœud source (A)
+% #2 = angle sortie du nœud source
+% #3 = angle entrée du nœud cible
+% #4 = décalage horizontal dx (en cm)
+% #5 = décalage vertical dy (en cm)
+% #6 = couleur ellipses et flèche
+% #7 = contenu du nœud B (texte, formule, TikZ, etc.)
+\newcommand{\FlecheEllipse}[7]{%
+  \begin{tikzpicture}[overlay]
+    % --- Nœud source A ---
+    \node[draw,#6,ellipse,inner sep=2pt](#1){};
+
+    % --- Nœud cible B ---
+    \coordinate (B) at ($(#1) + (#4cm,#5cm)$);
+    \node[draw,#6,ellipse,inner sep=2pt] (B-node) at (B) {#7};
+
+    % --- Flèche de A vers B ---
+    \draw[->,#6,thick] (#1) edge [out=#2,in=#3] (B-node);
+  \end{tikzpicture}%
+}
+
+\renewcommand{\arraystretch}{0.2}
+
+% Custom commands for events
+\newcommand{\cvdegree}[6]{%
+  \textbf{#1} & \textbf{#2} -- #3 \\
+  & \textit{#4} {\color{headerblue}} \\
+  & #5 \\[0.6em]
+}
+
+\newcommand{\cvevent}[6]{%
+  \textbf{#1} & \textbf{#2} -- #3 \\
+  & \textit{#4} {\color{cvred}} \\
+  & #5 \\[0.6em]
+}
+
+\tcbuselibrary{skins}
+
+\NewTotalTColorBox[auto counter]{\Example}{ +m +m }{
+  enhanced,
+  notitle,
+  colback=white,
+  colbacklower=white,
+  frame hidden,
+  boxrule=0pt,
+  bicolor,
+  sharp corners,
+  %borderline west={4pt}{0pt}{greenForet},
+  left=3mm, fontupper=\sffamily, overlay={% espace pour le texte vertical
+      % Bande verticale
+      \fill[greenForet]
+      (frame.south west) rectangle
+      ([xshift=4pt]frame.north west);
+
+      % Texte vertical
+      \node[
+        rotate=90,
+        anchor=south,
+        font=\sffamily\bfseries,
+        text=greenForet
+      ] at ([xshift=2pt]frame.west) {#1};
+
+      % Texte vertical centré
+      \node[
+        rotate=90,
+        anchor=center,
+        font=\sffamily\bfseries,
+        text=white
+      ] at ([xshift=2pt]frame.west |- frame.center) {Example};
+    }
+}{
+  \textcolor{greenForet}{
+    \sffamily\textbf{Exemple~: #1}\\
+  }
+  #2
+}
+
+\newcommand{\EncadreDeux}[4]{%
+  \begin{tcolorbox}[
+      enhanced,
+      notitle,
+      colback=white,
+      colbacklower=white,
+      frame hidden,
+      boxrule=0pt,
+      sharp corners,
+      borderline west={4pt}{0pt}{#3},
+      left=7mm,
+      fontupper=\sffamily,
+      overlay={%
+          % Bande verticale
+          \fill[#3]
+          (frame.south west) rectangle
+          ([xshift=4pt]frame.north west);
+
+          \node[
+            rotate=90,
+            anchor=south,
+            font=\sffamily\bfseries,
+            text=#3
+          ] at ([xshift=2pt]frame.west) {#2};
+
+          % Texte vertical (titre)
+          \node[
+            rotate=90,
+            anchor=center,
+            font=\sffamily\bfseries\small,
+            text=white
+          ] at ([xshift=2pt]frame.west |- frame.center)
+          {#1};
+
+        }
+    ]
+    % contenu
+    %\textcolor{#3}{\sffamily\textbf{#1}}\\
+    #4
+  \end{tcolorbox}
+}
+
+\NewTotalTColorBox[auto counter]{\Information}{+m}{
+  enhanced,
+  notitle,
+  colback=white,
+  colbacklower=white,
+  frame hidden,
+  boxrule=0pt,
+  sharp corners,
+  left=3mm,
+  fontupper=\sffamily,
+  overlay={
+      % Bande verticale
+      \fill[grayPierre]
+      (frame.south west) rectangle
+      ([xshift=4pt]frame.north west);
+
+      % Texte vertical
+      % \node[
+      %     rotate=90,
+      %     anchor=south,
+      %     font=\sffamily\bfseries,
+      %     text=grayPierre
+      % ] at ([xshift=2pt]frame.west) {Information};
+
+      % Texte vertical centré
+      \node[
+        rotate=90,
+        anchor=center,
+        font=\sffamily\bfseries,
+        text=white
+      ] at ([xshift=2pt]frame.west |- frame.center) {Information};
+    },
+}{
+  #1
+}
+
+\NewTotalTColorBox[auto counter]{\ARetenir}{+m}{
+  enhanced,
+  notitle,
+  colback=white,
+  colbacklower=white,
+  frame hidden,
+  boxrule=0pt,
+  bicolor,
+  sharp corners,
+  %borderline west={4pt}{0pt}{woodChene},
+  left=3mm, fontupper=\sffamily, overlay={
+      % Bande verticale
+      \fill[woodChene]
+      (frame.south west) rectangle
+      ([xshift=4pt]frame.north west);
+
+      % Texte vertical
+      % \node[
+      %     rotate=90,
+      %     anchor=south,
+      %     font=\sffamily\bfseries,
+      %     text=woodChene
+      % ] at ([xshift=2pt]frame.west) {À Retenir};
+
+      % Texte vertical centré
+      \node[
+        rotate=90,
+        anchor=center,
+        font=\sffamily\bfseries,
+        text=white
+      ] at ([xshift=2pt]frame.west |- frame.center) {À Retenir};
+    },
+}{
+  % \textcolor{woodChene}{
+  %     \sffamily\textbf{À retenir~: #1}
+  % }
+  #1
+}
+
+% \newcommand{\EncadreUn}[3]{
+
+% \NewTotalTColorBox[auto counter]{\ARetenir}{+m}{
+%   enhanced,
+%   notitle,
+%   colback=white,
+%   colbacklower=white,
+%   frame hidden,
+%   boxrule=0pt,
+%   bicolor,
+%   sharp corners,
+%   borderline west={4pt}{0pt}{#3},
+%   left=3mm, fontupper=\sffamily, overlay={
+%       % Bande verticale
+%       \fill[#3]
+%       (frame.south west) rectangle
+%       ([xshift=4pt]frame.north west);
+
+%       % Texte vertical centré
+%       \node[
+%         rotate=90,
+%         anchor=center,
+%         font=\sffamily\bfseries,
+%         text=white
+%       ] at ([xshift=2pt]frame.west |- frame.center) {#1};
+%     },
+% }{
+%   #2
+% }
+
+% }
+
+\newcommand{\EncadreUn}[3]{%
+  \begin{tcolorbox}[
+      enhanced,
+      notitle,
+      colback=white,
+      colbacklower=white,
+      frame hidden,
+      boxrule=0pt,
+      sharp corners,
+      borderline west={4pt}{0pt}{#2},
+      left=6mm,
+      fontupper=\sffamily,
+      overlay={
+          % Bande verticale
+          \fill[#2]
+          (frame.south west) rectangle
+          ([xshift=4pt]frame.north west);
+
+          % Texte vertical
+          \node[
+            rotate=90,
+            anchor=center,
+            font=\sffamily\bfseries\small,
+            text=white
+          ] at ([xshift=2pt]frame.west |- frame.center)
+          {#1};
+        }
+    ]
+    #3
+  \end{tcolorbox}
+}
+
+\NewTotalTColorBox[auto counter]{\Rappel}{+m}{
+  enhanced,
+  notitle,
+  colback=white,
+  colbacklower=white,
+  frame hidden,
+  boxrule=0pt,
+  bicolor,
+  sharp corners,
+  %borderline west={4pt}{0pt}{woodNoyer},
+  left=3mm, fontupper=\sffamily, overlay={
+      % Bande verticale
+      \fill[woodNoyer]
+      (frame.south west) rectangle
+      ([xshift=4pt]frame.north west);
+
+      % Texte vertical
+      % \node[
+      %     rotate=90,
+      %     anchor=south,
+      %     font=\sffamily\bfseries,
+      %     text=woodNoyer
+      % ] at ([xshift=2pt]frame.west) {Rappel};
+
+      % Texte vertical centré
+      \node[
+        rotate=90,
+        anchor=center,
+        font=\sffamily\bfseries,
+        text=white
+      ] at ([xshift=2pt]frame.west |- frame.center) {Rappel};
+    },
+}{
+  % \textcolor{woodNoyer}{
+  %     \sffamily\textbf{Rappel~: #1}
+  % }
+  #1
+}
+
+\NewTotalTColorBox[auto counter]{\Resume}{+m}{
+  enhanced,
+  notitle,
+  colback=white,
+  colbacklower=white,
+  frame hidden,
+  boxrule=0pt,
+  bicolor,
+  sharp corners,
+  %borderline west={4pt}{0pt}{woodAcajou},
+  left=3mm, fontupper=\sffamily, overlay={
+      % Bande verticale
+      \fill[woodAcajou]
+      (frame.south west) rectangle
+      ([xshift=4pt]frame.north west);
+
+      % Texte vertical
+      % \node[
+      %     rotate=90,
+      %     anchor=south,
+      %     font=\sffamily\bfseries,
+      %     text=woodAcajou
+      % ] at ([xshift=2pt]frame.west) {Conclusion};
+
+      % Texte vertical centré
+      \node[
+        rotate=90,
+        anchor=center,
+        font=\sffamily\bfseries,
+        text=white
+      ] at ([xshift=2pt]frame.west |- frame.center) {Conclusion};
+    },
+}{
+  % \textcolor{woodAcajou}{
+  %     \sffamily\textbf{Conclusion~: #1}
+  % }
+  #1
+}
+
+% Définition de la fonction pour générer la grille
+% \newcommand{\drawgrid}[4]{
+
+%   \begin{scope}[opacity = 0.2]
+
+%     % Paramètres : #1=xmin, #2=xmax, #3=ymin, #4=ymax
+
+%     % Grille principale en cm
+%     \draw[very thin, gray] (#1,#3) grid (#2,#4); % Grille de base (1 cm)
+
+%     \draw[very thin, gray] (#1,#3) grid[step=0.1] (#2,#4);
+
+%     \draw[thin, black] (#1,#3) edge[thick,line width=0.8ex,->,>=Stealth ] (#2,#3);
+
+%     \foreach \x in {#1,..., #2} {
+%         \draw[shift={(\x, #3)}] (0,-0.1) edge[line width=0.8ex] node[pos = -1 , below] {\x} (0,0.1); % Lignes verticales en mm
+%       }
+
+%     \draw[thin, black] (#1,#3)edge[thick,line width=0.8ex,->,>=Stealth ] (#1,#4);
+
+%     \foreach \y in {#3,..., #4} {
+%         \draw[shift={(#1, \y)}] (-0.1 , 0 ) edge[line width=0.8ex] node[pos = -1 , left ] {\y} (0.1 , 0); % Lignes verticales en mm
+%       }
+
+%   \end{scope}
+
+% }
+
+% Définition de la fonction pour générer la grille
+\newcommand{\drawgrid}[4]{
+
+  % #1 xmin
+  % #2 xmax
+  % #3 ymin
+  % #4 ymax
+
+  \begin{scope}[opacity=0.2]
+
+    % Taille des axes
+    \pgfmathsetmacro{\dx}{#2-#1}
+    \pgfmathsetmacro{\dy}{#4-#3}
+
+    % ======================
+    % Grille principale
+    % ======================
+
+    \draw[very thin, gray]
+    (#1,#3) grid (#2,#4);
+
+    \draw[very thin, gray]
+    (#1,#3) grid[step=0.1] (#2,#4);
+
+    % ======================
+    % Grille fine conditionnelle
+    % ======================
+
+    \ifdim \dx pt < 0.5pt
+
+      \draw[very thin, gray , line width=0.01mm ]
+      (#1,#3) grid[step=0.01] (#2,#4);
+
+    \fi
+
+    \ifdim \dy pt < 0.5pt
+
+      \draw[very thin, gray , line width=0.01mm]
+      (#1,#3) grid[step=0.01] (#2,#4);
+
+    \fi
+
+    % ======================
+    % Axe x
+    % ======================
+
+    \draw[thick,line width=0.8ex,->,>=Stealth]
+    (#1,#3) -- (#2,#3);
+
+    \foreach \x in {#1,...,#2} {
+
+        \draw[shift={(\x,#3)}]
+        (0,-0.1) --
+        (0,0.1)
+
+        node[pos=-1,below] {\x};
+
+      }
+
+    % ======================
+    % Axe y
+    % ======================
+
+    \draw[thick,line width=0.8ex,->,>=Stealth]
+    (#1,#3) -- (#1,#4);
+
+    \foreach \y in {#3,...,#4} {
+
+        \draw[shift={(#1,\y)}]
+        (-0.1,0) --
+        (0.1,0)
+
+        node[pos=-1,left] {\y};
+
+      }
+
+  \end{scope}
+
+}

@@ -1,0 +1,43 @@
+%\include{pakage_tikz}
+\usepackage{tikz}          % Charge le package TikZ
+\usepackage{xcolor}        % Gestion avancée des couleurs
+\usepackage{amsmath}       % Gestion des formules mathématiques
+\usepackage{pgfplots}
+\usepackage[active,tightpage]{preview}
+%PREAMBULE pour schÃéma
+\usepackage{pgfplots}
+\usepackage{tikz}
+\usepackage{listofitems}
+\usepackage[european resistor, european voltage, european current]{circuitikz}
+\usepackage{anyfontsize}
+\usepackage{bm}
+\usepackage[french, english]{babel}
+
+\PreviewEnvironment{tikzpicture}
+\pgfplotsset{compat=1.18}
+\setlength\PreviewBorder{5pt}
+\usetikzlibrary{arrows.meta,bending,positioning}
+\usetikzlibrary{datavisualization.formats.functions}
+\usetikzlibrary{spath3, intersections}
+\usetikzlibrary{arrows,shapes,positioning}
+\usetikzlibrary{decorations.text,decorations.markings,decorations.pathmorphing,
+  decorations.pathreplacing}
+\usetikzlibrary{calc,patterns,shapes.geometric}
+\usetikzlibrary {fadings,patterns}
+\usetikzlibrary{hobby} % <-- indispensable pour use Hobby shortcut
+\usetikzlibrary{curvilinear}
+
+%\usepgfplotslibrary{external}
+%\tikzexternalize
+
+%% Automatiser cela : une solution plus élégante  nouvelle page, tu peux utiliser la commande \newpage juste avant chaque \begin{tikzpicture}
+%\let\oldtikzpicture\tikzpicture
+%\let\endoldtikzpicture\endtikzpicture
+%\renewenvironment{tikzpicture}{\newpage\oldtikzpicture}{\endoldtikzpicture}
+%\usepackage{etoolbox} % dans le préambule, si pas encore utilisé
+%\pretocmd{\tikzpicture}{\clearpage}{}{}
+
+\AtBeginDocument{\shorthandoff{:;!?}}
+\tikzset{every picture/.style={execute at begin picture={\shorthandoff{:;!?};}}}
+\tikzstyle{every picture}+=[remember picture]
+\tikzstyle{na} = [shape=rectangle,inner sep=0pt]

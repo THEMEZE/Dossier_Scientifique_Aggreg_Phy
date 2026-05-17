@@ -1,0 +1,1807 @@
+\documentclass{standalone} % Utilise la classe standalone pour compiler uniquement le TikZ
+%\include{pakage_tikz}
+\usepackage{tikz}          % Charge le package TikZ
+\usepackage{xcolor}        % Gestion avancée des couleurs
+\usepackage{amsmath}       % Gestion des formules mathématiques
+\usetikzlibrary{arrows.meta} % Pour gérer les flèches avec des formes spécifiées comme "triangle"
+\usetikzlibrary {decorations.pathmorphing}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usepackage[active,tightpage]{preview}
+\PreviewEnvironment{tikzpicture}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary {arrows.meta,bending,positioning}
+\usetikzlibrary {datavisualization.formats.functions}
+%PREAMBULE pour schÃéma
+\usepackage{pgfplots}
+\usepackage{tikz}
+\usepackage[european resistor, european voltage, european current]{circuitikz}
+\usetikzlibrary{arrows,shapes,positioning}
+\usetikzlibrary{decorations.markings,decorations.pathmorphing,
+decorations.pathreplacing}
+\usetikzlibrary{calc,patterns,shapes.geometric}
+\usepackage{anyfontsize}
+
+\usetikzlibrary{hobby}
+
+\setlength\PreviewBorder{5pt}
+%\usepgfplotslibrary{external}
+%\tikzexternalize
+
+%% Automatiser cela : une solution plus élégante  nouvelle page, tu peux utiliser la commande \newpage juste avant chaque \begin{tikzpicture}
+%\let\oldtikzpicture\tikzpicture
+%\let\endoldtikzpicture\endtikzpicture
+%\renewenvironment{tikzpicture}{\newpage\oldtikzpicture}{\endoldtikzpicture}
+%\usepackage{etoolbox} % dans le préambule, si pas encore utilisé
+%\pretocmd{\tikzpicture}{\clearpage}{}{}
+
+
+% Définition de la fonction pour générer la grille
+
+\newcommand{\drawgrid}[4]{
+
+
+	\begin{scope}[opacity = 0.2]
+	
+	
+    	% Paramètres : #1=xmin, #2=xmax, #3=ymin, #4=ymax
+
+   	 	% Grille principale en cm
+    	\draw[very thin, gray] (#1,#3) grid (#2,#4); % Grille de base (1 cm)
+    
+    	\draw[very thin, gray] (#1,#3) grid[step=0.1] (#2,#4);
+
+    	\draw[thin, black] (#1,#3) edge[thick,line width=0.8ex,->,>=Stealth ] (#2,#3); 
+    
+    	\foreach \x in {#1,..., #2} {
+        	\draw[shift={(\x, #3)}] (0,-0.1) edge[line width=0.8ex] node[pos = -1 , below] {\x} (0,0.1); % Lignes verticales en mm
+    	}
+
+    	\draw[thin, black] (#1,#3)edge[thick,line width=0.8ex,->,>=Stealth ] (#1,#4); 
+    
+    	\foreach \y in {#3,..., #4} {
+        	\draw[shift={(#1, \y)}] (-0.1 , 0 ) edge[line width=0.8ex] node[pos = -1 , left ] {\y} (0.1 , 0); % Lignes verticales en mm
+    	}
+    
+    \end{scope}
+
+
+}
+
+
+\newcommand{\Axex}[1][$x$]{ % "x" est la valeur par défaut de #1
+    \draw
+        (-10, 0) edge[thick, line width=0.8ex, ->, >=Triangle, color=\colorThree] 
+        node[shift = {(0,1)} , pos=1.01, below]{ \huge #1 } (10, 0)
+        ;
+}
+
+\newcommand{\Axetheta}[1][$\theta$]{
+	\draw
+		(-10, 0 ) edge [thick,line width=0.8ex,->,>=Triangle , color = \colorThree ]node [pos=1.01,right]{\huge #1 } ( 10  , 0 )
+	;
+}
+
+\newcommand{\Axedensity}[1][$n$]{
+	\draw
+		(0, -1 ) edge [thick,line width=0.8ex,->,>=Triangle , color = \colorThree ]node [pos=1.01,left  ]{\huge #1 } ( 0  , 6 )
+	;
+}
+
+\newcommand{\Axedistribution}[1][$\nu$]{
+	\draw
+		(0, -1 ) edge [thick,line width=0.8ex,->,>=Triangle , color = \colorThree ]node [pos=1.01,left  ]{\huge #1 } ( 0  , 6 )
+	;
+}
+
+\newcommand{\Axesphase}[2][$x$]{
+	\Axex[#1]
+	\begin{scope}[rotate = 90]
+		\Axetheta[#2]	
+	\end{scope}
+}
+
+\newcommand{\Axesdensity}[2][$x$]{
+	\Axex[#1]
+	\Axedensity[#2]
+}
+
+\newcommand{\Axesdistribution}[2][\theta]{
+	\Axetheta[#1]
+	\Axedistribution[#2]
+}
+
+\newcommand{\Axetemps}[1][Deformation]{
+	\draw 
+		(-5 , 0 ) edge [line width=2.8ex, color=\colorOne ]( 0, 0)
+		(43 , 0 ) edge [line width=2.8ex, color=\colorOne , ->, >=Triangle] node[pos = 1.0 , right , scale = 2 ] { \fontsize{60pt}{720pt}\selectfont $\tilde{t}$} ( 50 , 0)
+		( 0 , 1 ) edge [line width=2.0ex, color=\colorOne ] ( 0 , -1 )  
+		( 43 , 1 ) edge [line width=2.0ex, color=\colorOne ] ( 43 , -1 ) 
+		(0 , 0) edge[<->, > = stealth, line width=2.8ex, color=\colorOne ]  node [ rectangle , midway, fill = white , scale = 2 ] {\fontsize{600pt}{720pt}\selectfont \bf  #1}(43, 0)  
+	;
+
+}
+
+\newcommand{\Palette}[1][\colorOne]{
+	\clip[decorate, decoration={random steps, segment length=3pt, amplitude=3pt}]
+        	(-1,-1) rectangle (1,1);
+	\draw[fill=#1 , color = #1 ] (-2,-2) rectangle (2,2);
+}
+
+
+
+
+
+
+% Définition des couleurs avec les codes HTML
+\definecolor{colorOne}{HTML}{443E46}
+%\definecolor{colorTwo}{HTML}{F6DEB8}
+\definecolor{colorTwo}{HTML}{FFFFFF}
+
+\definecolor{colorThree}{HTML}{908CA4}
+\definecolor{colorFour}{HTML}{57659E}
+\definecolor{colorFive}{HTML}{C57284}
+\definecolor{colorSix}{HTML}{FF5B69}
+
+% Raccourcis pour les couleurs
+\def\colorOne{colorOne}
+\def\colorTwo{colorTwo}
+\def\colorThree{colorThree}
+\def\colorFour{colorFour}
+\def\colorFive{colorFive}
+\def\colorSix{colorSix}
+
+
+
+% Graduation ordonné
+	
+\newcommand{\GraduationYMm}[2]{
+	\foreach \r in {1,...,9} {
+		\draw 
+			({-0.25 * 0.5 * (cos(3.14*0.2*\r r)^2 + 1)}, #1*#2 - #2 + 0.1*#2*\r) 
+			edge [thick, line width=0.3ex, color=\colorOne] 
+			({0.25 * 0.5 * (cos(3.14*0.2*\r r)^2 + 1)}, #1*#2 - #2 + 0.1*#2*\r);
+	}
+}
+
+\newcommand{\GraduationYCm}[4]{% #1: min, #2: max, #3: liste
+  \foreach \R in {#1,...,#2} {
+    \pgfmathparse{#3[\R-(#1)]} % index dans la liste
+    \let\labelText\pgfmathresult
+
+    \draw[color=\colorThree]
+      (-0.3, \R*#4)
+      edge [thick, line width=0.5ex, color=\colorOne]
+      node [pos=-0.0, left]{\Large \labelText}
+      (0.3, \R*#4);
+
+    %\GraduationYMm{\R}{#4}
+  }
+
+  % Graduation supplémentaire à #2 + 3
+  \pgfmathparse{#2 + 1}
+  \edef\extendedPosition{\pgfmathresult}
+  %\GraduationYMm{\extendedPosition}{#4}
+}
+
+\newcommand{\GraduationXMm}[2]{
+	\foreach \r in {1,...,9} {
+		\draw 
+			( #1*#2 - #2 + 0.1*#2*\r,{-0.25 * 0.5 * (cos(3.14*0.2*\r r)^2 + 1)}) 
+			edge [thick, line width=0.3ex, color=\colorOne] 
+			( #1*#2 - #2 + 0.1*#2*\r,{0.25 * 0.5 * (cos(3.14*0.2*\r r)^2 + 1)});
+	}
+}
+
+\newcommand{\GraduationXCm}[4]{% #1: min, #2: max, #3: liste
+  \foreach \R in {#1,...,#2} {
+    \pgfmathparse{#3[\R-(#1)]} % index dans la liste
+    \let\labelText\pgfmathresult
+
+    \draw[color=\colorThree]
+      (\R*#4,-0.3)
+      edge [thick, line width=0.5ex, color=\colorOne]
+      node [pos=-0.0, below]{\Large \labelText}
+      (\R*#4,0.3);
+
+    %\GraduationXMm{\R}{#4}
+  }
+
+  % Graduation supplémentaire à #2 + 3
+  \pgfmathparse{#2 + 1}
+  \edef\extendedPosition{\pgfmathresult}
+  %\GraduationXMm{\extendedPosition}{#4}
+}
+
+% Définition de la fonction pour générer la grille
+\newcommand{\backgrowngrid}[6]{
+
+
+	\begin{scope}[xscale = #5 , yscale = #6 ]
+	
+	
+    	% Paramètres : #1=xmin, #3=xmax, #2=ymin, #4=ymax
+    	%\clip[scale = 0.95 , decorate, decoration={random steps, segment length=0.1 cm, amplitude=0.2cm}](#1 , #2 ) rectangle ( #3 , #4 ) ;
+    	\pgfmathparse{#1-1}  
+    	\let\valXmin\pgfmathresult
+    	\pgfmathparse{#2-1}  
+    	\let\valYmin\pgfmathresult
+    	\pgfmathparse{#3+1}  
+    	\let\valXmax\pgfmathresult
+    	\pgfmathparse{#4+1}  
+    	\let\valYmax\pgfmathresult
+    	
+    	\draw[fill = \colorThree , opacity = 0.1]  (\valXmin , \valYmin ) rectangle ( \valXmax , \valYmax ) ;
+
+   	 	% Grille principale en cm
+    	\draw[very thin, line width=0.5ex ,  color=\colorTwo] (\valXmin , \valYmin ) grid ( \valXmax , \valYmax ); % Grille de base (#5 cm , #6 cm )
+    
+    	%\draw[very thin, line width=0.3ex ,  color=\colorTwo] (#1,#2) grid[step=0.1] (#3,#4);
+
+    	%\draw[thin, black] (#1,#2) edge[thick,line width=0.8ex,->,>=Stealth ] (#3,#2); 
+    
+    	%\foreach \x in {#1,..., #3} {
+    	%	\pgfmathparse{int(\x * #5)} % calcule et arrondit \pgfmathparse{round((\x * #5)/10)*10} Par exemple, au multiple de 10 le plus proche 
+    	%	\let\val\pgfmathresult
+        %	\draw[shift={(\x, #2)}] (0,-0.1) edge[line width=0.8ex] node[pos = -1 , below] {\val} (0,0.1); % Lignes verticales en mm
+    	%}
+
+    	%\draw[thin, black] (#1,#2)edge[thick,line width=0.8ex,->,>=Stealth ] (#1,#4); 
+    
+    	%\foreach \y in {#2,..., #4} {
+    	%	\pgfmathparse{int(\y * #6)} % calcule et arrondit  
+    	%	\let\val\pgfmathresult
+        %	\draw[shift={(#1, \y)}] (-0.1 , 0 ) edge[line width=0.8ex] node[pos = -1 , left ] {\val} (0.1 , 0); % Lignes verticales en mm
+    	%}
+    
+    \end{scope}
+
+
+}
+
+
+
+\begin{document}
+% Classique 2 problem
+\begin{tikzpicture}
+
+	\clip[] (-2.5 , -1.2 ) rectangle (7.5 , 7.5) ;
+
+	% Axxes 
+	\draw[shift = {(0,0)}]
+		(-1, 0) edge[thick, line width=0.5ex, ->, color=\colorOne] node[shift = {(0,0)} , pos=0.6, below]{\fontsize{12pt}{16pt}\selectfont \huge \color{\colorOne} position } (6, 0)
+		(-0, -1) edge[thick, line width=0.5ex, ->, color=\colorOne] node[shift = {(0,0)} , pos=0.4, above , rotate = 90 ]{\fontsize{12pt}{16pt}\selectfont \huge \color{\colorOne} time } (-0, 7.3)		
+	;
+	
+	\draw[]
+		(1,1) edge[thick, line width=0.5ex , color = colorFour] ($(1,1) + 1.0*(1,2) $)
+		(2,3) edge[dashed, line width=0.5ex , color = colorFour!50!colorThree] ($(2,3)!2.0!(3,5)$)
+
+		(5,1) edge[thick, line width=0.5ex , color = colorFive] ($(5,1) + 1.0*(-2,2) $)
+		(3,3) edge[dashed, line width=0.5ex , color = colorFive!50!colorThree] ($(3,3) + 2.0*(-2,2) $)
+	;
+
+	\draw[]
+		(2,3) edge[thick, line width=0.5ex , -> ,  >=Triangle , color = colorFive] ($(2,3) + 2.0*(-2,2) $)
+		(3,3) edge[thick, line width=0.5ex , -> , >=Triangle , color = colorFour] ($(3,3) + 2.0*(1,2) $)
+	;
+	
+
+	\draw[draw = none , fill = colorFour , opacity = 0.8] 
+		(1,1) circle (0.5) node [right]{
+			\tikz \draw[](0,0) edge[shift = {(0,1)}, thick, line width=0.3ex , -> ,  >=Stealth , color = colorFour] node [pos = 0.5 , above ]{\fontsize{20pt}{16pt}\selectfont $v_1$}  (1,0) ;
+			}
+	;
+	\draw[draw = none , fill = colorFour , opacity = 0.8] (2,3) circle (0.5) ;
+	\draw[draw = none , fill = colorFive , opacity = 0.8] 
+		(5,1) circle (0.5) node [left]{
+			\tikz \draw[](0,0) edge[shift = {(-0.1,1)}, thick, line width=0.3ex , -> ,  >=Stealth , color = colorFive] node [pos = 0.5 , above ]{\fontsize{20pt}{16pt}\selectfont $v_2$}  (-2,0) ;
+			}
+	;
+	\draw[draw = none , fill = colorFive , opacity = 0.8] (3,3) circle (0.5) ;
+
+	\draw[draw = none , fill = colorFive , opacity = 0.8] 
+		(0,5) circle (0.5) node [left]{
+			\tikz \draw[](0,0) edge[shift = {(-0.1,1)}, thick, line width=0.3ex , -> ,  >=Stealth , color = colorFive] node [pos = 0.7 , above]{\fontsize{20pt}{16pt}\selectfont $v_2$}  (-2,0) ;
+			}
+	;
+	\draw[draw = none , fill = colorFour , opacity = 0.8] 
+		(4,5) circle (0.5) node [right]{
+			\tikz \draw[](0,0) edge[shift = {(0,1)}, thick, line width=0.3ex , -> ,  >=Stealth , color = colorFour] node [pos =1 , right ]{\fontsize{20pt}{16pt}\selectfont $v_1$}  (1,0) ;
+			}
+	;
+	
+	\begin{scope}[shift = {(4.1,6.2)}]
+		\draw[shift = {(-0.6,0)}, thick, line width=0.5ex , -> ,  >=Stealth , color = colorThree] 
+			(-0.5,0) -- (0,0) 
+		;
+		\draw[shift = {(0.6,0)}]
+			(0,0) edge [thick, line width=0.5ex , <- , >=Stealth , color = colorThree] node [ pos = 1.0 , right ]{\fontsize{20pt}{16pt}\selectfont  \color{colorThree} $\Delta$ } (0.5,0) 
+		;			
+	\end{scope}
+
+	\begin{scope}[shift = {(5,1)}]
+		\draw[shift = {(-0.6,0)}, thick, line width=0.5ex , -> ,  >=Stealth , color = colorThree] 
+			(-0.5,0) -- (0,0) 
+		;
+		\draw[shift = {(0.6,0)}]
+			(0,0) edge [thick, line width=0.5ex , <- , >=Stealth , color = colorThree] node [ pos = 1.0 , right ]{\fontsize{20pt}{16pt}\selectfont  \color{colorThree} $\Delta$ } (0.5,0) 
+		;			
+	\end{scope}
+	
+	\begin{scope}[shift={(3,3.2)} , opacity = 0.0]
+    	\draw[
+        	fill=colorSix,
+       	 	color=colorSix,
+       		decorate,
+        	decoration={random steps, segment length=1mm, amplitude=1mm}
+   		 ] (0,0) circle (0.8);
+
+    	% Texte au centre
+    	\node at (0,0.) {\color{colorTwo} \fontsize{10pt}{5pt}\selectfont \bf Collision};
+	\end{scope}	
+
+	%\drawgrid{-3}{8}{-2}{8}	
+\end{tikzpicture}
+
+% Quantique2 problem
+\begin{tikzpicture}
+
+	\clip[] (-2.5 , -1.2 ) rectangle (7.5 , 7.5) ;
+	% Axxes 
+	\draw[shift = {(0,0)}]
+		(-1, 0) edge[thick, line width=0.5ex, ->, color=\colorOne] node[shift = {(0,0)} , pos=0.6, below]{\fontsize{12pt}{16pt}\selectfont \huge \color{\colorOne} position } (6, 0)
+		(-0, -1) edge[thick, line width=0.5ex, ->, color=\colorOne] node[shift = {(0,0)} , pos=0.5, above , rotate = 90 ]{\fontsize{12pt}{16pt}\selectfont \huge \color{\colorOne} time } (-0, 7.3)		
+	;
+	
+	\draw[]
+		(1,1) edge[thick, line width=0.5ex , color = colorFour] ($(1,1) + 1.0*(1,2) $)
+		(2,3) edge[dashed, line width=0.5ex , color = colorFour!50!colorThree] ($(2,3)!2.0!(3,5)$)
+
+		(5,1) edge[thick, line width=0.5ex , color = colorFive] ($(5,1) + 1.0*(-2,2) $)
+		(3,3) edge[dashed, line width=0.5ex , color = colorFive!50!colorThree] ($(3,3) + 2.0*(-2,2) $)
+	;
+
+	\draw[]
+		($(1,1) + 1.6*(1,2) $) edge[thick, line width=0.5ex , -> ,  >=Triangle , color = colorFive] ($(1,1) + 1.6*(1,2)  + 1.5*(-2,2) $)
+		($(5,1) + 1.6*(-2,2) $) edge[thick, line width=0.5ex , -> , >=Triangle , color = colorFour] ($(5,1) + 1.6*(-2,2)  + 1.5*(1,2) $)
+	;
+	
+
+	\shade[draw = none , inner color = colorFour , outer color=colorTwo, opacity = 0.8 , shading=radial ] 
+		(1,1) circle (0.5) node [right]{
+			\tikz \draw[](0,0) edge[shift = {(0,1)}, thick, line width=0.3ex , -> ,  >=Stealth , color = colorFour] node [pos = 0.5 , above ]{\fontsize{20pt}{16pt}\selectfont $\theta_1$}  (1,0) ;
+			}
+	;
+	
+	\shade[draw = none , inner color = colorFive , outer color=colorTwo, opacity = 0.8 , shading=radial ] 
+		(5,1) circle (0.5) node [left]{
+			\tikz \draw[](0,0) edge[shift = {(-0.1,1)}, thick, line width=0.3ex , -> ,  >=Stealth , color = colorFive] node [pos = 0.5 , above ]{\fontsize{20pt}{16pt}\selectfont $\theta_2$}  (-2,0) ;
+			}
+	;
+	
+
+	\shade[draw = none , inner color = colorFive , outer color=colorTwo, opacity = 0.8 , shading=radial ] 
+		($(1,1) + 1.6*(1,2)  + 0.8*(-2,2) $)  circle (0.5) node [left]{
+			\tikz \draw[](0,0) edge[shift = {(-0.1,0.0)}, thick, line width=0.3ex , -> ,  >=Stealth , color = colorFive] node [pos = 1 , left  ]{\fontsize{20pt}{16pt}\selectfont $\theta_2$}  (-2,0) ;
+			}
+	;
+	\shade[draw = none , inner color = colorFour , outer color=colorTwo, opacity = 0.8 , shading=radial ] 
+		($(5,1) + 1.6*(-2,2)  + 0.8*(1,2) $) circle (0.5) node [right]{
+			\tikz \draw[](0,0) edge[shift = {(0,0.0)}, thick, line width=0.3ex , -> ,  >=Stealth , color = colorFour] node [pos = 1 , right ]{\fontsize{20pt}{16pt}\selectfont $\theta_1$}  (1,0) ;
+			}
+	;
+	
+	\begin{scope}[shift = {(3.45,6.5)}]
+		\draw[shift = {(-0.6,0)}, thick, line width=0.5ex , -> ,  >=Stealth , color = colorThree] 
+			(-0.5,0) -- (0,0) 
+		;
+		\draw[shift = {(0.35,0)}]
+			(0,0) edge [thick, line width=0.5ex , <- , >=Stealth , color = colorThree] node [ pos = 1.0 , right ]{\fontsize{20pt}{16pt}\selectfont  \color{colorThree} $\Delta(\theta_1 - \theta_2)$ } (0.5,0) 
+		;			
+	\end{scope}
+
+	
+	\begin{scope}[shift={(2.3,3.6)} , opacity = 0.6]
+		\shade[draw = none , inner color = colorFour , outer color=colorTwo, opacity = 0.8 , shading=radial ] (-0.2,0) circle (0.5) ;
+		\shade[draw = none , inner color = colorFive , outer color=colorTwo, opacity = 0.8 , shading=radial ] (0.2,0) circle (0.5) ;
+    	\draw[
+        	fill=colorSix,
+       	 	color=colorSix,
+       		decorate,
+        	decoration={random steps, segment length=1mm, amplitude=1mm}
+   		 ] (0,0) circle (1.4);
+
+    	% Texte au centre
+    	\node at (0,0.) {\color{colorTwo} \fontsize{10pt}{5pt}\selectfont \bf Interaction};
+	\end{scope}
+	
+	%\drawgrid{-3}{8}{-2}{8}	
+\end{tikzpicture}
+
+\begin{tikzpicture}
+
+	% Axxes 
+	\draw[shift = {(0,0)}]
+		(-1, 0) edge[thick, line width=0.5ex, ->, >=Stealth, color=\colorOne] node[shift = {(0,0)} , pos=0.6, below]{ \huge \color{\colorOne} position } (6, 0)
+		(0, -1) edge[thick, line width=0.5ex, ->, >=Stealth, color=\colorOne] node[shift = {(0,0)} , pos=0.6, above , rotate = 90 ]{ \huge \color{\colorOne} temps } (0, 6)		
+	;
+	
+	\draw[]
+		(1,1) edge[thick, line width=0.5ex , color = colorFour] (3,3)
+		(3,3) edge[dashed, line width=0.5ex , color = colorThree] (5,5)
+		(5,1) edge[thick, line width=0.5ex , color = colorFive] (3,3)
+		(3,3) edge[dashed, line width=0.5ex , color = colorThree] (1,5) 
+	;
+	
+	\draw[]
+		(0,0) edge[shift = {(2.5,3)}, thick, line width=0.5ex , -> ,  >=Triangle , color = colorFour] (2.5,2.5)
+		(0,0) edge[shift = {(3.5,3)}, thick, line width=0.5ex , -> , >=Triangle , color = colorFive] (-2.5,2.5)
+	;
+	
+	\begin{scope}[shift = {(3.85,4.5)}]
+		\draw[thick, line width=0.2ex , -> ,  >=Stealth , color = colorThree] 
+			(-0.5,0) -- (0,0) 
+		;
+		\draw[shift = {(0.8,0)}]
+			(0,0) edge [thick, line width=0.2ex , <- , >=Stealth , color = colorThree] node [ pos = 1.0 , right ]{ \color{colorThree} $\Delta(\theta_1 - \theta_2)$ } (0.5,0) 
+		;			
+	\end{scope}
+	
+	\begin{scope}[shift={(3,3.2)}]
+    	\draw[
+        	fill=colorSix,
+       	 	color=colorSix,
+       		decorate,
+        	decoration={random steps, segment length=1mm, amplitude=1mm}
+   		 ] (0,0) circle (0.8);
+
+    	% Texte au centre
+    	\node at (0,0.) {\color{colorTwo} \fontsize{10pt}{5pt}\selectfont \bf Collision};
+	\end{scope}
+	
+	%Legende
+	\begin{scope}[shift = {(4.5cm,2.3cm)}]
+		\draw[
+  			shift={(0cm,0cm)},
+  			line width=0.5ex,
+  			draw=\colorThree,
+  			fill=\colorThree!50!\colorTwo,
+  			rounded corners=6pt,
+  			opacity = 0.2
+			] 
+  			(0,0) rectangle (1.7,1.2)
+  		;
+  		
+    	\draw[shift={(0.4cm,0.85cm)} , line width=0.5ex  ,color=\colorFive ,  fill = none] 	
+			(0,0) edge[] node[shift = {(0,0)} , pos=1, right ]{\fontsize{10pt}{5pt}\selectfont \bf $\theta_1$  } (0.5,0)
+		;
+		\draw[shift={(0.4cm,0.35cm)} , line width=0.5ex  ,color=\colorFour ,  fill = none] 	
+			(0,0) edge[] node[shift = {(0,0)} , pos=1, right ]{\fontsize{10pt}{5pt}\selectfont \bf $\theta_2$  } (0.5,0)
+		;
+	
+	\end{scope}
+
+	
+
+	%\drawgrid{-1}{7}{-1}{7}	
+\end{tikzpicture}
+
+
+
+% rho Fondamentale 
+
+\newcommand{\AxeBethe}{
+	\def\traitx{0.3}
+	\def\traity{0.5}
+	\draw[shift={(0,0)}]
+		(-13.5 , 0 ) edge [thick,line width=0.8ex ]( -3.2  , 0 )
+		( -3.2 - \traitx  , 0 - \traity ) edge [thick,line width=0.8ex ]( -3.2 + \traitx  , 0 + \traity  )
+		( -2.8 - \traitx  , 0 - \traity ) edge [thick,line width=0.8ex ]( -2.8 + \traitx  , 0 + \traity  )
+		(-2.8 , 0 ) edge [thick,line width=0.8ex ](2.8  , 0 )
+		( 2.8 - \traitx  , 0 - \traity ) edge [thick,line width=0.8ex ]( 2.8 + \traitx  , 0 + \traity  )
+		( 3.2 - \traitx  , 0 - \traity ) edge [thick,line width=0.8ex ]( 3.2 + \traitx  , 0 + \traity  )
+		(3.2, 0 ) edge [thick,line width=0.8ex,->,>=Stealth , color = black ]node [pos=1.01,below  ]{\huge \color{\colorOne}  $I$}	( 13.5  , 0 )
+	;
+}
+
+\newcommand{\DeltaUn}{
+	\draw[shift={(-10.75cm,-1cm)}]
+			(0,0) edge[color=\colorFour, thick , line width=0.5ex , >-<] node [pos = 0.5 , below]{\color{colorFour} \fontsize{20pt}{102pt}\selectfont \bfseries $1$} (0.5,0)
+	;
+}
+	
+\newcommand{\LegendeBetheUn}{
+	%\begin{scope}[shift={(-0,-0.5)},rotate=0,opacity=1,color=black]			
+
+		\begin{scope}[shift={(0.5,0.5)}]
+			\draw[color=\colorOne, thick, line width=0.5ex] 
+            (0, -0.3) -- (0, 0.3) ;
+            \filldraw[line width=0.5ex, color=\colorSix, outer color=\colorSix, inner color=\colorSix] 
+            (0, 0) circle (4pt);
+            
+            \node[anchor=west, font=\bfseries] at (0.2, 0) {\color{\colorSix}\large : quasi-particul};
+		\end{scope}
+
+	%\end{scope}
+}	
+
+\newcommand{\LegendeBethe}{	
+		\draw[shift={(0,0)} ,line width=1ex,rounded corners = 1ex,color=\colorOne , opacity =1 ,fill=\colorOne!00 , pattern={north east lines} , pattern color=\colorOne!00 ]
+			(0 , -1 ) rectangle (5,1)
+		;
+		
+		\LegendeBetheUn
+		
+		\begin{scope}[shift={(0.5,-0.5)}]
+			\draw[color=\colorOne, thick, line width=0.5ex] 
+            (0, -0.3) -- (0, 0.3) ;
+            \filldraw[line width=0.5ex, color=\colorSix, outer color=\colorTwo, inner color=\colorTwo] 
+            (0, 0) circle (4pt);
+            
+            \node[anchor=west, font=\bfseries] at (0.2, 0) {\color{\colorSix}\large : hole};
+		\end{scope}
+
+	%\end{scope}
+}
+
+\def\listetrais{
+	-13, -12.5, -12, -11.5, -11, -10.5, -10, -9.5, -9, -8.5, -8, -7.5, -7, -6.5, -6, -5.5, -5, -4.5, -4, -3.5,  -2.0, -1.5, -1, -0.5, 0, 0.5, 1, 1.5, 2, 2.5, 4, 4.5, 5, 5.5, 6, 6.5, 7, 7.5, 8, 8.5, 9, 9.5, 10, 10.5, 11, 11.5, 12, 12.5, 13
+	}
+
+\def\listetuple{
+	-11.5/{I_{1}}/{}, -9/{I_{2}}/{} , -7.5/{I_{3}}/{} , -7/{}/{} , -6/{}/{}  , -4.5/{}/{} , -4/{}/{} , -3.5/{}/{} ,  -2.0/{}/{}  , -1/{}/{} , -0.5/{I_{a}}/{} , 0/{}/{} ,  1/{}/{} ,  2/{}/{} , 2.5/{}/{} , 5/{}/{} , 5.5/{}/{} , 6/{}/{}  , 7/{}/{} , 8/{}/{}  , 9.5/{}/{} , 11/{I_N}/{}
+	}
+%1
+\begin{tikzpicture}
+
+	\clip (-14,-2) rectangle (14,16);
+
+	\begin{scope}[shift={(0,0)},scale=1.0]
+
+		\AxeBethe
+
+		% Loop over listetrais
+		\foreach \r in \listetrais {
+   	 		\draw[color=\colorFour, thick , line width=0.5ex] (\r - 0.25, -0.5) -- (\r - 0.25, 0.5);
+		}
+
+		
+		\DeltaUn
+			
+	
+	\end{scope}
+
+
+
+	%\draw[dashed, color=gray!70 , line width=0.8ex] (-14,-2) rectangle (14,16);
+	\path (-14,-2) rectangle (14,16);
+	%\drawgrid{-14}{14}{-2}{17}
+
+
+\end{tikzpicture}
+
+%2
+\begin{tikzpicture}
+
+	\clip (-14,-2) rectangle (14,16);
+
+	\begin{scope}[shift={(0,0)},scale=1.0]
+
+		\AxeBethe
+
+		%%%delta = 1 
+		\DeltaUn
+		% \begin{scope}[shift={(-10.5,1.8)},rotate=0,opacity=1,color=black]
+		% 	\LegendeBetheUn
+		% \end{scope}
+
+		% Loop over listetrais
+		\foreach \r in \listetrais {
+   	 		% Initialize found variable to zero
+    		% Initialize found variable to zero
+    		%\pgfmathsetmacro\found{0}
+    		\global\def\found{0}
+    		\xdef\nomtheta{}
+			\def\nomI{}
+  			\def\nomN{}
+    
+    		% Check if \r is in listetuple
+    		\foreach \x/\y/\nomN in \listetuple { 
+        		\ifdim \r pt=\x pt % If \r matches any \x in listetuple
+            		\global\def\found{1} ;
+           		 	\xdef\nomI{\y} % Set \nomtheta to the corresponding \y
+            		%\pgfmathsetmacro\found{1} % Set found to 1            
+          		  	%\global\pgfmathsetmacro\found{1}
+					\xdef\nomN{\nomN}
+        		\fi
+    		}
+    
+    		%\node [circle, draw, red] (A) at (\r, 2) {\found , $\nomI$};
+    
+    		% Draw the line and display \nomI if found
+    		\ifnum\found=1
+        		\draw[color=\colorOne, thick, line width=0.5ex] 
+        	    	(\r - 0.25, -0.5) -- (\r - 0.25, 0.5) node[shift = {(0, 0.0)} ,color=\colorSix , pos=-0.5] {\color{colorSix} \fontsize{20pt}{102pt}\selectfont \bfseries  $\nomI$} node[shift = {(0,-1.0)} ,color=\colorOne , pos=-0.5] {\color{colorOne} \fontsize{20pt}{102pt}\selectfont \bfseries $\nomN$};
+        	 	\filldraw[line width=0.5ex, color=\colorSix, outer color=\colorSix, inner color=\colorSix] 
+        	    	(\r - 0.25, 0) circle (4pt);
+    		\else 
+        		% Draw without \nomIand add a blue circle if not found
+				%\draw[color=\colorFour, thick , line width=0.5ex] (\r - 0.25, -0.5) -- (\r - 0.25, 0.5);
+				\draw[color=\colorOne, thick, line width=0.5ex] 
+         	  	 	(\r- 0.25, -0.5) -- (\r- 0.25, 0.5);
+        		\filldraw[line width=0.5ex, color=\colorSix, outer color=\colorTwo, inner color=\colorTwo]  
+            		(\r- 0.25, 0) circle (4pt); 
+    		\fi
+		}
+
+	\end{scope}
+
+
+
+	%\draw[dashed, color=gray!70 , line width=0.8ex] (-14,-2) rectangle (14,16);
+	%\path (-14,-2) rectangle (14,16);
+	%\drawgrid{-14}{14}{-2}{17}
+
+
+\end{tikzpicture}
+
+%3
+\newcommand{\BetheUn}{	
+	\AxeBethe
+
+		%%%delta = 1 
+		\DeltaUn
+		% \begin{scope}[shift={(-10.5,1.8)},rotate=0,opacity=1,color=black]
+		% 	\LegendeBethe
+		% \end{scope}
+
+		% Loop over listetrais
+		\foreach \r in \listetrais {
+   	 		% Initialize found variable to zero
+    		% Initialize found variable to zero
+    		%\pgfmathsetmacro\found{0}
+    		\global\def\found{0}
+    		\xdef\nomtheta{}
+			\def\nomI{}
+  			\def\nomN{}
+    
+    		% Check if \r is in listetuple
+    		\foreach \x/\y/\nomN in \listetuple { 
+        		\ifdim \r pt=\x pt % If \r matches any \x in listetuple
+            		\global\def\found{1} ;
+           		 	\xdef\nomI{\y} % Set \nomtheta to the corresponding \y
+            		%\pgfmathsetmacro\found{1} % Set found to 1            
+          		  	%\global\pgfmathsetmacro\found{1}
+					\xdef\nomN{\nomN}
+        		\fi
+    		}
+    
+    		%\node [circle, draw, red] (A) at (\r, 2) {\found , $\nomI$};
+    
+    		% Draw the line and display \nomI if found
+    		\ifnum\found=1
+        		\draw[color=\colorOne, thick, line width=0.5ex] 
+        	    	(\r - 0.25, -0.5) -- (\r - 0.25, 0.5) node[shift = {(0, 0.0)} ,color=\colorSix , pos=-0.5] {\color{colorSix} \fontsize{20pt}{102pt}\selectfont \bfseries  $\nomI$} node[shift = {(0,-1.0)} ,color=\colorOne , pos=-0.5] {\color{colorOne} \fontsize{20pt}{102pt}\selectfont \bfseries $\nomN$};
+        	 	\filldraw[line width=0.5ex, color=\colorSix, outer color=\colorSix, inner color=\colorSix] 
+        	    	(\r - 0.25, 0) circle (4pt);
+    		\else 
+        		% Draw without \nomIand add a blue circle if not found
+        		% \draw[color=\colorOne, dashed , line width=0.5ex] 
+         	  	%  	(\r - 0.25, -0.5) -- (\r - 0.25, 0.5);
+        		% \filldraw[line width=0.5ex, color=\colorSix, outer color=\colorTwo, inner color=\colorTwo]  
+            	% 	(\r - 0.25, 0) circle (4pt); 
+				%\draw[color=\colorFour, thick , line width=0.5ex] (\r - 0.25, -0.5) -- (\r - 0.25, 0.5);
+				\draw[color=\colorOne, thick, line width=0.5ex] 
+         	  	 	(\r- 0.25, -0.5) -- (\r- 0.25, 0.5);
+        		\filldraw[line width=0.5ex, color=\colorSix, outer color=\colorTwo, inner color=\colorTwo]  
+            		(\r- 0.25, 0) circle (4pt); 
+    		\fi
+		}
+}
+\begin{tikzpicture}
+
+	\clip (-14,-2) rectangle (14,16);
+
+	\begin{scope}[shift={(0,0)},scale=1.0]
+		\BetheUn
+	\end{scope}
+
+	%\draw[dashed, color=gray!70 , line width=0.8ex] (-14,-2) rectangle (14,16);
+	%\path (-14,-2) rectangle (14,16);
+	%\drawgrid{-14}{14}{-2}{17}
+
+\end{tikzpicture}
+
+
+
+\newcommand{\AxeTheta}{
+	\def\traitx{0.3}
+	\def\traity{0.5}
+	\draw[shift={(0,0)}]
+		(-13.5 , 0 ) edge [thick,line width=0.8ex ]( -3.2  , 0 )
+		( -3.2 - \traitx  , 0 - \traity ) edge [thick,line width=0.8ex ]( -3.2 + \traitx  , 0 + \traity  )
+		( -2.8 - \traitx  , 0 - \traity ) edge [thick,line width=0.8ex ]( -2.8 + \traitx  , 0 + \traity  )
+		(-2.8 , 0 ) edge [thick,line width=0.8ex ](2.8  , 0 )
+		( 2.8 - \traitx  , 0 - \traity ) edge [thick,line width=0.8ex ]( 2.8 + \traitx  , 0 + \traity  )
+		( 3.2 - \traitx  , 0 - \traity ) edge [thick,line width=0.8ex ]( 3.2 + \traitx  , 0 + \traity  )
+		(3.2, 0 ) edge [thick,line width=0.8ex,->,>=Stealth , color = black ]node [pos=1.01,below  ]{\huge \color{\colorOne}  $\theta$}	( 13.5  , 0 )
+	;
+}
+
+\def\listetupletheta{-12/\theta_{1}, -7.5/\theta_{2} ,  -5/\theta_{3} , -4/{} , -1.5/{} ,-1/\theta_{a} , 0/{}  , 1/{}  , 4/{}  , 5.5/{},  7/{} , 9/\theta_{N} }
+\def\listetraistheta{-13, -12 , -11, -10, -9 , -8 , -7.5 , -7,  -6 , -5, -4, -1,-1.5, 0 , 0.5, 1, 2, 4 , 5 , 5.5, 6 , 6.5,  7 , 8 , 8.5,  9 ,  10 , 11, 12 }
+
+% \def\listetraisthetatherm{-11/\theta_{i-1}, -6/\theta_{i}  ,   -2/\theta_{j} , 2/\theta_{j+1} , 5.5/\theta_{\ell} , 9.5/\theta_{\ell+1} };
+\def\listetraisthetatherm{-2/{} , 2/{} };
+
+
+%\def\listetraisItherm{-1.5/I_{j}, 1.5/I_{j+1} , 5.5/I_{\ell} , 8.5/I_{\ell+1}  };
+%\def\listetraisItherm{-1.5/I_{j}, 1.5/I_{j+1}};
+\def\listetraisItherm{-1.5/{}, 1.5/{}};
+
+
+
+\newcommand{\ThetaUn}{	
+	\AxeTheta
+
+
+		% Loop over listetrais
+		\foreach \r in \listetraistheta {
+   	 		% Initialize found variable to zero
+    		% Initialize found variable to zero
+    		%\pgfmathsetmacro\found{0}
+    		\global\def\found{0}
+    		\xdef\nomtheta{}
+			\def\nomtheta{}
+    
+    		% Check if \r is in listetuple
+    		\foreach \x/\y in \listetupletheta { 
+        		\ifdim \r pt=\x pt % If \r matches any \x in listetuple
+            		\global\def\found{1} ;
+           		 	\xdef\nomtheta{\y} % Set \nomtheta to the corresponding \y
+            		%\pgfmathsetmacro\found{1} % Set found to 1            
+          		  	%\global\pgfmathsetmacro\found{1}
+        		\fi
+    		}
+    
+    		%\node [circle, draw, red] (A) at (\r, 2) {\found , $\nomI$};
+    
+    		% Draw the line and display \nomI if found
+    		\ifnum\found=1
+        		\draw[color=\colorOne, thick, line width=0.5ex] 
+        	    	(\r - 0.25, -0.5) -- (\r - 0.25, 0.5) node[shift = {(0, 0.0)} ,color=\colorSix , pos=-0.5] {\color{colorSix} \fontsize{20pt}{102pt}\selectfont \bfseries  $\nomtheta$};
+        	 	\filldraw[line width=0.5ex, color=\colorSix, outer color=\colorSix, inner color=\colorSix] 
+        	    	(\r - 0.25, 0) circle (4pt);
+    		\else 
+        		% Draw without \nomIand add a blue circle if not found
+        		% \draw[color=\colorOne, dashed , line width=0.5ex] 
+         	  	%  	(\r - 0.25, -0.5) -- (\r - 0.25, 0.5);
+        		% \filldraw[line width=0.5ex, color=\colorSix, outer color=\colorTwo, inner color=\colorTwo]  
+            	% 	(\r - 0.25, 0) circle (4pt); 
+				\draw[color=\colorOne, thick, line width=0.5ex] 
+         	  	 	(\r- 0.25, -0.5) -- (\r- 0.25, 0.5);
+        		\filldraw[line width=0.5ex, color=\colorSix, outer color=\colorTwo, inner color=\colorTwo]  
+            		(\r- 0.25, 0) circle (4pt); 
+    		\fi
+		}
+}
+
+\newcommand{\ThetaDeux}{	
+	\ThetaUn
+
+		\foreach \r/\nomx in \listetraisthetatherm {
+			\draw[
+				decoration={
+				markings,
+    			mark connection node=my node,
+    			mark=at position .8 with{\node [blue,transform shape] (my node) {\large \color{\colorFour} $\nomx$};}},
+				color=\colorThree , thick, 
+				line width=0.5ex] %decorate { 
+            (\r, 1.12) -- (\r, -1.4)
+			%}
+        	;
+		}
+
+		\draw[
+			decoration={
+			markings,
+    		mark connection node=my node,
+    		mark=at position .5 with{\node [blue,transform shape] (my node) {\color{colorThree} \fontsize{20pt}{102pt}\selectfont \bfseries $\delta \theta $ };} },
+			color=\colorThree , thick, 
+			line width=0.5ex,
+			shift={(0,-3)}
+			] (-2, 1.2) edge[arrows={Computer Modern Rightarrow[line cap=round]-}] (-1 , 1.2)decorate { 
+            (-1.5, 1.2) -- (1.5, 1.2)}(1.0, 1.2) edge[arrows={-Computer Modern Rightarrow[line cap=round]}] (2 , 1.2)
+        ;
+}
+
+%4
+\begin{tikzpicture}
+
+	\clip (-14,-2) rectangle (14,16);
+
+	\begin{scope}[shift={(0,5)},scale=1.0]
+		\ThetaUn
+	\end{scope}
+
+	\begin{scope}[shift={(0,0)},scale=1.0]
+		\BetheUn
+		% \foreach \r/\nomx in \listetraisItherm {
+		% 	\draw[
+		% 		decoration={
+		% 		markings,
+    	% 		mark connection node=my node,
+    	% 		mark=at position .8 with{\node [blue,transform shape] (my node) {\large \color{\colorFour} $\nomx$};}},
+		% 		color=\colorThree , thick, 
+		% 		line width=0.5ex] decorate { 
+        %     (\r, 1.12) -- (\r, -1.2)}
+        % ;
+		% }
+		% \draw[
+		% 	decoration={
+		% 	markings,
+    	% 	mark connection node=my node,
+    	% 	mark=at position .5 with{\node [blue,transform shape] (my node) {\color{colorThree} \fontsize{20pt}{102pt}\selectfont \bfseries $\delta I$ };}},
+		% 	color=\colorThree , thick, 
+		% 	line width=0.5ex] (-1.5, 1.2) edge[arrows={Computer Modern Rightarrow[line cap=round]-}] (-1 , 1.2)decorate { 
+        %     (-1.5, 1.2) -- (1.5, 1.2)}(1.0, 1.2) edge[arrows={-Computer Modern Rightarrow[line cap=round]}] (1.5 , 1.2)
+        % ;
+	\end{scope}
+
+	% \begin{scope}[shift={(0,0)}]
+	% 	\draw[color=\colorThree, dashed , line width=0.5ex]
+	% 		(-1.5 , 1.5) --  (-2 , 3)
+	% 		(1.5 , 1.5) --  (2 , 3)
+	% 	;
+	% \end{scope}
+	
+
+	%\draw[dashed, color=gray!70 , line width=0.8ex] (-14,-2) rectangle (14,16);
+	%\path (-14,-2) rectangle (14,16);
+	%\drawgrid{-14}{14}{-2}{17}
+
+\end{tikzpicture}
+
+%5
+\begin{tikzpicture}
+
+	\clip (-14,-2) rectangle (14,16);
+
+	\begin{scope}[shift={(0,5)},scale=1.0]
+		\ThetaDeux
+	\end{scope}
+
+	\begin{scope}[shift={(0,0)},scale=1.0]
+		\BetheUn
+		\foreach \r/\nomx in \listetraisItherm {
+			\draw[
+				decoration={
+				markings,
+    			mark connection node=my node,
+    			mark=at position .8 with{\node [blue,transform shape] (my node) {\large \color{\colorFour} $\nomx$};}},
+				color=\colorThree , thick, 
+				line width=0.5ex] %decorate { 
+            (\r, 1.12) -- (\r, -1.2)
+			%}
+        ;
+		}
+		\draw[
+			decoration={
+			markings,
+    		mark connection node=my node,
+    		mark=at position .5 with{\node [blue,transform shape] (my node) {\color{colorThree} \fontsize{20pt}{102pt}\selectfont \bfseries $\delta I$ };}},
+			color=\colorThree , thick, 
+			line width=0.5ex] (-1.5, 1.2) edge[arrows={Computer Modern Rightarrow[line cap=round]-}] (-1 , 1.2)decorate { 
+            (-1.5, 1.2) -- (1.5, 1.2)}(1.0, 1.2) edge[arrows={-Computer Modern Rightarrow[line cap=round]}] (1.5 , 1.2)
+        ;
+	\end{scope}
+
+	\begin{scope}[shift={(0,0)}]
+		\draw[color=\colorThree, dashed , line width=0.5ex]
+			(-1.5 , 1.5) --  (-2 , 3)
+			(1.5 , 1.5) --  (2 , 3)
+		;
+	\end{scope}
+	
+
+	%\draw[dashed, color=gray!70 , line width=0.8ex] (-14,-2) rectangle (14,16);
+	%\path (-14,-2) rectangle (14,16);
+	%\drawgrid{-14}{14}{-2}{17}
+
+\end{tikzpicture}
+
+%6
+
+\newcommand{\FinDefRhoUn}{	
+	
+
+	\begin{scope}[shift={(0,10)}]
+		\draw[shift={(0,0)}]
+			(-13, 0 ) edge [thick,line width=0.8ex,->,>=Stealth , color = colorOne ]node [pos=1.01,below  ]{\huge$\theta$}	( 13  , 0 )
+		;
+		% \draw[shift={(0,0)}]
+		% 	(-12, -1 ) edge [thick,line width=0.8ex,->,>=Stealth , color = colorOne ]node [pos=0.9,left  ]{\huge$\rho$}	( -12  , 10 )
+		% ;
+		% \draw[shift={(0,0)}]
+		% 	(12, -1 ) edge [thick,line width=0.8ex,->,>=Stealth , color = colorOne ]node [pos=0.9,right  ]{\huge$\nu$}	( 12  , 10 )
+		% ;
+
+		
+		% \draw[shift={(0,0)} , thick,line width=1.6ex  , color = colorSix ]
+		% 	(-13,0) -- (-7,0) -- ( -7 , 3 ) to [controls=+(90:4) and +(90:4)] ( 7 , 3 ) -- ( 7 , 0 ) -- ( 13 , 0 )
+		% ;
+		\draw[line width=0.8ex, color = colorSix](-12,0) .. ( -11,1 ).. (-9,2).. (-7,2.5).. (-1,3.5) .. (4,4).. (7.5,4.2) .. ( 11, 1 ).. (12,0);
+		\node[font=\fontsize{40pt}{10pt}\selectfont\bfseries] at (4,5) {\textcolor{colorSix}{$\rho$}};
+
+
+		% \draw[shift={(0,0)} , thick,line width=1.0ex  , color = colorFour ]
+		% 	(-13,0) -- (-7,0) -- ( -7 , 8 ) -- ( 7 , 8 ) -- ( 7 , 0 ) -- ( 13 , 0 )
+		% ;
+
+		%\drawgrid{-12}{12}{-1}{7}
+	\end{scope}
+
+
+	\begin{scope}[shift={(0,5)},scale=1.0]
+		\ThetaDeux
+	\end{scope}
+
+	\begin{scope}[shift={(0,0)},scale=1.0]
+		\BetheUn
+		\foreach \r/\nomx in \listetraisItherm {
+			\draw[
+				decoration={
+				markings,
+    			mark connection node=my node,
+    			mark=at position .8 with{\node [blue,transform shape] (my node) {\large \color{\colorFour} $\nomx$};}},
+				color=\colorThree , thick, 
+				line width=0.5ex] %decorate { 
+            (\r, 1.12) -- (\r, -1.2)
+			%}
+        ;
+		}
+		\draw[
+			decoration={
+			markings,
+    		mark connection node=my node,
+    		mark=at position .5 with{\node [blue,transform shape] (my node) {\color{colorThree} \fontsize{20pt}{102pt}\selectfont \bfseries $\delta I$ };}},
+			color=\colorThree , thick, 
+			line width=0.5ex] (-1.5, 1.2) edge[arrows={Computer Modern Rightarrow[line cap=round]-}] (-1 , 1.2)decorate { 
+            (-1.5, 1.2) -- (1.5, 1.2)}(1.0, 1.2) edge[arrows={-Computer Modern Rightarrow[line cap=round]}] (1.5 , 1.2)
+        ;
+	\end{scope}
+
+	\begin{scope}[shift={(0,0)}]
+		\draw[color=\colorThree, dashed , line width=0.5ex]
+			(-1.5 , 1.5) --  (-2 , 3)
+			(1.5 , 1.5) --  (2 , 3)
+		;
+	\end{scope}
+
+	\begin{scope}[shift={(0,0)}]
+		\draw[color=\colorThree, dashed , line width=0.5ex]
+			(-2 , 6.5) --  (0 , 10)
+			(2 , 6.5) --  (0 , 10)
+		;
+		\draw[color=\colorThree, thick, line width=0.9ex]
+			(0 , 10) --  (0 , 14)
+		;
+	\end{scope}
+
+	
+
+	
+}
+
+\begin{tikzpicture}[use Hobby shortcut]
+
+	\clip (-14,-2) rectangle (14,16);
+
+	\FinDefRhoUn
+
+	\begin{scope}[shift={(1.7,4.5)},rotate=0,opacity=1,color= colorSix , transform canvas = {scale=1.5}]	
+		
+		\draw[shift={(0,0)} ,line width=1ex,rounded corners = 1ex,color=\colorSix , opacity =1 ,fill=\colorOne!00  ]
+			(0.1 , -3.5 ) rectangle (7.5,1)
+		;
+		
+		\node[anchor=west] at (0.2, 0.5) {\color{\colorSix}\large $L\rho (\theta) \delta \theta$ };\node[anchor=west, font=\bfseries] at (2, 0.5) {\color{\colorSix}\large : $\#$ rapidities $\in [\theta , \theta + \delta \theta  [$ };
+		
+		\node[anchor=west] at (0.2, -0.5) {\color{\colorSix}\large $L\rho_s (\theta) \delta \theta = \delta I $ };\node[anchor=west, font=\bfseries] at (2.9, -0.5) {\color{\colorSix}\large  : $\#$ states $\in [\theta , \theta + \delta \theta [$};
+		
+
+		\node[anchor=west] at (0.5, -2) {\color{\colorSix}\large $ \displaystyle \nu(\theta) = \frac{\rho(\theta)}{\rho_s(\theta)}$ };\node[anchor=west, font=\bfseries] at (2.95,-2) {\color{\colorSix}\large : Occupation factor };
+
+		\node[anchor=west] at (0.5, -3) {\color{\colorSix}\large $ \displaystyle \rho(\theta) \rightleftharpoons
+ 		\nu(\theta)$ } ;
+		
+		
+	\end{scope}
+
+	
+
+	%\draw[dashed, color=gray!70 , line width=0.8ex] (-14,-2) rectangle (14,16);
+	%\path (-14,-2) rectangle (14,16);
+	%\drawgrid{-14}{14}{-2}{17}
+
+\end{tikzpicture}
+
+\begin{tikzpicture}[use Hobby shortcut]
+
+	\clip (-14,-2) rectangle (14,16);
+	
+	\FinDefRhoUn
+
+
+
+	%\draw[dashed, color=gray!70 , line width=0.8ex] (-14,-2) rectangle (14,16);
+	%\path (-14,-2) rectangle (14,16);
+	%\drawgrid{-14}{14}{-2}{17}
+
+\end{tikzpicture}
+
+%%%
+\begin{tikzpicture}
+	\begin{scope}[shift={(0,0)}]
+	
+		\node[right] at (-12 , 1) {\fontsize{20pt}{5pt}\selectfont \bf (a) État fondamental (Mer de Fermi) } ;
+	
+		\draw[shift = {(0,0)}]
+		(-14, 0) edge[thick, line width=0.5ex, ->, >=Stealth, color=\colorOne] node[shift = {(0,0)} , pos=1.0, below]{ \huge \color{\colorOne} $I$ } (14, 0)
+		;
+		
+		\def\listetuple{-9/{-\frac{N-1}{2}{\quad}} ,  9/{+\frac{N-1}{2}{\quad}} }
+		\def\listetrais{ -9 , -8.5 ,  -8 , -7.5,  -7 , -6.5 ,  -6 , -5.5 ,-5, -4.5 ,-4,  -3.5 , -3 , -2.5 , -2, -1.5 ,  -1 , -0.5 ,   0 , 0.5 ,   1, 1.5 , 2, 2.5 , 3 , 3.5 ,  4, 4.5 ,  5 , 5.5,   6 , 6.5 ,  7 , 7.5 , 8 , 8.5,  9 }
+
+		% Loop over listetrais
+		\foreach \r in \listetrais {
+   	 		% Initialize found variable to zero
+    		% Initialize found variable to zero
+    		%\pgfmathsetmacro\found{0}
+    		\global\def\found{0}
+    		\xdef\nomtheta{}
+    
+    		% Check if \r is in listetuple
+    		\foreach \x/\y in \listetuple { 
+        		\ifdim \r pt=\x pt % If \r matches any \x in listetuple
+            		\global\def\found{1} ;
+           		 	\xdef\nomtheta{\y} % Set \nomtheta to the corresponding \y
+            		%\pgfmathsetmacro\found{1} % Set found to 1            
+          		  	%\global\pgfmathsetmacro\found{1}
+        		\fi
+    		}
+    
+    		%\node [circle, draw, red] (A) at (\r, 2) {\found , $\nomtheta$};
+    
+    		% Draw the line and display \nomtheta if found
+    		\ifnum\found=1
+        		\draw[color=\colorOne, thick, line width=0.5ex] 
+        	    	(\r, -0.5) -- (\r, 0.5) node[color=\colorOne , pos=-0.5] {\fontsize{20pt}{5pt}\selectfont \bf $\nomtheta$} ;
+        	 	\filldraw[line width=0.5ex, color=\colorSix, outer color=\colorSix, inner color=\colorSix] 
+        	    	(\r, 0) circle (4pt);
+    		\else 
+        		% Draw without \nomtheta and add a blue circle if not found
+        		\draw[color=\colorOne, thick, line width=0.5ex] 
+         	  	 	(\r, -0.5) -- (\r, 0.5);
+        		\filldraw[line width=0.5ex, color=\colorSix, outer color=\colorSix, inner color=\colorSix]  
+            		(\r, 0) circle (4pt); 
+    		\fi
+		}
+		
+		%\drawgrid{-12}{7}{-1}{7}			
+	\end{scope}
+	
+	\begin{scope}[shift={(0,-4)}]
+		
+		\node[right] at (-12 , 1) {\fontsize{20pt}{5pt}\selectfont \bf (b) Excitation de type I } ;
+		
+		\draw[shift = {(0,0)}]
+		(-14, 0) edge[thick, line width=0.5ex, ->, >=Stealth, color=\colorOne] node[shift = {(0,0)} , pos=1.0, below]{ \huge \color{\colorOne} $I$ } (14, 0)
+		;
+		\draw[color=\colorOne, dashed, line width=0.5ex] 
+        	   (-9, -0.5) -- (-9, 0.5) node[color=\colorOne , pos=-0.5] {\fontsize{20pt}{5pt}\selectfont \bf $-\frac{N-1}{2}{\quad}$} 
+        	   (9, -0.5) -- (9, 0.5) node[color=\colorOne , pos=-0.5] {\fontsize{20pt}{5pt}\selectfont \bf $+\frac{N-1}{2}{\quad}$} 
+        	   
+        ;
+		
+		\def\listetuple{-9 , -8.5 ,  -8 , -7.5,  -7 , -6.5 ,  -6 , -5.5 ,-5, -4.5 ,-4,  -3.5 , -3 , -2.5 , -2, -1.5 ,  -1 , -0.5 ,   0 , 0.5 ,   1, 1.5 , 2, 2.5 , 3 , 3.5 ,  4, 4.5 ,  5 , 5.5,   6 , 6.5 ,  7 , 7.5 , 8 , 8.5,  12 }
+		\def\listetrais{ -9 , -8.5 ,  -8 , -7.5,  -7 , -6.5 ,  -6 , -5.5 ,-5, -4.5 ,-4,  -3.5 , -3 , -2.5 , -2, -1.5 ,  -1 , -0.5 ,   0 , 0.5 ,   1, 1.5 , 2, 2.5 , 3 , 3.5 ,  4, 4.5 ,  5 , 5.5,   6 , 6.5 ,  7 , 7.5 , 8 , 8.5,  9 , 12 }
+
+		% Loop over listetrais
+		\foreach \r in \listetrais {
+   	 		% Initialize found variable to zero
+    		% Initialize found variable to zero
+    		%\pgfmathsetmacro\found{0}
+    		\global\def\found{0}
+    		\xdef\nomtheta{}
+    
+    		% Check if \r is in listetuple
+    		\foreach \x/\y in \listetuple { 
+        		\ifdim \r pt=\x pt % If \r matches any \x in listetuple
+            		\global\def\found{1} ;
+           		 	\xdef\nomtheta{\y} % Set \nomtheta to the corresponding \y
+            		%\pgfmathsetmacro\found{1} % Set found to 1            
+          		  	%\global\pgfmathsetmacro\found{1}
+        		\fi
+    		}
+    
+    		%\node [circle, draw, red] (A) at (\r, 2) {\found , $\nomtheta$};
+    
+    		% Draw the line and display \nomtheta if found
+    		\ifnum\found=1
+        		\draw[color=\colorOne, thick, line width=0.5ex] 
+        	    	(\r, -0.5) -- (\r, 0.5) ;
+        	 	\filldraw[line width=0.5ex, color=\colorSix, outer color=\colorSix, inner color=\colorSix] 
+        	    	(\r, 0) circle (4pt);
+    		\else 
+        		% Draw without \nomtheta and add a blue circle if not found
+        		\draw[color=\colorOne, dashed , line width=0.5ex] 
+         	  	 	(\r, -0.5) -- (\r, 0.5);
+        		\filldraw[line width=0.5ex, color=\colorSix, outer color=\colorTwo, inner color=\colorTwo]  
+            		(\r, 0) circle (4pt); 
+    		\fi
+		}	
+		
+		\draw[->,  color=\colorSix , thick , line width=0.5ex] (9, 1 ) to[out=45, in=135] (12 , 1 );
+			
+	\end{scope}
+	
+	
+	\begin{scope}[shift={(0,-8)}]
+		
+		\node[right] at (-12 , 1) {\fontsize{20pt}{5pt}\selectfont \bf (c) Excitation de type II } ;
+		
+		\draw[shift = {(0,0)}]
+		(-14, 0) edge[thick, line width=0.5ex, ->, >=Stealth, color=\colorOne] node[shift = {(0,0)} , pos=1.0, below]{ \huge \color{\colorOne} $I$ } (14, 0)
+		;
+		\draw[color=\colorOne, dashed, line width=0.5ex] 
+        	   (-9, -0.5) -- (-9, 0.5) node[color=\colorOne , pos=-0.5] {\fontsize{20pt}{5pt}\selectfont \bf $-\frac{N-1}{2}{\quad}$} 
+        	   (9, -0.5) -- (9, 0.5) node[color=\colorOne , pos=-0.5] {\fontsize{20pt}{5pt}\selectfont \bf $+\frac{N-1}{2}{\quad}$} 
+        	   
+        ;
+		
+		\def\listetuple{-9 , -8.5 ,  -8 , -7.5,  -7 , -6.5 ,  -6 , -5.5 ,-5, -4.5 ,-4,  -3.5 , -3 , -2.5 , -2, -1.5 ,  -1 , -0.5 ,   0 , 0.5 ,   1, 1.5 , 2, 2.5 , 3 , 3.5 ,  4, 4.5 ,  5 , 5.5,   6  ,  7 , 7.5 , 8 , 8.5,  9 , 9.5 }
+		\def\listetrais{ -9 , -8.5 ,  -8 , -7.5,  -7 , -6.5 ,  -6 , -5.5 ,-5, -4.5 ,-4,  -3.5 , -3 , -2.5 , -2, -1.5 ,  -1 , -0.5 ,   0 , 0.5 ,   1, 1.5 , 2, 2.5 , 3 , 3.5 ,  4, 4.5 ,  5 , 5.5,   6 , 6.5 ,  7 , 7.5 , 8 , 8.5,  9 , 9.5 }
+
+		% Loop over listetrais
+		\foreach \r in \listetrais {
+   	 		% Initialize found variable to zero
+    		% Initialize found variable to zero
+    		%\pgfmathsetmacro\found{0}
+    		\global\def\found{0}
+    		\xdef\nomtheta{}
+    
+    		% Check if \r is in listetuple
+    		\foreach \x/\y in \listetuple { 
+        		\ifdim \r pt=\x pt % If \r matches any \x in listetuple
+            		\global\def\found{1} ;
+           		 	\xdef\nomtheta{\y} % Set \nomtheta to the corresponding \y
+            		%\pgfmathsetmacro\found{1} % Set found to 1            
+          		  	%\global\pgfmathsetmacro\found{1}
+        		\fi
+    		}
+    
+    		%\node [circle, draw, red] (A) at (\r, 2) {\found , $\nomtheta$};
+    
+    		% Draw the line and display \nomtheta if found
+    		\ifnum\found=1
+        		\draw[color=\colorOne, thick, line width=0.5ex] 
+        	    	(\r, -0.5) -- (\r, 0.5) ;
+        	 	\filldraw[line width=0.5ex, color=\colorSix, outer color=\colorSix, inner color=\colorSix] 
+        	    	(\r, 0) circle (4pt);
+    		\else 
+        		% Draw without \nomtheta and add a blue circle if not found
+        		\draw[color=\colorOne, dashed , line width=0.5ex] 
+         	  	 	(\r, -0.5) -- (\r, 0.5);
+        		\filldraw[line width=0.5ex, color=\colorSix, outer color=\colorTwo, inner color=\colorTwo]  
+            		(\r, 0) circle (4pt); 
+    		\fi
+		}	
+		
+		\draw[->,  color=\colorSix , thick , line width=0.5ex] (6.5, 1 ) to[out=45, in=135] (9.5 , 1 );
+			
+	\end{scope}
+
+\end{tikzpicture}
+
+
+\begin{tikzpicture}
+
+
+\def\colorslide{blue!50!black}
+
+\def\Occupation{
+	\def\traitx{0.3}
+	\def\traity{0.5}
+	\draw[shift={(0,0)}]
+		(-13.5 , 0 ) edge [thick,line width=0.8ex ]( -3.2  , 0 )
+		( -3.2 - \traitx  , 0 - \traity ) edge [thick,line width=0.8ex ]( -3.2 + \traitx  , 0 + \traity  )
+		( -2.8 - \traitx  , 0 - \traity ) edge [thick,line width=0.8ex ]( -2.8 + \traitx  , 0 + \traity  )
+		(-2.8 , 0 ) edge [thick,line width=0.8ex ](2.8  , 0 )
+		( 2.8 - \traitx  , 0 - \traity ) edge [thick,line width=0.8ex ]( 2.8 + \traitx  , 0 + \traity  )
+		( 3.2 - \traitx  , 0 - \traity ) edge [thick,line width=0.8ex ]( 3.2 + \traitx  , 0 + \traity  )
+		(3.2, 0 ) edge [thick,line width=0.8ex,->,>=Stealth , color = black ]node [pos=1.01,below  ]{\huge$\theta$}	( 13  , 0 )
+	;
+	\draw[shift={(0,0)}, color=\colorOne]
+		(-10.5 , -1.5 ) edge [thick,line width=0.8ex , ->,>=Stealth  ]( -10.5  , 4.5 )
+	;
+		
+	\foreach \r in {1 , ... , 3 } {
+%		\draw[
+%		decoration={
+%		markings,
+%    	mark connection node=my node,
+%    	mark=at position 0 with{\node [blue,transform shape] (my node) {\large \r};}},
+%		color=gray, thick, 
+%		line width=0.5ex] decorate { 
+%            (-11.0, \r) -- (-10.1, \r )}
+%        ;
+        \draw[
+			color=\colorOne,
+			] 
+            (-11.0, \r) edge[color=\colorThree , thick,line width=0.5ex] node [pos=-0.5 ]{\large\color{\colorFour} $\frac{\r}{L \delta \theta}$ } (-10.3, \r )
+        	;
+	
+	}
+	
+
+	
+	% Graduation abcsisse 
+	% Définitions des listes
+% Definitions of the lists
+\def\listetuple{-9/\theta_{1}, -8/\theta_{2} , -5/\theta_{3} , -2/\theta_{a-1} , 0/\theta_{a} , 1/\theta_{a+1} , 2/\theta_{a+2} ,  5/\theta_{N-4} , 7/\theta_{N-3},8/\theta_{N-1},9/\theta_{N} }
+\def\listetrais{-12 , -11, -10, -9 , -8 , -7 ,  -6 , -5, -4.5,-4, -2 , -1, 0 , 0.5, 1, 2, 4 , 5 ,  6 , 7 , 8 ,8.5, 9 ,  10 , 11, 12 }
+
+% Loop over listetrais
+\foreach \r in \listetrais {
+    % Initialize found variable to zero
+    % Initialize found variable to zero
+    %\pgfmathsetmacro\found{0}
+    \global\def\found{0}
+    \xdef\nomtheta{}
+    
+    % Check if \r is in listetuple
+    \foreach \x/\y in \listetuple { 
+        \ifdim \r pt=\x pt % If \r matches any \x in listetuple
+            \global\def\found{1} ;
+            \xdef\nomtheta{\y} % Set \nomtheta to the corresponding \y
+            %\pgfmathsetmacro\found{1} % Set found to 1            
+            %\global\pgfmathsetmacro\found{1}
+        \fi
+    }
+    
+    %\node [circle, draw, red] (A) at (\r, 2) {\found , $\nomtheta$};
+    
+    % Draw the line and display \nomtheta if found
+    \ifnum\found=1
+        \draw[color=\colorOne, thick, line width=0.5ex] 
+            (\r, -0.3) -- (\r, 0.3) node[color=\colorSix , pos=-0.5] {\large $\nomtheta$};
+         \filldraw[line width=0.5ex, color=\colorSix, outer color=\colorSix, inner color=\colorSix] 
+            (\r, 0) circle (4pt);
+    \else 
+        % Draw without \nomtheta and add a blue circle if not found
+        \draw[color=\colorOne, thick, line width=0.5ex] 
+            (\r, -0.3) -- (\r, 0.3);
+        \filldraw[line width=0.5ex, color=\colorSix, outer color=\colorTwo, inner color=\colorTwo] 
+            (\r, 0) circle (4pt); 
+    \fi
+}
+
+\def\listetrais{-9.5/\theta_{i-1}/2/3, -6.5/\theta_{i}/1/4  ,   -1.5/\theta_{j}/2/4 , 1.5/\theta_{j+1}/-1/3 , 3.5/\theta_{\ell-1}/1/3 , 6.5/\theta_{\ell}/3/4 , 9.5/\theta_{\ell+1}/-1/3 };
+
+
+
+\foreach \r/\nomx/\y/\ys in \listetrais {
+	\draw[
+		decoration={
+		markings,
+    	mark connection node=my node,
+    	mark=at position .5 with{\node [blue,transform shape] (my node) {\large \color{\colorFour} $\nomx$};}},
+		color=\colorThree , thick, 
+		line width=0.5ex] decorate { 
+            (\r, 0.12) -- (\r, -1.2)}
+        ;
+     
+     \ifdim \y pt > -1 pt 
+     	\draw[
+			decoration={
+			markings,
+    		mark connection node=my node,
+    		mark=at position .5 with{\node [blue,transform shape] (my node) {\large \color{\colorFour} $\rho(\nomx) $};}},
+			color=\colorThree, thick, 
+			line width=0.5ex] decorate { 
+            (\r, \y) -- (\r +3, \y)}
+        ;
+        \draw[
+			decoration={
+			markings,
+    		mark connection node=my node,
+    		mark=at position .5 with{\node [blue,transform shape] (my node) {\large \color{\colorFive} $\rho_s(\nomx) $};}},
+			color=\colorFive, thick, 
+			line width=0.5ex] decorate { 
+            (\r, \ys) -- (\r +3, \ys)}
+        ;
+     \fi 
+     \ifdim \r pt= -1.5 pt
+     	\draw[
+     		decoration={
+			markings,
+    		mark connection node=my node,
+    		mark=at position .5 with{\node [blue,transform shape] (my node) {\large \color{\colorFour}  $\delta \theta $};},
+    		%mark=at position 0.1  with {\arrow[blue, line width=0.5ex]{<}},
+    		%mark=at position 1  with {\arrow[blue, line width=0.5ex]{>}}
+    		},
+        	color=\colorThree,
+        	thick,
+        	line width=0.5ex,
+        	%arrows={Computer Modern Rightarrow[line cap=round]-Computer Modern Rightarrow[line cap=round]}
+   			](\r, -1.2) edge[arrows={Computer Modern Rightarrow[line cap=round]-}] (\r + 0.4, -1.2)decorate {
+    		(\r, -1.2) -- (\r + 3, -1.2)}(\r + 2, -1.2) edge[arrows={-Computer Modern Rightarrow[line cap=round]}] (\r + 3, -1.2)
+    		;
+    \fi
+			
+	
+}
+
+
+			
+}
+
+
+\begin{scope}
+	%\draw[help lines , width=1.5ex] (-8,-3) grid (8,3);\draw[help lines ,width=0.5ex , opacity = 0.5] (-3,-3) grid[step=0.1] (3,3));
+	
+	%\draw[help lines] 
+	%	(-3,-3) edge[width=1.5ex] grid (3,3)	
+	%	(-3,-3) edge[width=0.5ex , opacity = 0.5] grid (3,3)	
+	%;
+	\begin{scope}[shift={(0,1)},rotate=0,opacity=1,color=black]
+		\Occupation	
+		
+		%\node[anchor=east, font=\bfseries] at (-11, 0) {\color{red}\large (T = 0 )} ;	
+	\end{scope}
+	
+	
+	
+	
+	\begin{scope}[shift={(-10.5,7)},rotate=0,opacity=1,color=black]
+	
+	\begin{scope}[shift={(-0,0)},rotate=0,opacity=1,color=black]
+	
+		\draw[shift={(0,0)} ,line width=1ex,rounded corners = 1ex,color=\colorOne , opacity =1 ,fill=\colorOne!00 , pattern={north east lines} , pattern color=\colorOne!00 ]
+			(0 , -1 ) rectangle (5,1)
+		;
+		
+
+		\begin{scope}[shift={(0.5,0.5)}]
+			\draw[color=\colorOne, thick, line width=0.5ex] 
+            (0, -0.3) -- (0, 0.3) ;
+            \filldraw[line width=0.5ex, color=\colorSix, outer color=\colorSix, inner color=\colorSix] 
+            (0, 0) circle (4pt);
+            
+            \node[anchor=west, font=\bfseries] at (0.2, 0) {\color{\colorSix}\large : quasi-particule};
+		\end{scope}
+		
+		\begin{scope}[shift={(0.5,-0.5)}]
+			\draw[color=\colorOne, thick, line width=0.5ex] 
+            (0, -0.3) -- (0, 0.3) ;
+            \filldraw[line width=0.5ex, color=\colorSix, outer color=\colorTwo, inner color=\colorTwo] 
+            (0, 0) circle (4pt);
+            
+            \node[anchor=west, font=\bfseries] at (0.2, 0) {\color{\colorSix}\large : trou};
+		\end{scope}
+
+	\end{scope}
+	
+	\begin{scope}[shift={(6,0)},rotate=0,opacity=1,color=black]	
+		
+		\draw[shift={(0,0)} ,line width=1ex,rounded corners = 1ex,color=\colorOne , opacity =1 ,fill=\colorOne!00 , pattern={north east lines} , pattern color=\colorOne!00 ]
+			(0 , -1 ) rectangle (7.5,1)
+		;
+		
+		\node[anchor=west] at (0.5, 0.5) {\color{\colorFour}\large $\rho$ };\node[anchor=west, font=\bfseries] at (1, 0.5) {\color{\colorFour}\large : distribution de rapidité};
+		
+		\node[anchor=west] at (0.5, -0.5) {\color{\colorFour}\large $\rho_h$ };\node[anchor=west, font=\bfseries] at (1, -0.5) {\color{\colorFour}\large  : densité de trous};
+		
+	\end{scope}
+	
+	\begin{scope}[shift={(14.5,0)},rotate=0,opacity=1,color=black]	
+		
+		\draw[shift={(0,0)} ,line width=1ex,rounded corners = 1ex,color=\colorOne , opacity =1 ,fill=\colorOne!00 , pattern={north east lines} , pattern color=\colorOne!00 ]
+			(0 , -0.5 ) rectangle (7.0,0.5)
+		;
+		
+		\node[anchor=west] at (0.2, 0) {\color{\colorFour}\large ${\color{\colorFive}\rho_s} = \rho + \rho_h $ } node[anchor=west , font=\bfseries] at (3.1 , 0 )  {\color{\colorFour}\large {\color{\colorFive} : densité d'état}};
+		
+	\end{scope}
+	
+	
+	\end{scope}
+
+
+		
+	
+\end{scope}
+
+%\begin{scope}[shift={(0,-5)},transform canvas={scale=0.6}]
+\begin{scope}[shift={(0,-5)},scale=0.7]
+
+		
+		\draw[shift = {(0,0)}]
+		(-23, 0) edge[thick, line width=0.5ex, ->, >=Stealth, color=\colorOne] node[shift = {(0,0)} , pos=1.0, below]{ \huge \color{\colorOne} $I$ } (23, 0)
+		;
+		
+		\def\listetuple{
+			 -22, -21.5, -21, -20.5, -20, -19.5, -19, -18.5, -18, -17.5, -17, -16.5, -16, -15.5,  -14.5, -14, -13.5, -13, -12.5, -12, -11.5, -11, -10.5, -10,  -8, -7.5, -7, -6.5, -6, -5.5, -5, -4.5, -4,   -1, 0, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 5.5, 6, 6.5, 7, 7.5,  9, 9.5, 10, 10.5,  12,  13,  14, 14.5, 15, 15.5, 16, 16.5, 17, 17.5, 18, 18.5, 19, 19.5, 20, 20.5, 21
+		}
+		\def\listetrais{
+			-22.5, -22, -21.5, -21, -20.5, -20, -19.5, -19, -18.5, -18, -17.5, -17, -16.5, -16, -15.5, -15, -14.5, -14, -13.5, -13, -12.5, -12, -11.5, -11, -10.5, -10, -9.5, -9, -8.5, -8, -7.5, -7, -6.5, -6, -5.5, -5, -4.5, -4, -3.5, -3, -2.5, -2, -1.5, -1, -0.5, 0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 5.5, 6, 6.5, 7, 7.5, 8, 8.5, 9, 9.5, 10, 10.5, 11, 11.5, 12, 12.5, 13, 13.5, 14, 14.5, 15, 15.5, 16, 16.5, 17, 17.5, 18, 18.5, 19, 19.5, 20, 20.5, 21, 21.5, 22
+		}
+
+
+		% Loop over listetrais
+		\foreach \r in \listetrais {
+   	 		% Initialize found variable to zero
+    		% Initialize found variable to zero
+    		%\pgfmathsetmacro\found{0}
+    		\global\def\found{0}
+    		\xdef\nomtheta{}
+    
+    		% Check if \r is in listetuple
+    		\foreach \x/\y in \listetuple { 
+        		\ifdim \r pt=\x pt % If \r matches any \x in listetuple
+            		\global\def\found{1} ;
+           		 	\xdef\nomtheta{\y} % Set \nomtheta to the corresponding \y
+            		%\pgfmathsetmacro\found{1} % Set found to 1            
+          		  	%\global\pgfmathsetmacro\found{1}
+        		\fi
+    		}
+    
+    		%\node [circle, draw, red] (A) at (\r, 2) {\found , $\nomtheta$};
+    
+    		% Draw the line and display \nomtheta if found
+    		\ifnum\found=1
+        		\draw[color=\colorOne, thick, line width=0.5ex] 
+        	    	(\r - 0.25, -0.5) -- (\r - 0.25, 0.5) ;
+        	 	\filldraw[line width=0.5ex, color=\colorSix, outer color=\colorSix, inner color=\colorSix] 
+        	    	(\r - 0.25, 0) circle (4pt);
+    		\else 
+        		% Draw without \nomtheta and add a blue circle if not found
+        		\draw[color=\colorOne, dashed , line width=0.5ex] 
+         	  	 	(\r - 0.25, -0.5) -- (\r - 0.25, 0.5);
+        		\filldraw[line width=0.5ex, color=\colorSix, outer color=\colorTwo, inner color=\colorTwo]  
+            		(\r - 0.25, 0) circle (4pt); 
+    		\fi
+		}
+		
+	\draw[
+     		decoration={
+			markings,
+    		mark connection node=my node,
+    		mark=at position .5 with{\node [blue,transform shape] (my node) {\fontsize{10pt}{5pt}\selectfont \bf \color{\colorFour}  $\delta I $};},
+    		%mark=at position 0.1  with {\arrow[blue, line width=0.5ex]{<}},
+    		%mark=at position 1  with {\arrow[blue, line width=0.5ex]{>}}
+    		},
+        	color=\colorThree,
+        	thick,
+        	line width=0.5ex,
+        	%arrows={Computer Modern Rightarrow[line cap=round]-Computer Modern Rightarrow[line cap=round]}
+   			](-1.1, -1.2) edge[arrows={Computer Modern Rightarrow[line cap=round]-}] (-1, -1.2)decorate {
+    		(-1, -1.2) -- (1, -1.2)}(1, -1.2) edge[arrows={-Computer Modern Rightarrow[line cap=round]}] (1.1, -1.2)
+    		;	
+		
+	
+\end{scope}
+
+\begin{scope}[shift={(0,-5)}]
+	\draw[color=\colorOne, dashed , line width=0.5ex]
+		(-0.8 , 0.7) --  (-1.5 , 4.6)
+		(0.8 , 0.7) --  (1.5 , 4.6)
+	;
+	
+\end{scope}
+
+
+%\drawgrid{-12}{7}{-4}{7}
+
+
+\end{tikzpicture}
+
+
+
+%article_distribution_24-04-2024
+\begin{tikzpicture}
+
+	%\clip[scale = 0.95 , decorate, decoration={random steps, segment length=0.1 cm, amplitude=0.2cm}](#1 , #2 ) rectangle ( #3 , #4 ) ;
+	\clip[](-14 , -3) rectangle (9.5 , 12) ;
+	
+	% Définition de l’échelle
+	\def\echelleY{10}
+	\pgfmathsetmacro{\echelleYCm}{11/6}
+	\def\echelleX{50}
+	\pgfmathsetmacro{\echelleXCm}{20/7}
+
+	% Définition de la liste
+	\def\listeLabelsY{{0,10,20,30,40,50,60}}
+	\def\listeLabelsX{{-200,-150,-100,-50,0,50,100,150}}
+	
+	
+	
+	\pgfmathparse{-4*\echelleXCm}  
+    \let\valXmin\pgfmathresult
+
+    
+    \begin{scope}
+    	\pgfmathparse{-4*\echelleXCm}  
+    	\let\valXmin\pgfmathresult
+    	\clip[](\valXmin , -1) rectangle (9.2 , 11.5) ;
+    	\backgrowngrid{-4}{0}{3}{6}{\echelleXCm}{\echelleYCm}
+    	
+    	\draw[
+  			shift={(-11cm,6cm)},
+  			line width=0.5ex,
+  			draw=\colorThree,
+  			fill=\colorThree!50!\colorTwo,
+  			rounded corners=6pt,
+  			opacity = 0.2
+			] 
+  			(0,0) rectangle (10.7,5);
+  			
+    	\draw[line width=0.8ex  ,color=\colorFive ,  fill = none] 	
+			plot[smooth] file {data/donnee_bord_article_distribution_24-04-2024.table}
+			(-10.5,10) edge[] node[shift = {(0,0)} , pos=1, right ]{\fontsize{19pt}{19pt}\selectfont \bf Profil de bord } (-9,10)
+		;
+		\draw[line width=1.0ex  ,color=\colorSix ,  fill = none] 	
+			plot[] file {data/GHD_bord_article_distribution_24-04-2024.table}
+			(-10.5,9) edge[] node[shift = {(0,0)} , pos=1, right ]{\fontsize{19pt}{19pt}\selectfont \bf Ajustement : T = 560~nK } (-9,9)
+		;
+		\draw[line width=1.0ex  ,color=\colorThree ,  fill = none] 	
+			plot[] file {data/GHD_bord_2_article_distribution_24-04-2024.table}
+			(-10.5,7) edge[] node[shift = {(0,0)} , pos=1, right ]{\fontsize{19pt}{19pt}\selectfont \bf   T = 1550~nK } (-9,7)
+		;
+		\draw[line width=0.8ex  ,color=\colorFour ,  fill = none] 
+			plot[smooth] file {data/donnee_selection_1_article_distribution_24-04-2024.table}
+			(-10.5,8) edge[] node[shift = {(0,0)} , pos=1, right ]{\fontsize{19pt}{19pt}\selectfont \bf Sélection} (-9,8)
+		;
+    \end{scope}
+    
+    
+    % Graduations     
+	\begin{scope}[shift = {(\valXmin,0)}]
+		\GraduationYCm{0}{6}{\listeLabelsY}{\echelleYCm}	
+	\end{scope}			
+	\begin{scope}[shift = {(0,-1)}]	
+		\GraduationXCm{-4}{3}{\listeLabelsX}{\echelleXCm}
+	\end{scope}
+	
+	
+	% Axxes 
+	\draw[shift = {(0,-1)}](\valXmin, 0) edge[thick, line width=0.8ex, ->, >=Triangle, color=\colorOne] node[shift = {(0,-1)} , pos=0.5, below]{ \huge $x~(\mu m)$ } (9.5, 0);
+    \draw   (\valXmin, -1) edge[thick, line width=0.8ex, ->, >=Triangle, color=\colorOne] node[shift = {(-1,0)} , pos=0.5, above , rotate = 90 ]{ \huge $n~({\mu m}^{-1})$ } (\valXmin, 12)
+		
+		
+	;
+	
+	%\draw[line width=2.5ex , color = red ] (-14 , -1) rectangle (9.5 , 12) ;
+	%\drawgrid{-13}{9.5}{-1}{12}
+	
+\end{tikzpicture}
+
+
+%Assymetrie
+\begin{tikzpicture}
+
+	%\clip[scale = 0.95 , decorate, decoration={random steps, segment length=0.1 cm, amplitude=0.2cm}](#1 , #2 ) rectangle ( #3 , #4 ) ;
+	\clip[](-12 , -4) rectangle (11 , 12) ;
+	
+	% Définition de l’échelle
+	%\def\echelleY{10}
+	\pgfmathsetmacro{\echelleYCm}{9/3}
+	%\def\echelleX{50}
+	\pgfmathsetmacro{\echelleXCm}{16/4}
+
+	% Définition de la liste
+	\def\listeLabelsY{{0,1,2,3}}
+	\def\listeLabelsX{{-400,-200,0,200,400}}
+	
+	
+
+    
+    \begin{scope}
+
+    	\clip[](-10 , -2) rectangle (10, 11.5) ;
+    	\backgrowngrid{-2}{0}{2}{3}{\echelleXCm}{\echelleYCm}
+    	
+    	\draw[
+  			shift={(2cm,8cm)},
+  			line width=0.5ex,
+  			draw=\colorThree,
+  			fill=\colorThree!50!\colorTwo,
+  			rounded corners=6pt,
+  			opacity = 0.2
+			] 
+  			(0,0) rectangle (7,3);
+  			
+    	\draw[line width=0.8ex  ,color=\colorFour ,  fill = none] 	
+			plot[smooth] file {data/donnee_article_asymetrie_24-04-202.table}
+			(2.5,10) edge[] node[shift = {(0,0)} , pos=1, right ]{\fontsize{25pt}{19pt}\selectfont \bf $\tilde{n}(x)$ } (4,10)
+		;
+		\draw[line width=0.8ex  ,color=\colorFive,  fill = none] 	
+			plot[smooth] file {data/donnee_2_article_asymetrie_24-04-202.table}
+			(2.5,9) edge[] node[shift = {(0,0)} , pos=1, right ]{\fontsize{25pt}{19pt}\selectfont \bf $\tilde{n}(2x_s-x)$  } (4,9)
+		;
+    \end{scope}
+    
+    
+    % Graduations     
+	\begin{scope}[shift = {(-10,0)}]
+		\GraduationYCm{0}{3}{\listeLabelsY}{\echelleYCm}	
+	\end{scope}			
+	\begin{scope}[shift = {(0,-2)}]	
+		\GraduationXCm{-2}{2}{\listeLabelsX}{\echelleXCm}
+	\end{scope}
+	
+	
+	% Axxes 
+	\draw[shift = {(0,-2)}](-10, 0) edge[thick, line width=0.8ex, ->, >=Triangle, color=\colorOne] node[shift = {(0,-1)} , pos=0.5, below]{ \huge $x~(\mu m)$ } (11, 0);
+    \draw [shift = {(-10,0)}]  (0, -2) edge[thick, line width=0.8ex, ->, >=Triangle, color=\colorOne] node[shift = {(-1,0)} , pos=0.5, above , rotate = 90 ]{ \huge $n~({\mu m}^{-1})$ } (0, 12)
+		
+		
+	;
+	
+	%\draw[line width=2.5ex , color = red ] (-14 , -1) rectangle (9.5 , 12) ;
+	%\drawgrid{-11}{13}{-4}{12}
+		
+\end{tikzpicture}
+
+
+%theorie 
+\begin{tikzpicture}
+	%\clip[scale = 0.95 , decorate, decoration={random steps, segment length=0.1 cm, amplitude=0.2cm}](#1 , #2 ) rectangle ( #3 , #4 ) ;
+	\clip[](-15 , -3) rectangle (7 , 11.5) ;
+	
+	% Définition de l’échelle
+	%\def\echelleY{10}
+	\pgfmathsetmacro{\echelleYCm}{10/6}
+	%\def\echelleX{50}
+	\pgfmathsetmacro{\echelleXCm}{10/4}
+
+	% Définition de la liste
+	\def\listeLabelsY{{0,20,40,60,80,100,120}}
+	\def\listeLabelsX{{-12.5,-10,-7.5,-5,-2.5 , 0 , 2.5, 5}}
+	
+	
+
+    
+    \begin{scope}
+
+    	\clip[](-13 , -1) rectangle (6.6, 11.0) ;
+    	\backgrowngrid{-5}{0}{2}{6}{\echelleXCm}{\echelleYCm}
+    	
+    	\draw[
+  			shift={(-12cm,6.2cm)},
+  			line width=0.5ex,
+  			draw=\colorThree,
+  			fill=\colorThree!50!\colorTwo,
+  			rounded corners=6pt,
+  			opacity = 0.2
+			] 
+  			(0,0) rectangle (8,3.5);
+  			
+    	\draw[line width=0.8ex  ,color=\colorSix ,  fill = none] 	
+			plot[smooth] file {data/GHD_article_distribution_24-04-2024.table}
+			(-11.5,9) edge[] node[shift = {(0,0)} , pos=1, right ]{\fontsize{20pt}{19pt}\selectfont \bf $\tau \ast n_{\mbox{\tiny GHD}}(\tau \ast \cdot - x_0)$ } (-10,9)
+		;
+		\draw[line width=0.8ex  ,color=\colorFive,  fill = none] 	
+			plot[smooth] file {data/Pi_article_distribution_24-04-2024.table}
+			(-11.5,8) edge[] node[shift = {(0,0)} , pos=1, right ]{\fontsize{20pt}{19pt}\selectfont \bf $\Pi $  } (-10,8)
+		;
+		\draw[line width=0.8ex  ,color=\colorFour, dashed , dash pattern=on 10pt off 6pt,  fill = none] 	
+			plot[] file {data/rho_article_distribution_24-04-2024.table}
+			(-11.5,7) edge[] node[shift = {(0,0)} , pos=1, right ]{\fontsize{20pt}{19pt}\selectfont \bf $\ell \ast \rho  $  } (-10,7)
+		;
+    \end{scope}
+    
+    
+    % Graduations     
+	\begin{scope}[shift = {(-13,0)}]
+		\GraduationYCm{0}{6}{\listeLabelsY}{\echelleYCm}	
+	\end{scope}			
+	\begin{scope}[shift = {(0,-1)}]	
+		\GraduationXCm{-5}{2}{\listeLabelsX}{\echelleXCm}
+	\end{scope}
+	
+	
+	% Axxes 
+	\draw[shift = {(-3,-1)}](-10, 0) edge[thick, line width=0.8ex, ->, >=Triangle, color=\colorOne] node[shift = {(0,-1)} , pos=0.5, below]{ \huge $\theta~(\mu m / m s) $ } (10, 0);
+    \draw [shift = {(-13,0)}]  (0, -1) edge[thick, line width=0.8ex, ->, >=Triangle, color=\colorOne] node[shift = {(-1,0)} , pos=0.5, above , rotate = 90 ]{ \huge $ms/\mu m$ } (0, 11.5)
+		
+		
+	;
+	
+	%\draw[line width=2.5ex , color = red ] (-14 , -1) rectangle (9.5 , 12) ;
+	%\drawgrid{-10}{13}{4}{12}
+	
+\end{tikzpicture}
+
+
+%Fit expension
+\begin{tikzpicture}
+	%\clip[scale = 0.95 , decorate, decoration={random steps, segment length=0.1 cm, amplitude=0.2cm}](#1 , #2 ) rectangle ( #3 , #4 ) ;
+	\clip[](-13 , -3) rectangle (9.5 , 11.4) ;
+	
+	% Définition de l’échelle
+	%\def\echelleY{10}
+	\pgfmathsetmacro{\echelleYCm}{10/4}
+	%\def\echelleX{50}
+	\pgfmathsetmacro{\echelleXCm}{20/9}
+
+	% Définition de la liste
+	\def\listeLabelsY{{0,1,2,3,4}}
+	\def\listeLabelsX{{-500,-400,-300,-200,-100 , 0 ,100, 200 , 300 , 400}}
+	
+	
+
+    \pgfmathparse{-5*\echelleXCm}  
+    \let\valXmin\pgfmathresult
+    \begin{scope}
+		
+    	\clip[](\valXmin , -1) rectangle (9, 11.0) ;
+    	\backgrowngrid{-6}{0}{4}{4}{\echelleXCm}{\echelleYCm}
+    	
+    	\draw[
+  			shift={(-10.5cm,7.2cm)},
+  			line width=0.5ex,
+  			draw=\colorThree,
+  			fill=\colorThree!50!\colorTwo,
+  			rounded corners=6pt,
+  			opacity = 0.2
+			] 
+  			(0,0) rectangle (8.6,3.5);
+  			
+    	\draw[line width=0.8ex  ,color=\colorFour ,  fill = none] 	
+			plot[smooth] file {data/Donnee_article_simul_expansion_1_24-04-2024-T-x0.table}
+			(-10.2,10) edge[] node[shift = {(0,0)} , pos=1, right ]{\fontsize{16pt}{19pt}\selectfont \bf Données } (-8.7,10)
+		;
+		\draw[line width=0.8ex  ,color=\colorSix,  fill = none] 	
+			plot[smooth] file {data/GHD_1_article_simul_expansion_1_24-04-2024-T-x0.table}
+			(-10.2,9) edge[] node[shift = {(0,0)} , pos=1, right ]{\fontsize{16pt}{19pt}\selectfont \bf T = 560 nK  } (-8.7,9)
+		;
+		\draw[line width=0.8ex  ,color=\colorThree,  fill = none] 	
+			plot[] file {data/GHD_2_article_simul_expansion_1_24-04-2024-T-x0.table}
+			(-10.2,8) edge[] node[shift = {(0,0)} , pos=1, right ]{\fontsize{16pt}{19pt}\selectfont \bf Ajust : T = 1550 nK  } (-8.7,8)
+		;
+    \end{scope}
+    
+    
+    % Graduations     
+	\begin{scope}[shift = {(\valXmin,0)}]
+		\GraduationYCm{0}{4}{\listeLabelsY}{\echelleYCm}	
+	\end{scope}			
+	\begin{scope}[shift = {(0,-1)}]	
+		\GraduationXCm{-5}{4}{\listeLabelsX}{\echelleXCm}
+	\end{scope}
+	
+	
+	% Axxes 
+	\draw[shift = {(0,-1)}](\valXmin, 0) edge[thick, line width=0.8ex, ->, >=Triangle, color=\colorOne] node[shift = {(0,-1)} , pos=0.5, below]{ \huge $x~(\mu m) $ } (9.5, 0);
+    \draw [shift = {(\valXmin,0)}]  (0, -1) edge[thick, line width=0.8ex, ->, >=Triangle, color=\colorOne] node[shift = {(-1,0)} , pos=0.5, above , rotate = 90 ]{ \huge ${\mu m}^{-1}$ } (0, 11.5)
+		
+		
+	;
+	
+	%\draw[line width=2.5ex , color = red ] (-14 , -1) rectangle (9.5 , 12) ;
+	%\drawgrid{-13}{13}{-4}{12}
+	
+\end{tikzpicture}
+
+
+
+
+
+
+%\tikz \InsitutDiagram ; 
+
+
+\end{document}

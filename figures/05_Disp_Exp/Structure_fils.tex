@@ -1,0 +1,71 @@
+
+% Définition des couleurs avec les codes HTML
+\definecolor{colorOne}{HTML}{443E46}
+%\definecolor{colorTwo}{HTML}{F6DEB8}
+\definecolor{colorTwo}{HTML}{FFFFFF}
+
+\definecolor{colorThree}{HTML}{908CA4}
+\definecolor{colorFour}{HTML}{57659E}
+\definecolor{colorFive}{HTML}{C57284}
+\definecolor{colorSix}{HTML}{FF5B69}
+
+% Raccourcis pour les couleurs
+\def\colorOne{colorOne}
+\def\colorTwo{colorTwo}
+\def\colorThree{colorThree}
+\def\colorFour{colorFour}
+\def\colorFive{colorFive}
+\def\colorSix{colorSix}
+
+\definecolor{colorGold}{HTML}{FFD700}
+\def\colorGold{colorGold}
+
+
+\begin{scope}
+	%\drawgrid{-6}{6}{0}{10}	;
+	\draw
+		(-5,0) edge[thick,line width=0.5cm, color = \colorFour] node [pos = 0 , above]{{\color{\colorTwo} $\bm{U}$}} (-5,2.75)
+		(-5,2) edge[thick,line width=1.5cm, color = \colorFour] (5,2)
+		(5,2.75) edge[thick,line width=0.5cm, color = \colorFour] (5,0)
+	;
+	\draw[thick,line width=0.5cm, color = \colorSix]
+		(-5.5,0) -- node [pos = 0 , above]{{\color{\colorTwo} $\bm{Z}$}}  (-5.5,3.) -- (5.00,3.0) -- (5.00,6.35)
+	;
+	\draw[shift={(-5.65cm , 3.35cm)} , thick,line width=0.2cm, color = \colorFive]
+		(0,3) -- (0,0)-- (2.5,0)-- node [pos = 1 , above]{d}(2.5,3)
+	;
+	\draw[shift={(2.15cm , 3.35cm)} , thick,line width=0.2cm, color = \colorFive , opacity = 1]
+		(0,3) -- node [pos = 0 , above]{d'} (0,0)-- (2.5,0)-- (2.5,3)
+	;
+	\draw[shift={(-5.4cm , 3.6cm)} , thick,line width=0.3cm, color = \colorThree , opacity = 1]
+		(0,2.75) -- (0,0)-- (1.7,0)-- node [pos = 1 , above]{D} (1.7,2.75)
+	;
+	\draw[shift={(2.7cm , 3.6cm)} , thick,line width=0.3cm, color = \colorThree , opacity = 1]
+		(0,2.75) -- node [pos = 0 , above]{D'} (0,0)-- (1.7,0)-- (1.7,2.75)
+	;
+	
+	\draw[shift={(-3.0cm , 3.6cm)} , thick,line width=0.2cm, color = \colorThree , opacity = 1]
+		(0.06,2.75) -- (0.06,0.095)-- (4.94,0.095)-- (4.94,2.75)
+	;
+	
+	\draw[shift={(-3.0cm , 3.6cm)} , thick,line width=0.03cm, color = \colorTwo , opacity = 1]
+		(-0.035,2.75) -- (-0.035,0)-- (5.035,0)-- (5.035,2.75)
+		(0.035,2.75) -- (0.035,0.07)-- (4.965,0.07)-- (4.965,2.75)
+		(0.105,2.75) -- (0.105,0.14)-- (4.895,0.14)-- (4.895,2.75)
+	;
+	
+	\draw[shift={(-3.0cm , 4cm)} , thick,line width=0.1cm, color = \colorOne , opacity = 1 , <->]
+		(0.0,0.095) -- node[pos = 0.5, above]{$2l = 1390~\mu m$} (5.0,0.095)
+		
+	;
+	
+	\draw[shift={(-3.0cm , 5cm)} , thick,line width=0.1cm, color = \colorOne , opacity = 1 , <->]
+		(-0.5,0.095) -- node[pos = 0.5, above]{$2L = 1890 \,\mu m$} (5.5,0.095)
+	;
+	
+	\draw[shift={(-6.0cm , -0.25cm)} , thick,line width=0.1cm, color = \colorOne , opacity = 1 ]
+		(-0.5,0)edge[, ->] node[pos = 1.01, above]{\fontsize{20pt}{8pt}\selectfont$\bm{\vec{e}_x}$} (12,0)
+		(0,-0.5) edge[, ->] node[pos = 0.99, left]{\fontsize{20pt}{8pt}\selectfont$\bm{\vec{e}_u}$} (0,7.25)
+	;
+	
+\end{scope}

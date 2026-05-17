@@ -1,0 +1,154 @@
+% Définition des couleurs avec les codes HTML
+\definecolor{colorOne}{HTML}{443E46}
+\definecolor{colorTwo}{HTML}{F6DEB8}
+\definecolor{colorThree}{HTML}{908CA4}
+\definecolor{colorFour}{HTML}{57659E}
+\definecolor{colorFive}{HTML}{C57284}
+\definecolor{colorSix}{HTML}{FF5B69}
+
+% Raccourcis pour les couleurs
+\def\colorOne{colorOne}
+\def\colorTwo{colorTwo}
+\def\colorThree{colorThree}
+\def\colorFour{colorFour}
+\def\colorFive{colorFive}
+\def\colorSix{colorSix}
+
+\def\colorslide{blue!50!black}
+
+
+% Définition des couleurs avec les codes HTML
+\definecolor{colorOne}{HTML}{443E46}
+%\definecolor{colorTwo}{HTML}{F6DEB8}
+\definecolor{colorTwo}{HTML}{FFFFFF}
+\definecolor{colorThree}{HTML}{908CA4}
+\definecolor{colorFour}{HTML}{57659E}
+\definecolor{colorFive}{HTML}{C57284}
+\definecolor{colorSix}{HTML}{FF5B69}
+
+% Raccourcis pour les couleurs
+\def\colorOne{colorOne}
+\def\colorTwo{colorTwo}
+\def\colorThree{colorThree}
+\def\colorFour{colorFour}
+\def\colorFive{colorFive}
+\def\colorSix{colorSix}
+
+\definecolor{colorGold}{HTML}{FFD700}
+\def\colorGold{colorGold}
+
+\def\Occupation{
+	\def\traitx{0.3}
+	\def\traity{0.5}
+	\draw[shift={(0,0)}]
+		(-13.5 , 0 ) edge [thick,line width=0.8ex ]( -3.2  , 0 )
+		( -3.2 - \traitx  , 0 - \traity ) edge [thick,line width=0.8ex ]( -3.2 + \traitx  , 0 + \traity  )
+		( -2.8 - \traitx  , 0 - \traity ) edge [thick,line width=0.8ex ]( -2.8 + \traitx  , 0 + \traity  )
+		(-2.8 , 0 ) edge [thick,line width=0.8ex ](2.8  , 0 )
+		( 2.8 - \traitx  , 0 - \traity ) edge [thick,line width=0.8ex ]( 2.8 + \traitx  , 0 + \traity  )
+		( 3.2 - \traitx  , 0 - \traity ) edge [thick,line width=0.8ex ]( 3.2 + \traitx  , 0 + \traity  )
+		(3.2, 0 ) edge [thick,line width=0.8ex,->,>=triangle 45 , color = black ]node [pos=1.01,below  ]{\huge$\theta$}	( 13  , 0 )
+	;
+
+	
+	% Graduation abcsisse 
+	% Définitions des listes
+% Definitions of the lists
+\def\listetuple{-9/\theta_{1}, -8/\theta_{2} , -5/\theta_{3} , -2/\theta_{a-1} , 0/\theta_{a} , 1/\theta_{a+1} , 2/\theta_{a+2} ,  5/\theta_{N-4} , 7/\theta_{N-3},8/\theta_{N-1},9/\theta_{N} }
+\def\listetrais{-12 , -11, -10, -9 , -8 , -7 ,  -6 , -5, -4.5,-4, -2 , -1, 0 , 0.5, 1, 2, 4 , 5 ,  6 , 7 , 8 ,8.5, 9 ,  10 , 11, 12 }
+
+% Loop over listetrais
+\foreach \r in \listetrais {
+    % Initialize found variable to zero
+    % Initialize found variable to zero
+    %\pgfmathsetmacro\found{0}
+    \global\def\found{0}
+    \xdef\nomtheta{}
+    
+    % Check if \r is in listetuple
+    \foreach \x/\y in \listetuple { 
+        \ifdim \r pt=\x pt % If \r matches any \x in listetuple
+            \global\def\found{1} ;
+            \xdef\nomtheta{\y} % Set \nomtheta to the corresponding \y
+            %\pgfmathsetmacro\found{1} % Set found to 1            
+            %\global\pgfmathsetmacro\found{1}
+        \fi
+    }
+    
+    %\node [circle, draw, red] (A) at (\r, 2) {\found , $\nomtheta$};
+    
+    % Draw the line and display \nomtheta if found
+    \ifnum\found=1
+        \draw[color=\colorOne, thick, line width=0.5ex] 
+            (\r, -0.3) -- (\r, 0.3) node[red , pos=-0.5] {\large $\nomtheta$};
+         \filldraw[line width=0.5ex, color=\colorSix, outer color=\colorSix, inner color=\colorSix] 
+            (\r, 0) circle (4pt);
+    \else 
+        % Draw without \nomtheta and add a blue circle if not found
+        \draw[color=\colorOne, thick, line width=0.5ex] 
+            (\r, -0.3) -- (\r, 0.3);
+        \filldraw[line width=0.5ex, color=\colorSix, outer color=\colorTwo, inner color=\colorTwo] 
+            (\r, 0) circle (4pt); 
+    \fi
+}
+
+\def\listetrais{-9.5/\theta_{i-1}/2/3, -6.5/\theta_{i}/1/4  ,   -1.5/\theta_{j}/2/4 , 1.5/\theta_{j+1}/-1/3 , 3.5/\theta_{\ell-1}/1/3 , 6.5/\theta_{\ell}/3/4 , 9.5/\theta(\theta_{\ell+1})/-1/3 };
+
+
+			
+}
+
+
+\begin{scope}
+	%\draw[help lines , width=1.5ex] (-8,-3) grid (8,3);\draw[help lines ,width=0.5ex , opacity = 0.5] (-3,-3) grid[step=0.1] (3,3));
+	
+	%\draw[help lines] 
+	%	(-3,-3) edge[width=1.5ex] grid (3,3)	
+	%	(-3,-3) edge[width=0.5ex , opacity = 0.5] grid (3,3)	
+	%;
+	\begin{scope}[shift={(0,1)},rotate=0,opacity=1,color=black]
+		\Occupation	
+		
+		%\node[anchor=east, font=\bfseries] at (-11, 0) {\color{red}\large (T = 0 )} ;	
+	\end{scope}
+	
+	
+	
+	
+	\begin{scope}[shift={(-11.5,3)},rotate=0,opacity=1,color=black]
+	
+	\begin{scope}[shift={(-0,0)},rotate=0,opacity=1,color=black]
+	
+		\draw[shift={(0,0)} ,line width=1ex,rounded corners = 1ex,color=\colorOne , opacity =1 ,fill=\colorOne!00 , pattern={north east lines} , pattern color=\colorOne!00 ]
+			(0 , -1 ) rectangle (5,1)
+		;
+		
+
+		\begin{scope}[shift={(0.5,0.5)}]
+			\draw[color=\colorOne, thick, line width=0.5ex] 
+            (0, -0.3) -- (0, 0.3) ;
+            \filldraw[line width=0.5ex, color=\colorSix, outer color=\colorSix, inner color=\colorSix] 
+            (0, 0) circle (4pt);
+            
+            \node[anchor=west, font=\bfseries] at (0.2, 0) {\color{\colorSix}\large : quasi-particule};
+		\end{scope}
+		
+		\begin{scope}[shift={(0.5,-0.5)}]
+			\draw[color=\colorOne, thick, line width=0.5ex] 
+            (0, -0.3) -- (0, 0.3) ;
+            \filldraw[line width=0.5ex, color=\colorSix, outer color=\colorTwo, inner color=\colorTwo] 
+            (0, 0) circle (4pt);
+            
+            \node[anchor=west, font=\bfseries] at (0.2, 0) {\color{\colorSix}\large : hole};
+		\end{scope}
+
+	\end{scope}
+
+	
+	
+	\end{scope}
+
+
+		
+	
+\end{scope}

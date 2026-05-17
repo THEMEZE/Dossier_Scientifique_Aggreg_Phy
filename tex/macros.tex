@@ -1,0 +1,22 @@
+\titleformat{\section}{\Large\bfseries}{\thesection}{1em}{}
+\titleformat{\subsection}{\large\bfseries}{\thesubsection}{1em}{}
+\titleformat{\paragraph}[runin]{\bfseries}{\theparagraph}{1em}{}
+\setlength{\parskip}{0.8em}
+\setlength{\parindent}{0pt}
+
+\makeatletter
+\newcommand\xleftrightarrow[2][]{%
+  \ext@arrow 9999{\longleftrightarrowfill@}{#1}{#2}}
+\newcommand\longleftrightarrowfill@{%
+  \arrowfill@\leftarrow\relbar\rightarrow}
+\makeatother
+
+\hypersetup{
+  linkcolor=linkcolor, % couleur des liens internes (acronymes, toc, refs…)
+  citecolor=linkcolor, % couleur des citations
+  urlcolor=linkcolor   % couleur des URLs
+}
+
+\geometry{margin=1.0cm}
+\setlist[itemize]{topsep=3pt,parsep=0pt,partopsep=0pt}
+

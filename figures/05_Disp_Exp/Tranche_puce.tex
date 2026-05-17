@@ -1,0 +1,161 @@
+% Définition des couleurs avec les codes HTML
+\definecolor{colorOne}{HTML}{443E46}
+%\definecolor{colorTwo}{HTML}{F6DEB8}
+\definecolor{colorTwo}{HTML}{FFFFFF}
+
+\definecolor{colorThree}{HTML}{908CA4}
+\definecolor{colorFour}{HTML}{57659E}
+\definecolor{colorFive}{HTML}{C57284}
+\definecolor{colorSix}{HTML}{FF5B69}
+
+% Raccourcis pour les couleurs
+\def\colorOne{colorOne}
+\def\colorTwo{colorTwo}
+\def\colorThree{colorThree}
+\def\colorFour{colorFour}
+\def\colorFive{colorFive}
+\def\colorSix{colorSix}
+
+\definecolor{colorGold}{HTML}{FFD700}
+\def\colorGold{colorGold}
+
+
+
+\begin{scope}
+
+
+	\draw[shift={(-2cm , 1.25cm)} , thick,line width=2.5cm, color = \colorThree , opacity = 1 ]
+		(0,0) -- node[shift={(-0.75cm , -0.5cm)} , pos = 0.0, right , color = \colorTwo]{{\color{\colorTwo} \fontsize{15pt}{8pt}\selectfont \bf SiC} } (13.5,0)
+	;
+	\draw[shift={(-2cm , 3.5cm)} , thick,line width=2.cm, color = \colorFour , opacity = 1 ]
+		(0,0) -- node[shift={(-0.75cm , -0.5cm)} , pos = 0.0, right , color = \colorTwo]{{\color{\colorTwo} \fontsize{15pt}{8pt}\selectfont \bf BCB} } (13.5,0)
+	;
+	\draw[shift={(-2cm , 5.cm)} , thick,line width=1.cm, color = \colorGold , opacity = 1 ]
+		(0,0) -- node[shift={(-0.2cm , 0.cm)} , pos = 0.0, right , color = \colorTwo]{{\color{\colorOne} \fontsize{15pt}{8pt}\selectfont \bf Au} } (13.5,0)
+	;
+	
+	
+	\begin{scope}[shift={(2cm , 2.5cm)}]
+		\draw[thick,line width=0.1cm , rounded corners=0cm,  color = \colorTwo , fill = \colorFive ] 
+			(0,0) rectangle (1,1)
+			;
+		% croix
+		\draw[ thick,line width=0.1cm , color = \colorOne] 
+			(0,0) -- (1,1)
+			(0,1) -- (1,0)
+		;
+		\node[left , shift={(-0.3cm , 0.5cm)} , color = \colorTwo] at (0,0) {{\color{\colorTwo}\fontsize{20pt}{8pt}\selectfont$-I$}};
+	\end{scope}
+	
+	\begin{scope}[shift={(5cm , 2.5cm)}]
+		\draw[thick,line width=0.1cm , rounded corners=0cm,  color = \colorTwo , fill = \colorFive ] 
+			(0,0) rectangle (1,1)
+			;
+		% croix
+		\fill[ thick,line width=0.1cm , color = \colorOne] 
+			(0.5,0.5) circle (0.1cm);
+		\node[left , shift={(-0.3cm , 0.5cm)} , color = \colorTwo] at (0,0) {{\color{\colorTwo}\fontsize{20pt}{8pt}\selectfont$I$}};
+	\end{scope}
+	
+	\begin{scope}[shift={(8cm , 2.5cm)}]
+		\draw[thick,line width=0.1cm , rounded corners=0cm,  color = \colorTwo , fill = \colorFive ] 
+			(0,0) rectangle (1,1)
+			;
+		% croix
+		\draw[ thick,line width=0.1cm , color = \colorOne] 
+			(0,0) -- (1,1)
+			(0,1) -- (1,0)
+		;
+		\node[left , shift={(-0.3cm , 0.5cm)} , color = \colorTwo] at (0,0) {{\color{\colorTwo}\fontsize{20pt}{8pt}\selectfont$-I$}};
+	\end{scope}
+	
+	\draw[shift={(2.5cm , 2.cm)}]
+		(0,0) edge [decoration={
+   							markings,
+    						mark connection node=midnode,
+    						mark=at position 0.5 with {
+      							\node[draw = none ,fill= \colorThree ,transform shape , opacity = 1] (midnode) {{\color{\colorTwo} \fontsize{10pt}{8pt}\selectfont
+					$d = 15 \mu m $}};
+    							}
+ 						 	},
+  							postaction={decorate},
+		thick,line width=0.1cm , <->, color = \colorTwo	, >=Stealth	
+		] (3,0)
+	;
+	
+	\draw[shift={(3.8cm , 3.cm)}]
+		(0,0) edge [decoration={
+   							markings,
+    						mark connection node=midnode,
+    						mark=at position 0.65 with {
+      							\node[draw = none ,fill= \colorGold ,transform shape , opacity = 1] (midnode) {{\color{\colorOne} \fontsize{10pt}{8pt}\selectfont
+					$d$}};
+    							}
+ 						 	},
+  							postaction={decorate},
+		thick,line width=0.1cm , <->, color = \colorOne , >=Stealth	
+		] (0,3)
+	;
+	
+	\draw[shift={(10.25cm , 0.cm)}]
+		(0,0) edge [decoration={
+   							markings,
+    						mark connection node=midnode,
+    						mark=at position 0.5 with {
+      							\node[draw = none ,fill= \colorThree ,transform shape , opacity = 1] (midnode) {{\color{\colorTwo} \fontsize{10pt}{8pt}\selectfont
+					$\sim 300 \mu m $}};
+    							}
+ 						 	},
+  							postaction={decorate},
+		thick,line width=0.1cm , <->, color = \colorTwo	, >=Stealth	
+		] (0,2.5)
+	;
+	
+	\draw[shift={(10.25cm , 2.5cm)}]
+		(0,0) edge [decoration={
+   							markings,
+    						mark connection node=midnode,
+    						mark=at position 0.5 with {
+      							\node[draw = none ,fill= \colorFour ,transform shape , opacity = 1] (midnode) {{\color{\colorTwo} \fontsize{10pt}{8pt}\selectfont
+					$< 6 \,\mu m $}};
+    							}
+ 						 	},
+  							postaction={decorate},
+		thick,line width=0.1cm , <->, color = \colorTwo	, >=Stealth	
+		] (0,2)
+	;
+	
+	\draw[shift={(10.25cm , 4.5cm)}, thick,line width=0.1cm , {Triangle[scale=0.5]}-{Triangle[scale=0.5]}, color = \colorOne ]
+		(0,0) -- node[pos = 0.5 , left ]{{\color{\colorOne} \fontsize{15pt}{8pt}\selectfont $\sim 150 \, nm $}}  (0,1)
+	;
+	
+	\draw[shift={(2.5cm , 5.5cm)}, thick,line width=0.08cm , >-< ,   {Triangle[scale=0.7, reversed]}-{Triangle[scale=0.7, reversed]}, color = \colorOne ]
+		(0,0) -- node[pos = 0.5 , left ]{{\color{\colorOne} \fontsize{17pt}{8pt}\selectfont $\sim 7 \,\mu m $}}  (0,0.5)
+	;
+	
+	\begin{scope}[shift={(4.5cm , 4.9cm)} , decoration={
+    		markings,% switch on markings
+    		mark=between positions 0.3 and 1 step 1cm with {\arrow[\colorSix,line width=1mm]{>}}}
+    	]
+  		\draw [postaction={decorate} , color = \colorSix , line width=1mm] (0,0) .. controls (1,1) and (1,1) .. (2,0);
+  		\draw [ shift={(2.25cm , 2.25cm)} , rotate = 90, xscale=-1 ,  postaction={decorate} , color = \colorSix , line width=1mm] (0,0) .. controls (1,1) and (1,1) .. (2,0);
+  		\draw [shift={(-0.25cm , 0.25cm)} , rotate = -90, xscale=-1 , postaction={decorate} , color = \colorSix , line width=1mm] (0,0) .. controls (1,1) and (1,1) .. (2,0);
+  		\draw [shift={(2.cm , 2.5cm)} , rotate = 180, xscale=1 , postaction={decorate} , color = \colorSix , line width=1mm] (0,0) .. controls (1,1) and (1,1) .. (2,0);
+  		
+  		\node[align=center, font=\fontsize{15}{12}\selectfont, text=\colorSix] at (3.95,1.25) {Champ produit\\par les micro-fils};
+	\end{scope}
+	
+
+	\draw[shift={(-0.0cm , -0.0cm)} , thick,line width=0.1cm, color = \colorOne , opacity = 1 ]
+		(-0.,0)edge[, ->] node[pos = 1.01, above]{\fontsize{20pt}{8pt}\selectfont$\bm{\vec{e}_u}$} (12,0)
+		(0,-0.) edge[, ->] node[pos = 0.99, left]{\fontsize{20pt}{8pt}\selectfont$\bm{\vec{e}_v}$} (0,7.25)
+	;
+	
+	\draw[thick ,line width=0.1cm] (0,0) circle (0.3cm);
+	\fill (0,0) circle (1mm);
+	\node[below , shift={(-0.0cm , -0.4cm)}] at (0,0) {\fontsize{20pt}{8pt}\selectfont$\bm{\vec{e}_x}$};
+	
+	
+	
+	%\drawgrid{-3}{12}{-1}{10}
+\end{scope}

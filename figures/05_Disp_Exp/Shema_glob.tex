@@ -1,0 +1,277 @@
+\usetikzlibrary {arrows.meta,petri,positioning}
+\usetikzlibrary {backgrounds}
+\usetikzlibrary{arrows.meta, petri, positioning, backgrounds, decorations.pathmorphing, fit}
+
+%\input{../couleur.tex}\input{../optique.tex}
+\input{./figures/couleur.tex}\input{./figures/optique.tex}
+
+
+\begin{scope}[node distance=1.8cm and 1.2cm]
+
+	
+	\node[DMD] at (0,0) (DMD) {};
+	\node[left=-1mm of DMD, rotate=90, anchor=center , color = \colorPrune] (DMDlabel) { \color{\colorPrune} \small DMD};
+				
+	\node[lens ,  right=20mm of DMD] (lensDMD) {};
+	
+	
+	
+	
+	\node[,  right=25mm of lensDMD ] (mirrord1) {
+  		\begin{tikzpicture}
+  			\draw[mirror , rotate = 45];
+  		\end{tikzpicture}
+  	};
+  	
+  	
+  	\node[fiber ,  above=0mm of mirrord1 , shift = {(-0.1,0)} , rotate = 16 ,  xscale = -1 ] (fibre) {};
+  	
+  	\node[right=2mm of mirrord1, shift = {(0,1.62)}] (In) {};
+  
+  	\node[scale=0.3, rotate=16 , shift = {(0,-0.5)} ]  at ($(In)!0.15!(DMD)$) {\color{\colorSix} fibre};
+  	\node[lens, scale=0.3, rotate=16] (collimateur) at ($(In)!0.25!(DMD)$) {};
+  	\node[scale=0.3, rotate=16 , shift = {(0,-1)} ]  at ($(In)!0.25!(DMD)$) {\color{\colorFour} collimateur};
+  	\node[lens, scale=0.5, rotate=16] (lens1) at ($(In)!0.35!(DMD)$) {};
+  	\node[halfwave plate, scale=0.4, rotate=16] () at ($(In)!0.4!(DMD)$) {};
+  	\node[ scale=0.4, rotate=16 , shift = {(0,-1)} ] () at ($(In)!0.4!(DMD)$) {\color{\colorSix}$\lambda/2$};
+  	\node[lens, scale=0.5, rotate=16] () at ($(In)!0.45!(DMD)$) {};
+  	
+  	
+  	\node[,  below=25mm of mirrord1] (Sep) {
+  		\begin{tikzpicture}
+  			\draw[sep , rotate = 45];
+  		\end{tikzpicture}
+  	};
+  	\node[lens ,  left=20mm of Sep] (lensCCD) {};
+  	\node[CCD ,  left=20mm of lensCCD] (CCD) {CCD};
+  	%\node[sep ,  below=25mm of mirrord1 , rotate = 45 ]  (DMD) {};
+  	\node[ , right=25mm of Sep , scale = 0.8] (Bess) {
+  		\begin{tikzpicture}[]
+  			\draw[lensbess , rotate = 45 ];
+  		\end{tikzpicture}	
+  	};
+  	
+  	\begin{scope}[shift={(Bess)}]
+  		\draw[thick, line width=0.2ex , color = \colorThree , fill = \colorThree!20!\colorTwo] (0.4,0 ) {[color=\colorThree!30!\colorTwo, line width=0.4ex]--++ (0, 0.52)} --++ (-0.5 , 0 ) --++ (0,0.4)--++  (1.85, 0)node[pos = 0.5 , above , shift = {(0,-0.1)} , \colorThree]{\fontsize{4}{16}\selectfont Enceinte à vide}--++ (0,-1.86) --++ (-1.85, 0) --++ (0, 0.4) --++ (0.5,0) {[color=\colorThree!30!\colorTwo, line width=0.4ex]-- cycle}; 
+  		\draw[thick, line width=0.2ex , color = \colorGold, fill = \colorGold!20!\colorTwo]	 (0.7,-0.45) rectangle +(0.9,0.9);
+  	\end{scope}
+
+  	
+  	\begin{scope}[shift={(9.2, 1.6)}]
+  		\draw[line width=0.2ex , color = \colorThree , rounded corners=5pt]
+  		
+  			(-1.65,-1.45) rectangle +(2.5,2.5)
+  		
+  		;
+  		\node[  , scale = 0.8] at (-1.1,-0.15) (Bess2) {
+  		\begin{tikzpicture}[]
+  			\draw[lensbess , rotate = 45 ];
+  		\end{tikzpicture}	
+  		};
+  		
+  		\begin{scope}[shift={(Bess2)}]
+  			\draw[shift={(-0.14,0)}, thick, line width=0.2ex , color = \colorThree , fill = \colorThree!20!\colorTwo] (0.4,0 ) {[color=\colorThree!30!\colorTwo, line width=0.4ex]--++ (0, 0.52)} --++ (-0.5 , 0 ) --++ (0,0.4)--++  (1.85, 0)node[pos = 0.5 , above , shift = {(0,-0.1)} , \colorThree]{\fontsize{4}{16}\selectfont Enceinte à vide}--++ (0,-1.86) --++ (-1.85, 0) --++ (0, 0.4) --++ (0.5,0) {[color=\colorThree!30!\colorTwo, line width=0.4ex]-- cycle}; 
+  			%\draw[thick, line width=0.2ex , color = \colorGold, fill = \colorGold!20!\colorTwo]	 (0.7,-0.45) rectangle +(0.9,0.9);
+  		\end{scope}
+  		
+  		
+
+  		\begin{scope}[shift={(0, 0)}]
+  		\filldraw[
+  			color = orange,
+    		fill=colorGold,                  % fond
+    		rotate=45                     % rotation du rectangle + motif
+		] 
+		(-0.05,-0.6) rectangle (0.05,0.6);	
+%		\fill[
+%    		shift={(0.0,0)},
+%    		pattern={Lines[angle=0,distance={3pt/sqrt(2)}]},pattern color=orange,
+%    		rotate=45   % fait tourner le rectangle et le motif
+%			] 
+%		(-0.05,-0.6) rectangle (0.05,0.6);
+		\end{scope}
+		\begin{scope}[shift={(0, 0)}]
+			\draw[thick, line width=0.2ex, color=\colorOne , fill = \colorOne!50!\colorTwo ]
+    (0.5,-0.4) -- (0.45,-0.4) -- (-0.4,0.45)-- 
+    node[shift = {(0,-0.1)} , pos=0.5, above]{\tiny monture de puce}(0.5,0.45) -- cycle;
+
+%			\fill[pattern={Lines[angle=-45,distance={3pt/sqrt(2)}]},pattern color=\colorOne]
+%				(0.5,-0.4) -- (0.45,-0.4) -- (-0.4,0.45) -- (0.5,0.45)
+%			;
+			%\drawgrid{-1.}{1}{1}{-1};	
+		\end{scope}
+		
+		\node[atome ,  right=7mm of Bess2] (atome2) {};
+		
+		
+		\begin{scope}[ shift ={(9,0)}, transform canvas={scale=0.5, shift ={(0,0)}}]
+  		\draw
+  			(0,0) edge[line width=0.2ex, -> , color = \colorOne] node [pos = 1 , left , color = \colorOne]{\fontsize{10}{16}\selectfont $\vec{e}_x$ }  ( 0 , 0.5 ) 
+  			(0,0) edge[line width=0.2ex, -> , color = \colorOne] node [pos = 1 , left  , color = \colorOne]{\fontsize{10}{16}\selectfont $\vec{e}_z$ }  ( -0.5 , 0 ) 
+  			
+  		;
+  		\draw[line width=0.2ex, color = \colorOne]  
+  			(0,0) circle (0.1) node[right]{\fontsize{10}{16}\selectfont $\vec{e}_x$}
+  		;
+  		\draw[fill = \colorOne]
+  			(0,0) circle (0.01) 
+  		;	
+  	\end{scope}
+  	\end{scope}
+  	
+  	
+
+  	\node[atome ,  right=10mm of Bess] (atome) {};
+  	
+  	
+  	\draw[line width=0.2ex, <->] ($(DMD)+(0.2,-1)$) -- ($(lensDMD)+(0,-1)$)node[midway, below] {$f_{\mathrm{DMD}} = 750\,\text{mm}$};
+  	
+  	\draw[line width=0.2ex, <->] ($(Bess)+(0.2,-1.2)$) -- ($(atome)+(0,-1.2)$)node[midway, below] {$f_{\mathrm{at}} = 32\,\text{mm}$};
+  	
+  	\draw[line width=0.2ex, <->] ($(CCD)+(0.6,-1)$) -- ($(lensCCD)+(0,-1)$)node[midway, below] {$f_{\mathrm{CCD}} = 250\,\text{mm}$};
+  	
+  	\draw[line width=0.2ex, <-] 
+  ($(Sep)+(0.2,0.2)$) to[out=80, in=180] node[pos=1, right] {Lame R:T 10:90}
+  (6.8,-0.6) 
+  ;
+
+
+
+  	\draw[laser beam] (In) -- (DMD) -- (mirrord1) -- (Sep) -- (atome)  ;
+  	\draw[sond beam] (atome) -- (CCD);
+  	
+  	
+  	
+  	
+  	  	
+  	
+  	\begin{scope}[shift ={(7,-3.4)}]
+  		\draw
+  			(0,0) edge[line width=0.2ex, -> , color = \colorOne] node [pos = 1 , below , color = \colorOne]{\fontsize{10}{16}\selectfont $\vec{e}_x$ }  ( 0 , -0.5 ) 
+  			(0,0) edge[line width=0.2ex, -> , color = \colorOne] node [pos = 1 , left  , color = \colorOne]{\fontsize{10}{16}\selectfont $\vec{e}_y$ }  ( -0.5 , 0 ) 
+  			
+  		;
+  		\draw[line width=0.2ex, color = \colorOne]  
+  			(0,0) circle (0.1) node[above]{\fontsize{10}{16}\selectfont $\vec{e}_z$}
+  		;
+  		\draw[fill = \colorOne]
+  			(0,0) circle (0.01) 
+  		;	
+  	\end{scope}
+
+  	
+	%\drawgrid{-1.5}{15}{4}{-4};
+\end{scope}
+
+
+
+%\begin{scope}[shift = {(12 , 0) } , node distance=1.8cm and 1.2cm]
+%	
+%	% DFB 
+%	\node[DMD , draw] at (-3.5,0) (DMD) {};
+%	\node[lensd , draw] at (-3.0,0) (DMD) {};
+%	\node[lensbess , draw] at (-2.5,0) (DMD) {};
+%	\node[sep , draw] at (-2,0) (DMD) {};
+%  \node[laser source] (laser) {DBR};
+%  \node[fiber ,  right=1mm of laser , draw = none] (fiberinput) {};
+%  \node[below=-1.05cm of fiberinput] {\color{\colorSix} \tiny  Fibre};
+%  \node[lens ,  right=1mm of fiberinput] (collimateurinput) {};  
+%  \node[below=-0cm of laser] {\color{\colorOne} $\scriptscriptstyle  \lambda = 770.5~nm$};
+%  \node[below=-0cm of collimateurinput] {\color{\colorFour} \tiny  Collimateur};
+%  
+%  
+%  \node[,  right=25mm of collimateurinput ] (mirrord1) {
+%  \begin{tikzpicture}
+%  	\draw[mirror , rotate = -45];
+%  \end{tikzpicture}
+%  };
+%  \node[above=2cm of mirrord1 ] (mirrord2)
+%  {
+%  \begin{tikzpicture}
+%  	\draw[mirror , rotate = 45];
+%  \end{tikzpicture}
+%  };
+%	
+%%	\node[mirror, rotate=-45, right=of collimateurinput] (mirrord1) {};
+%%	\node[mirror, rotate=-45, above=2cm of mirrord1] (mirrord2) {};
+%
+%  
+%  
+%  \node[halfwave plate, left=of mirrord2] (lambda2TA) {};
+%  \node[below=-0cm of lambda2TA] { \color{\colorFive} $\scriptscriptstyle \tiny \lambda/2$};
+%  
+%  %% TA 
+%  \node[lens ,  left=5mm of lambda2TA] (lens1TA) {};
+%  \node[TA ,  left=2mm of lens1TA , xscale = 1  ] (TA) {};
+%  \node[below=-0cm of TA] { \color{\colorOne} \tiny TA};
+%  \node[lens ,  left=2mm of TA] (lens2TA) {};
+%  
+%  
+%  \node[cylindrical lens, left=of lens2TA] (cyl1) {};
+%  \node[cylindrical lens, left=of cyl1] (cyl2) {};
+%  \node[below=-0cm of cyl1] {\color{\colorFour}\tiny Cylindrique};
+%  \node[below=-0cm of cyl2] {\color{\colorFour}\tiny Cylindrique};
+%  
+%  
+%  \node[left=of cyl2] (mirrorTA1) {
+%  \begin{tikzpicture}
+%  	\draw[mirror , rotate = -135];
+%  \end{tikzpicture}
+%  };
+%  \node[above=2cm of mirrorTA1] (mirrorTA2)
+%  {
+%  \begin{tikzpicture}
+%  	\draw[mirror , rotate = 135];
+%  \end{tikzpicture}
+%  };
+%  
+%	% Telescope 
+%  \node[lens ,  right=10mm of mirrorTA2] (lensTele1) {};
+%  \node[pignol ,  right=35mm of lensTele1] (pignol) {};
+%  \node[lens ,  right=15mm of pignol] (lensTele2) {};
+%  \node[below=-0cm of pignol] { \color{\colorOne} $\scriptscriptstyle \mu m $};
+%  
+%  
+%  %\node[right=15mm of lensTele2] (mirrorTele1) {
+%  \node[,  above=2cm of mirrord2 ] (mirrorTele1) {
+%  \begin{tikzpicture}
+%  	\draw[mirror , rotate = -45];
+%  \end{tikzpicture}
+%  };
+%  \node[above=2cm of mirrorTele1] (mirrorTele2)
+%  {
+%  \begin{tikzpicture}
+%  	\draw[mirror , rotate = 45];
+%  \end{tikzpicture}
+%  };
+%  
+%  \node[halfwave plate, left=of mirrorTele2] (lambda2Iso) {};
+%   \node[below=-0cm of lambda2Iso] {\color{\colorFive} $\scriptscriptstyle \tiny \lambda/2$};
+%  
+%  \node[optical isolator, left=of lambda2Iso] (Iso) {};
+%  \node[below=-0cm of Iso] {\color{\colorOne}\tiny Isolateur Optique};
+%  
+%  
+%  \node[AOM, left=of Iso] (Aom) {};
+%  \node[below=-0cm of Aom] {\color{\colorOne}\tiny AOM};
+%  
+%  \node[lens ,  left=10mm of Aom] (collimateuroutput) {};
+%  \node[below=-0cm of collimateuroutput] {\color{\colorFour} \tiny  Collimateur};
+%  
+%  \node[fiber ,  left=20mm of collimateuroutput , xscale = -1 ] (fiberoutput) {};
+%  \node[below=-1.05cm of fiberoutput] {\color{\colorSix} \tiny  Fibre};
+%  %\node[ left=2cm of fiberoutput  ] (Out) {};
+%  
+%  \node[above=2cm of mirrorTA2] (Out) {};
+%  
+%  
+% 
+%
+%  \draw[laser beam] (laser) -- (mirrord1) -- (mirrord2) -- (mirrorTA1) -- (mirrorTA2) -- (mirrorTele1)--(mirrorTele2) -- (Out) ;
+%	
+%	\drawgrid{-3.5}{7}{-1}{8};
+%	
+%	\draw[white] (-3.5,-1) rectangle (7,8) ;
+%\end{scope}
+
+

@@ -1,0 +1,15 @@
+# Compilation LaTeX
+*.aux
+*.log
+*.out
+*.toc
+*.synctex.gz
+*.fls
+*.fdb_latexmk
+*.pdf
+
+# PDF principal
+main.pdf
+
+# sauf exceptions (si besoin)
+!figures/*.pdf

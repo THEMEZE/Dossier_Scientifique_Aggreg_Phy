@@ -1,0 +1,189 @@
+
+% Définition des couleurs avec les codes HTML
+\definecolor{colorOne}{HTML}{443E46}
+%\definecolor{colorTwo}{HTML}{F6DEB8}
+\definecolor{colorTwo}{HTML}{FFFFFF}
+
+\definecolor{colorThree}{HTML}{908CA4}
+\definecolor{colorFour}{HTML}{57659E}
+\definecolor{colorFive}{HTML}{C57284}
+\definecolor{colorSix}{HTML}{FF5B69}
+
+% Raccourcis pour les couleurs
+\def\colorOne{colorOne}
+\def\colorTwo{colorTwo}
+\def\colorThree{colorThree}
+\def\colorFour{colorFour}
+\def\colorFive{colorFive}
+\def\colorSix{colorSix}
+
+\definecolor{colorGold}{HTML}{FFD700}
+\def\colorGold{colorGold}
+
+
+
+\begin{scope}
+
+	
+	%Base L ,S 
+	\draw[]
+	
+		(-1,0) edge [ thick,line width=0.5ex, color = \colorOne ] node [shift={(0cm,-0mm)}, pos = 0.5 , above  ]{{ \color{\colorOne}$5S$}} (1 , 0) 
+		
+	;
+	
+	
+	% 5S1/2 Fine 	
+	\begin{scope}[shift={(1cm,0cm)}]
+		\draw
+			(0,0) edge [dashed ,line width=0.45ex, color = \colorOne ] (1 , 0)
+		;
+		
+		\begin{scope}[shift={(1cm,0cm)}]
+			\draw[shift={(0cm,0cm)}]
+				(0,0) edge [ thick,line width=0.5ex, color = \colorOne ] node [shift={(0cm,-1mm)}, pos = 0.75 , above ]{{ \color{\colorOne}$ 5S_{1/2}$}} (2 , 0)
+			;
+			
+			\draw
+				(0.25,0.01) edge [decoration={
+   							markings,
+    						mark connection node=midnode,
+    						mark=at position 0.5 with {
+      							\node[draw = none ,fill= white ,transform shape , opacity = 1] (midnode) {{\color{\colorFive} \fontsize{8pt}{8pt}\selectfont
+					$D_1 : 795~nm$}};
+    							}
+ 						 	},
+  							postaction={decorate}, thick, line width=0.5ex, <->, >=Stealth, color=colorFive ] 
+   				(0.25,4.29)		
+   				(0.75,0.01) edge[decoration={
+   							markings,
+    						mark connection node=midnode,
+    						mark=at position 0.4 with {
+      							\node[draw = none ,fill= white ,transform shape , opacity = 1] (midnode) {{\color{\colorFour}\fontsize{8pt}{8pt}\selectfont $D_2 : 780~nm$}};
+    							}
+ 						 	},
+  							postaction={decorate}, thick, line width=0.5ex, <->, >=Stealth, color=colorFour ]
+   				(0.75,5.74)	
+				;
+			
+			%Hyperfine
+			\begin{scope}[shift={(2cm,0cm)}]
+				\draw	
+					(0,0) edge [dashed ,line width=0.45ex, color = \colorOne ] (1 , 0.75)
+					(0,0) edge [dashed ,line width=0.45ex, color = \colorOne ] (1 , -0.75)
+				;
+				
+				\draw[shift={(1cm,0mm)}]
+					(0,0.75) edge [ thick,line width=0.5ex, color = \colorOne ] node [shift={(0cm,0mm)}, pos = 1 , right ]{{ \color{\colorOne}$ F = 2 $}} (2 , 0.75)
+					(0,-0.75) edge [ thick,line width=0.5ex, color = \colorOne ] node [shift={(0cm,0mm)} , pos = 1 , right ]{{ \color{\colorOne}$ F = 1$}} (2 , -0.75)
+				;
+				
+				
+			\end{scope}
+		\end{scope}
+	\end{scope}
+	
+	
+	% 5P1/2 3/2 Fine 
+	\begin{scope}[shift={(1cm,5cm)}]
+		
+		\draw[shift={(-2cm,0cm)}]
+			(0,0) edge [ thick,line width=0.5ex, color = \colorOne ] node [shift={(0cm,-0mm)}, pos = 0.5 , above ]{{ \color{\colorOne}$5P$}} (2 , 0)
+		;
+
+		\draw
+			(0,0) edge [dashed ,line width=0.45ex, color = \colorOne ] (1 , 0.75)
+			(0,0) edge [dashed ,line width=0.45ex, color = \colorOne ] (1 , -0.75)
+		;
+		
+		%5P1/2 
+		\begin{scope}[shift={(1cm,-0.75cm)}]		
+			\draw
+				(0,0) edge [ thick,line width=0.5ex, color = \colorOne ] node [shift={(0cm,-1mm)} , pos = 0.75 , above  ]{{ \color{\colorOne}$ 5P_{1/2}$}} (2 , 0)
+			;		
+		\end{scope}
+		
+		%5P3/2 
+		\begin{scope}[shift={(1cm,0.75cm)}]		
+			\draw
+				(0,0) edge [ thick,line width=0.5ex, color = \colorOne ] node [shift={(0cm,-1mm)} , pos = 0.75 , above  ]{{ \color{\colorOne}$ 5P_{3/2}$}} (2 , 0)
+			;
+			
+			%Hyperfine
+			\begin{scope}[shift={(2cm,0cm)}]
+				\draw
+					(0,0) edge [dashed ,line width=0.45ex, color = \colorOne ] (1 , 2.25)
+					(0,0) edge [dashed ,line width=0.45ex, color = \colorOne ] (1 , 0.75)
+					(0,0) edge [dashed ,line width=0.45ex, color = \colorOne ] (1 , -0.75)
+					(0,0) edge [dashed ,line width=0.45ex, color = \colorOne ] (1 , -2.25)
+				;
+				
+				\draw[shift={(1cm,0mm)}]
+					(0,2.25) edge [ thick,line width=0.5ex, color = \colorOne ] node [shift={(0cm,0mm)} , pos = 1 , right ]{{ \color{\colorOne}$ F' = 3$}} (2 , 2.25)
+					(0,0.75) edge [ thick,line width=0.5ex, color = \colorOne ] node [shift={(0cm,0mm)}, pos = 1 , right ]{{ \color{\colorOne}$ F' = 2 $}} (2 , 0.75)
+					(0,-0.75) edge [ thick,line width=0.5ex, color = \colorOne ] node [shift={(0cm,0mm)} , pos = 1 , right ]{{ \color{\colorOne}$ F' = 1$}} (2 , -0.75)
+					(0,-2.25) edge [ thick,line width=0.5ex, color = \colorOne ] node [shift={(0cm,0mm)} , pos = 1 , right ]{{ \color{\colorOne}$ F' = 0$}} (2 , -2.25)
+					
+					(0.55,1.5) edge [dotted ,line width=0.5ex, color = \colorOne ]  (1.45 , 1.5)
+					
+					(1.25,1.75) edge [dotted ,line width=0.5ex, color = \colorSix ]  (2.15 , 1.75)
+					(1.25,2.75) edge [dotted ,line width=0.5ex, color = \colorSix ]  (2.15 , 2.75)
+				;
+				
+				\draw[shift={(1cm,0mm)}]
+					(0.25,0.75) edge [decoration={
+   							markings,
+    						mark connection node=midnode,
+    						mark=at position 0.5 with {
+      							\node[draw = none ,fill= white ,transform shape , opacity = 1] (midnode) {{\color{\colorFive} \fontsize{4pt}{8pt}\selectfont$267.2~MHz$}};
+    							}
+ 						 	},
+  							postaction={decorate}, thick, line width=0.5ex, <->, >=Stealth, color=colorFive ] 
+   					(0.25,2.25)		
+				;
+			\end{scope}		
+		\end{scope}
+		
+	\end{scope}
+	
+	\draw[shift={(5cm,0mm)}]	
+   		(1.75,-0.75) edge[decoration={
+   							markings,
+    						mark connection node=midnode,
+    						mark=at position 0.5 with {
+      							\node[draw = none ,fill= white ,transform shape , opacity = 1] (midnode) {{\color{\colorFive}\fontsize{4pt}{8pt}\selectfont $6.874~GHz$}};
+    							}
+ 						 	},
+  							postaction={decorate}, thick, line width=0.5ex, <->, >=Stealth, color=colorFive ]
+   		(1.75,0.75)
+   		(.25,-0.75) edge[decoration={
+   							markings,
+    						mark connection node=midnode,
+    						mark=at position 0.38 with {
+      							\node[draw = none ,fill= white ,transform shape , opacity = 1] (midnode) {{\color{\colorSix}\fontsize{8pt}{8pt}\selectfont Repompeur}};
+    							}
+ 						 	},
+  							postaction={decorate}, thick, line width=0.5ex, <->, >=Stealth, color=colorSix ]
+   		(.25,6.55)	
+   		(1.0,0.75) edge[decoration={
+   							markings,
+    						mark connection node=midnode,
+    						mark=at position 0.2 with {
+      							\node[draw = none ,fill= white ,transform shape , opacity = 1] (midnode) {{\color{\colorSix}\fontsize{8pt}{8pt}\selectfont Maitre 1}};
+    							}
+ 						 	},
+  							postaction={decorate}, thick, line width=0.5ex, <->, >=Stealth, color=colorSix ]
+   		(1.0,7.25)	
+   		(1.75,0.75) edge[decoration={
+   							markings,
+    						mark connection node=midnode,
+    						mark=at position 0.18 with {
+      							\node[draw = none ,fill= white ,transform shape , opacity = 1] (midnode) {{\color{\colorSix}\fontsize{8pt}{8pt}\selectfont Maitre 2 }};
+    							}
+ 						 	},
+  							postaction={decorate}, thick, line width=0.5ex, <->, >=Stealth, color=colorSix ]
+   		(1.75,7.75)
+		;
+
+
+\end{scope}

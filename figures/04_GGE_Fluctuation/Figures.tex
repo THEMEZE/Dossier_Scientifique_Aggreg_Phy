@@ -1,0 +1,281 @@
+\documentclass{standalone} % Utilise la classe standalone pour compiler uniquement le TikZ
+%\include{pakage_tikz}
+%\usepackage{tikz}          % Charge le package TikZ
+%\usepackage{xcolor}        % Gestion avancée des couleurs
+%\usepackage{amsmath}       % Gestion des formules mathématiques
+%\usetikzlibrary{arrows.meta} % Pour gérer les flèches avec des formes spécifiées comme "triangle"
+%\usetikzlibrary {decorations.pathmorphing}
+%%\usepackage{pgfplots}
+%%\pgfplotsset{compat=1.18}
+%\usepackage[active,tightpage]{preview}
+%\PreviewEnvironment{tikzpicture}
+%\usetikzlibrary{arrows.meta}
+%\usetikzlibrary {arrows.meta,bending,positioning}
+%\usetikzlibrary {datavisualization.formats.functions}
+%%PREAMBULE pour schÃéma
+%\usepackage{pgfplots}
+%\usepackage[european resistor, european voltage, european current]{circuitikz}
+%\usetikzlibrary{arrows,shapes,positioning}
+%\usetikzlibrary{decorations.markings,decorations.pathmorphing,
+%decorations.pathreplacing}
+%\usetikzlibrary{calc,patterns,shapes.geometric}
+%\usepackage{anyfontsize}
+%\setlength\PreviewBorder{5pt}
+
+
+\usepackage{tikz}
+\usepackage[european resistor, european voltage, european current]{circuitikz}
+\usetikzlibrary{arrows,shapes,positioning}
+\usetikzlibrary{decorations.markings,decorations.pathmorphing,
+decorations.pathreplacing}
+\usetikzlibrary{calc,patterns,shapes.geometric}
+\usepackage{anyfontsize}
+%\usepgfplotslibrary{external}
+%\tikzexternalize
+
+%% Automatiser cela : une solution plus élégante  nouvelle page, tu peux utiliser la commande \newpage juste avant chaque \begin{tikzpicture}
+%\let\oldtikzpicture\tikzpicture
+%\let\endoldtikzpicture\endtikzpicture
+%\renewenvironment{tikzpicture}{\newpage\oldtikzpicture}{\endoldtikzpicture}
+%\usepackage{etoolbox} % dans le préambule, si pas encore utilisé
+%\pretocmd{\tikzpicture}{\clearpage}{}{}
+
+
+% Définition de la fonction pour générer la grille
+\newcommand{\drawgrid}[4]{
+
+
+	\begin{scope}[opacity = 0.2]
+	
+	
+    	% Paramètres : #1=xmin, #2=xmax, #3=ymin, #4=ymax
+
+   	 	% Grille principale en cm
+    	\draw[very thin, gray] (#1,#3) grid (#2,#4); % Grille de base (1 cm)
+    
+    	\draw[very thin, gray] (#1,#3) grid[step=0.1] (#2,#4);
+
+    	\draw[thin, black] (#1,#3) edge[thick,line width=0.8ex,->,>=Stealth ] (#2,#3); 
+    
+    	\foreach \x in {#1,..., #2} {
+        	\draw[shift={(\x, #3)}] (0,-0.1) edge[line width=0.8ex] node[pos = -1 , below] {\x} (0,0.1); % Lignes verticales en mm
+    	}
+
+    	\draw[thin, black] (#1,#3)edge[thick,line width=0.8ex,->,>=Stealth ] (#1,#4); 
+    
+    	\foreach \y in {#3,..., #4} {
+        	\draw[shift={(#1, \y)}] (-0.1 , 0 ) edge[line width=0.8ex] node[pos = -1 , left ] {\y} (0.1 , 0); % Lignes verticales en mm
+    	}
+    
+    \end{scope}
+
+
+}
+
+
+\newcommand{\Axex}[1][$x$]{ % "x" est la valeur par défaut de #1
+    \draw
+        (-10, 0) edge[thick, line width=0.8ex, ->, >=Triangle, color=\colorThree] 
+        node[shift = {(0,1)} , pos=1.01, below]{ \huge #1 } (10, 0)
+        ;
+}
+
+\newcommand{\Axetheta}[1][$\theta$]{
+	\draw
+		(-10, 0 ) edge [thick,line width=0.8ex,->,>=Triangle , color = \colorThree ]node [pos=1.01,right]{\huge #1 } ( 10  , 0 )
+	;
+}
+
+\newcommand{\Axedensity}[1][$n$]{
+	\draw
+		(0, -1 ) edge [thick,line width=0.8ex,->,>=Triangle , color = \colorThree ]node [pos=1.01,left  ]{\huge #1 } ( 0  , 6 )
+	;
+}
+
+\newcommand{\Axedistribution}[1][$\nu$]{
+	\draw
+		(0, -1 ) edge [thick,line width=0.8ex,->,>=Triangle , color = \colorThree ]node [pos=1.01,left  ]{\huge #1 } ( 0  , 6 )
+	;
+}
+
+\newcommand{\Axesphase}[2][$x$]{
+	\Axex[#1]
+	\begin{scope}[rotate = 90]
+		\Axetheta[#2]	
+	\end{scope}
+}
+
+\newcommand{\Axesdensity}[2][$x$]{
+	\Axex[#1]
+	\Axedensity[#2]
+}
+
+\newcommand{\Axesdistribution}[2][\theta]{
+	\Axetheta[#1]
+	\Axedistribution[#2]
+}
+
+\newcommand{\Axetemps}[1][Deformation]{
+	\draw 
+		(-5 , 0 ) edge [line width=2.8ex, color=\colorOne ]( 0, 0)
+		(43 , 0 ) edge [line width=2.8ex, color=\colorOne , ->, >=Triangle] node[pos = 1.0 , right , scale = 2 ] { \fontsize{60pt}{720pt}\selectfont $\tilde{t}$} ( 50 , 0)
+		( 0 , 1 ) edge [line width=2.0ex, color=\colorOne ] ( 0 , -1 )  
+		( 43 , 1 ) edge [line width=2.0ex, color=\colorOne ] ( 43 , -1 ) 
+		(0 , 0) edge[<->, > = stealth, line width=2.8ex, color=\colorOne ]  node [ rectangle , midway, fill = white , scale = 2 ] {\fontsize{600pt}{720pt}\selectfont \bf  #1}(43, 0)  
+	;
+
+}
+
+\newcommand{\Palette}[1][\colorOne]{
+	\clip[decorate, decoration={random steps, segment length=3pt, amplitude=3pt}]
+        	(-1,-1) rectangle (1,1);
+	\draw[fill=#1 , color = #1 ] (-2,-2) rectangle (2,2);
+}
+
+
+
+
+
+
+% Définition des couleurs avec les codes HTML
+\definecolor{colorOne}{HTML}{443E46}
+%\definecolor{colorTwo}{HTML}{F6DEB8}
+\definecolor{colorTwo}{HTML}{FFFFFF}
+
+\definecolor{colorThree}{HTML}{908CA4}
+\definecolor{colorFour}{HTML}{57659E}
+\definecolor{colorFive}{HTML}{C57284}
+\definecolor{colorSix}{HTML}{FF5B69}
+
+% Raccourcis pour les couleurs
+\def\colorOne{colorOne}
+\def\colorTwo{colorTwo}
+\def\colorThree{colorThree}
+\def\colorFour{colorFour}
+\def\colorFive{colorFive}
+\def\colorSix{colorSix}
+
+
+
+% Graduation ordonné
+	
+\newcommand{\GraduationYMm}[2]{
+	\foreach \r in {1,...,9} {
+		\draw 
+			({-0.25 * 0.5 * (cos(3.14*0.2*\r r)^2 + 1)}, #1*#2 - #2 + 0.1*#2*\r) 
+			edge [thick, line width=0.3ex, color=\colorOne] 
+			({0.25 * 0.5 * (cos(3.14*0.2*\r r)^2 + 1)}, #1*#2 - #2 + 0.1*#2*\r);
+	}
+}
+
+\newcommand{\GraduationYCm}[4]{% #1: min, #2: max, #3: liste
+  \foreach \R in {#1,...,#2} {
+    \pgfmathparse{#3[\R-(#1)]} % index dans la liste
+    \let\labelText\pgfmathresult
+
+    \draw[color=\colorThree]
+      (-0.3, \R*#4)
+      edge [thick, line width=0.5ex, color=\colorOne]
+      node [pos=-0.0, left]{\Large \labelText}
+      (0.3, \R*#4);
+
+    %\GraduationYMm{\R}{#4}
+  }
+
+  % Graduation supplémentaire à #2 + 3
+  \pgfmathparse{#2 + 1}
+  \edef\extendedPosition{\pgfmathresult}
+  %\GraduationYMm{\extendedPosition}{#4}
+}
+
+\newcommand{\GraduationXMm}[2]{
+	\foreach \r in {1,...,9} {
+		\draw 
+			( #1*#2 - #2 + 0.1*#2*\r,{-0.25 * 0.5 * (cos(3.14*0.2*\r r)^2 + 1)}) 
+			edge [thick, line width=0.3ex, color=\colorOne] 
+			( #1*#2 - #2 + 0.1*#2*\r,{0.25 * 0.5 * (cos(3.14*0.2*\r r)^2 + 1)});
+	}
+}
+
+\newcommand{\GraduationXCm}[4]{% #1: min, #2: max, #3: liste
+  \foreach \R in {#1,...,#2} {
+    \pgfmathparse{#3[\R-(#1)]} % index dans la liste
+    \let\labelText\pgfmathresult
+
+    \draw[color=\colorThree]
+      (\R*#4,-0.3)
+      edge [thick, line width=0.5ex, color=\colorOne]
+      node [pos=-0.0, below]{\Large \labelText}
+      (\R*#4,0.3);
+
+    %\GraduationXMm{\R}{#4}
+  }
+
+  % Graduation supplémentaire à #2 + 3
+  \pgfmathparse{#2 + 1}
+  \edef\extendedPosition{\pgfmathresult}
+  %\GraduationXMm{\extendedPosition}{#4}
+}
+
+% Définition de la fonction pour générer la grille
+\newcommand{\backgrowngrid}[6]{
+
+
+	\begin{scope}[xscale = #5 , yscale = #6 ]
+	
+	
+    	% Paramètres : #1=xmin, #3=xmax, #2=ymin, #4=ymax
+    	%\clip[scale = 0.95 , decorate, decoration={random steps, segment length=0.1 cm, amplitude=0.2cm}](#1 , #2 ) rectangle ( #3 , #4 ) ;
+    	\pgfmathparse{#1-1}  
+    	\let\valXmin\pgfmathresult
+    	\pgfmathparse{#2-1}  
+    	\let\valYmin\pgfmathresult
+    	\pgfmathparse{#3+1}  
+    	\let\valXmax\pgfmathresult
+    	\pgfmathparse{#4+1}  
+    	\let\valYmax\pgfmathresult
+    	
+    	\draw[fill = \colorThree , opacity = 0.1]  (\valXmin , \valYmin ) rectangle ( \valXmax , \valYmax ) ;
+
+   	 	% Grille principale en cm
+    	\draw[very thin, line width=0.5ex ,  color=\colorTwo] (\valXmin , \valYmin ) grid ( \valXmax , \valYmax ); % Grille de base (#5 cm , #6 cm )
+    
+    	%\draw[very thin, line width=0.3ex ,  color=\colorTwo] (#1,#2) grid[step=0.1] (#3,#4);
+
+    	%\draw[thin, black] (#1,#2) edge[thick,line width=0.8ex,->,>=Stealth ] (#3,#2); 
+    
+    	%\foreach \x in {#1,..., #3} {
+    	%	\pgfmathparse{int(\x * #5)} % calcule et arrondit \pgfmathparse{round((\x * #5)/10)*10} Par exemple, au multiple de 10 le plus proche 
+    	%	\let\val\pgfmathresult
+        %	\draw[shift={(\x, #2)}] (0,-0.1) edge[line width=0.8ex] node[pos = -1 , below] {\val} (0,0.1); % Lignes verticales en mm
+    	%}
+
+    	%\draw[thin, black] (#1,#2)edge[thick,line width=0.8ex,->,>=Stealth ] (#1,#4); 
+    
+    	%\foreach \y in {#2,..., #4} {
+    	%	\pgfmathparse{int(\y * #6)} % calcule et arrondit  
+    	%	\let\val\pgfmathresult
+        %	\draw[shift={(#1, \y)}] (-0.1 , 0 ) edge[line width=0.8ex] node[pos = -1 , left ] {\val} (0.1 , 0); % Lignes verticales en mm
+    	%}
+    
+    \end{scope}
+
+
+}
+
+
+
+\begin{document}
+
+\begin{tikzpicture}
+			%\input{figures/04_GGE_Fluctuation/Occupation_code}	
+			\begin{scope}%[transform canvas={scale=0.6}]
+			\input{Fonc_A_code}	
+			\end{scope}
+			
+			%\draw[color = red , scale = 0.5 , draw = none ] (-13.5 , -1) rectangle (13 , 10) ; 
+				
+			
+		\end{tikzpicture}
+
+\end{document}

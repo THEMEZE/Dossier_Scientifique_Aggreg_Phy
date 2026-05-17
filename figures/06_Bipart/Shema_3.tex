@@ -1,0 +1,1703 @@
+\documentclass{standalone} % Utilise la classe standalone pour compiler uniquement le TikZ
+%\include{pakage_tikz}
+\usepackage{tikz}          % Charge le package TikZ
+\usepackage{xcolor}        % Gestion avancée des couleurs
+\usepackage{amsmath}       % Gestion des formules mathématiques
+\usetikzlibrary{arrows.meta} % Pour gérer les flèches avec des formes spécifiées comme "triangle"
+\usetikzlibrary {decorations.pathmorphing}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usepackage[active,tightpage]{preview}
+\PreviewEnvironment{tikzpicture}
+\setlength\PreviewBorder{5pt}
+%\usepgfplotslibrary{external}
+%\tikzexternalize
+
+%% Automatiser cela : une solution plus élégante  nouvelle page, tu peux utiliser la commande \newpage juste avant chaque \begin{tikzpicture}
+%\let\oldtikzpicture\tikzpicture
+%\let\endoldtikzpicture\endtikzpicture
+%\renewenvironment{tikzpicture}{\newpage\oldtikzpicture}{\endoldtikzpicture}
+%\usepackage{etoolbox} % dans le préambule, si pas encore utilisé
+%\pretocmd{\tikzpicture}{\clearpage}{}{}
+
+
+% Définition de la fonction pour générer la grille
+\newcommand{\drawgrid}[4]{
+
+
+	\begin{scope}[opacity = 0.2]
+	
+	
+    	% Paramètres : #1=xmin, #2=xmax, #3=ymin, #4=ymax
+
+   	 	% Grille principale en cm
+    	\draw[very thin, gray] (#1,#3) grid (#2,#4); % Grille de base (1 cm)
+    
+    	\draw[very thin, gray] (#1,#3) grid[step=0.1] (#2,#4);
+
+    	\draw[thin, black] (#1,#3) edge[thick,line width=0.8ex,->,>=Stealth ] (#2,#3); 
+    
+    	\foreach \x in {#1,..., #2} {
+        	\draw[shift={(\x, #3)}] (0,-0.1) edge[line width=0.8ex] node[pos = -1 , below] {\x} (0,0.1); % Lignes verticales en mm
+    	}
+
+    	\draw[thin, black] (#1,#3)edge[thick,line width=0.8ex,->,>=Stealth ] (#1,#4); 
+    
+    	\foreach \y in {#3,..., #4} {
+        	\draw[shift={(#1, \y)}] (-0.1 , 0 ) edge[line width=0.8ex] node[pos = -1 , left ] {\y} (0.1 , 0); % Lignes verticales en mm
+    	}
+    
+    \end{scope}
+
+
+}
+
+
+\newcommand{\Axex}[1][$x$]{ % "x" est la valeur par défaut de #1
+    \draw
+        (-10, 0) edge[thick, line width=0.8ex, ->, >=Triangle, color=\colorThree] 
+        node[shift = {(-1cm,-3.5cm)} , pos=1.01, above,  scale = 1.5 , font =  \bfseries \fontsize{35pt}{35pt}\selectfont ]{  #1  } (10, 0)
+    ;
+}
+
+
+
+\newcommand{\Axetheta}[1][$\theta$]{
+	\draw
+		(-10, 0 ) edge [thick,line width=0.8ex,->,>=Triangle , color = \colorThree ]
+		node [pos=1.01,right , scale = 1.5 , font =  \bfseries \fontsize{35pt}{35pt}\selectfont ]{#1 } ( 10  , 0 )
+	;
+}
+
+\newcommand{\Axedensity}[1][$n$]{
+	\draw
+		(0, -1 ) edge [thick,line width=0.8ex,->,>=Triangle , color = \colorThree ]
+		node [pos=1.01,left , scale = 1.5 , font =  \bfseries \fontsize{35pt}{35pt}\selectfont , shift = {(0.3, 0) }  ]{ #1 } ( 0  , 6 )
+	;
+}
+
+\newcommand{\Axedistribution}[1][$\nu$]{
+	\draw
+		(0, -1 ) edge [thick,line width=0.8ex,->,>=Triangle , color = \colorThree ]
+		node [pos=1.01,left, scale = 1.5 , font =  \bfseries \fontsize{35pt}{35pt}\selectfont   ]{#1 } ( 0  , 6 )
+	;
+}
+
+\newcommand{\Axesphase}[2][$x$]{
+	\Axex[#1]
+	\begin{scope}[rotate = 90]
+		\Axetheta[#2]	
+	\end{scope}
+}
+
+\newcommand{\Axesdensity}[2][$x$]{
+	\Axex[#1]
+	\Axedensity[#2]
+}
+
+\newcommand{\Axesdistribution}[2][\theta]{
+	\Axetheta[#1]
+	\Axedistribution[#2]
+}
+
+\newcommand{\Axetemps}[1][Deformation]{
+	\draw 
+		(-5 , 0 ) edge [line width=2.8ex, color=\colorOne ]( 0, 0)
+		(43 , 0 ) edge [line width=2.8ex, color=\colorOne , ->, >=Triangle] node[pos = 1.0 , right , scale = 2 ] { \fontsize{60pt}{720pt}\selectfont $\tilde{t}$} ( 50 , 0)
+		( 0 , 1 ) edge [line width=2.0ex, color=\colorOne ] ( 0 , -1 )  
+		( 43 , 1 ) edge [line width=2.0ex, color=\colorOne ] ( 43 , -1 ) 
+		(0 , 0) edge[<->, > = stealth, line width=2.8ex, color=\colorOne ]  node [ rectangle , midway, fill = white , scale = 2 ] {\fontsize{600pt}{720pt}\selectfont \bf  #1}(43, 0)  
+	;
+
+}
+
+\newcommand{\Palette}[1][\colorOne]{
+	\clip[decorate, decoration={random steps, segment length=3pt, amplitude=3pt}]
+        	(-1,-1) rectangle (1,1);
+	\draw[fill=#1 , color = #1 ] (-2,-2) rectangle (2,2);
+}
+
+
+\definecolor{colorOne}{HTML}{443E46}    % gris violet foncé
+\definecolor{colorTwo}{HTML}{6C5B7B}    % lavande sombre
+\definecolor{colorThree}{HTML}{C06C84}  % rose vintage
+\definecolor{colorFour}{HTML}{F67280}   % corail chaud
+\definecolor{colorFive}{HTML}{F8B195}   % pêche clair
+\definecolor{colorSix}{HTML}{355C7D}    % bleu acier profond
+\definecolor{colorSeven}{HTML}{99B898}  % vert doux
+\definecolor{colorEight}{HTML}{FECEAB}  % beige pastel
+\definecolor{colorNine}{HTML}{E84A5F}   % rouge framboise
+\definecolor{colorTen}{HTML}{2A363B}    % gris anthracite
+
+
+
+% Définition des couleurs avec les codes HTML
+\definecolor{colorOne}{HTML}{443E46}
+%\definecolor{colorTwo}{HTML}{F6DEB8}
+\definecolor{colorTwo}{HTML}{FFFFFF}
+\definecolor{colorThree}{HTML}{908CA4}
+\definecolor{colorFour}{HTML}{57659E}
+\definecolor{colorFive}{HTML}{C57284}
+\definecolor{colorSix}{HTML}{FF5B69}
+
+% Raccourcis pour les couleurs
+\def\colorOne{colorOne}
+\def\colorTwo{colorTwo}
+\def\colorThree{colorThree}
+\def\colorFour{colorFour}
+\def\colorFive{colorFive}
+\def\colorSix{colorSix}
+
+
+
+
+\def\Background{
+	\draw[fill = \colorFour ]  
+		(-10 , -10 ) rectangle ( 10 , 10 ) 
+	;	
+
+}
+
+
+
+
+
+%% different test d'insitut 
+
+% a la main
+\pgfdeclareverticalshading{Insitut}{20cm}
+ {color(0)=(\colorFour); color(2cm)=(\colorFive); color(4cm)=(\colorSix);color(10cm)=(\colorSix);  color(12cm)=(\colorFive);  color(14cm)=(\colorFour)}
+ % avec donné
+\newcommand{\Insitutmap}[0]{
+ \begin{axis}[
+	%title={Données expérimentales $f(x,y)$},
+    colormap/viridis,
+    %colorbar,
+    enlargelimits=false,
+    axis on top,
+    xtick=\empty,
+    ytick=\empty,
+    xlabel={},
+    ylabel={},
+    axis lines=none
+]
+
+\addplot [
+    matrix plot,
+    point meta=explicit,
+    mesh/rows=5, % à adapter au nombre de lignes
+    shader=interp,
+]
+table [meta=z] {./data/donnees1.dat};
+\end{axis}
+}
+
+
+
+%Palette 
+\newcommand{\Palettes}[0]{
+%\begin{tikzpicture}	
+	\node at (0,0) [rectangle, ] {
+		\begin{tikzpicture}
+			\Palette[\colorOne]
+		\end{tikzpicture}} ;
+	\node at (3,0) [rectangle, ] {
+		\begin{tikzpicture}
+			\Palette[\colorTwo]
+		\end{tikzpicture}} ;
+	\node at (6,0) [rectangle, ] {
+		\begin{tikzpicture}
+			\Palette[\colorThree]
+		\end{tikzpicture}} ;
+	\node at (9,0) [rectangle, ] {
+		\begin{tikzpicture}
+			\Palette[\colorFour]
+		\end{tikzpicture}} ;
+	\node at (12,0) [rectangle, ] {
+		\begin{tikzpicture}
+			\Palette[\colorFive]
+		\end{tikzpicture}} ;
+	\node at (15,0) [rectangle, ] {
+		\begin{tikzpicture}
+			\Palette[\colorSix]
+		\end{tikzpicture}} ;
+%\end{tikzpicture}
+}
+
+% Insitut
+%% diagramme de phase 
+\newcommand{\InsitutDiagram}[0]{
+	%\node at (0,0) [circle, ]{\includegraphics[width=2\textwidth]{data/insitut.pdf}};
+	\begin{scope}
+	 	% Appliquer un rectangle décoré et clipper la zone
+    	%\clip[decorate, decoration={random steps, segment length=3pt, amplitude=1pt}](-8,-8) rectangle (8,8); 
+     	%\node at (0,0) [circle  ] {\begin{tikzpicture}[transform canvas={scale=1}] \Background \end{tikzpicture}};
+		%\node at (0,0) [circle, ] {\pgfuseshading{Insitut}};
+		%\node at (0,0) [circle, ] {\begin{tikzpicture} \Insitutmap \end{tikzpicture} };
+		\node at (-0.95,-0.3) [circle, ]{\includegraphics[height = 1.6\textwidth]{data/graph_insitut_only.pdf}}; %width=1.8\textwidth
+		%\node at (0,0) [circle, ]{\includegraphics[height = 1.6\textwidth]{data/insitut.pdf}}; 
+		
+	\end{scope}
+				
+	\begin{scope}[shift={(2,-0.3)}]
+		\clip[decorate, decoration={random steps, segment length=3pt, amplitude=1pt}](9,-9) rectangle (13,10);
+		%\draw[red]  (9,-9) rectangle (13,10);	
+		\node at (0,0) [circle, ]{\includegraphics[height = 1.6\textwidth ]{data/complete_graph_insitut.pdf}}; 
+	\end{scope}
+
+	%\node at (0,0) [circle, ]{\includegraphics[width = 1.8\textwidth , trim=0cm 0.cm 0cm 0.cm, clip ]{data/complete_graph_insitut.pdf}}; 
+				
+	\node at (0,0) [circle] { \begin{tikzpicture}[transform canvas={scale=1}] \Axesphase[$x ~ (\mu m) $]{$\theta ~ (\mu m / {ms}) $} \end{tikzpicture}};
+}
+
+
+%% density
+\newcommand{\InsitutDensity}[0]{
+	\begin{scope}
+		\clip[decorate, decoration={random steps, segment length=3pt, amplitude=1pt}](-9,-8) rectangle (8.5,8); 
+        \draw[line width=1.8ex , color = \colorFour , fill = none ] (-10 , 0 ) -- (-10 , 5 ) -- (10 , 5 ) -- ( 10, 0 )  ;
+        \draw[line width=1.8ex , color = \colorFour] 
+        	(-0.3, 5 ) edge [thick,line width=0.8ex,, color = \colorThree ]node [pos=-0.01, above left  ]{\huge $56$ }( 0.3  , 5 )	
+        	(-0.3, 0 ) edge [thick,line width=0.8ex,, color = \colorThree ]node [pos=-0.01, below left ]{\huge $0$ } ( 0.3  , 0 )	
+        ;	
+								
+	\end{scope}
+		
+	\Axesdensity[$x ~ (\mu m) $]{$n ~({\mu m}^{-1})$}
+}
+
+%% distribution
+\newcommand{\InsitutDistributionzero}[0]{
+	\begin{scope}
+		\clip[decorate, decoration={random steps, segment length=3pt, amplitude=1pt}](-8.8,-8) rectangle (8.8,8);
+
+		%\filldraw[smooth , line width=1.8ex , color = \colorFour , fill = \colorThree] plot coordinates {(-10,0) (-5,0.5) (-4,4) (4,4) (5,0.5) (10 , 0 )};
+		%\filldraw[  smooth, line width=1.8ex, color=\colorFour, fill=\colorThree] (-10,0)  .. controls (0,0) and (-10,5) .. (0,5) .. controls (10,5) and (0,0) .. (10,0);	
+    	\draw[line width=1.8ex , color = \colorFour , fill = none ] plot[smooth] file {data/insitut.table};
+    	\draw[line width=1.8ex , color = \colorFour] 
+    		(-0.3, 5 ) edge [thick,line width=0.8ex, color = \colorThree ]node [pos=-0.01, left  ]{\huge $1$ } ( 0.3  , 5 )	
+    		(-0.3, 0 ) edge [thick,line width=0.8ex,, color = \colorThree ]node [pos=-0.01, below left ]{\huge $0$ } ( 0.3  , 0 )	
+    	;	
+    						
+	\end{scope}		
+	\Axesdistribution[$\theta ~ (\mu m / {ms}) $]{$\nu(x)$}	
+}
+
+% distribution x < 0
+\newcommand{\InsitutDistribution}[0]{
+	\begin{scope}
+		\clip[decorate, decoration={random steps, segment length=3pt, amplitude=1pt}](-8.8,-8) rectangle (8.8,8);
+
+		%\filldraw[smooth , line width=1.8ex , color = \colorFour , fill = \colorThree] plot coordinates {(-10,0) (-5,0.5) (-4,4) (4,4) (5,0.5) (10 , 0 )};
+		%\filldraw[  smooth, line width=1.8ex, color=\colorFour, fill=\colorThree] (-10,0)  .. controls (0,0) and (-10,5) .. (0,5) .. controls (10,5) and (0,0) .. (10,0);	
+					
+
+    	%\filldraw[opacity = 1.0 , smooth , dashed , line width=1.8ex , color = \colorFour , fill = none] plot coordinates {(-10,0)  (10 , 0 )};
+    	\draw[opacity = 1.0 ,  line width=1.8ex , color = \colorSix, fill = none] plot[smooth] file {data/insitut.table};
+    				
+    	\draw[line width=1.8ex , color = \colorFour]     	
+    		(-0.3, 5 ) edge [ thick,line width=0.8ex, color = colorThree ]node [shift ={(3.5, 0)}, pos=-0.01, left, scale = 1.2,  font = \fontsize{150pt}{10pt}\selectfont \bfseries  ]{ $1$ } ( 0.3  , 5 )	
+    		(-0.3, 0 ) edge [thick,line width=0.8ex,scale = 1.2,  color = colorThree ]node [pos=-0.01, below left, scale = 1.2,  font = \fontsize{150pt}{10pt}\selectfont \bfseries ]{$0$ } ( 0.3  , 0 )	
+    	;				
+	\end{scope}	
+				
+	% \draw[shift={(4,5)}]
+	% 	%(4,5) edge [thick,line width=1.8ex,opacity = 0.9 , dashed , color = \colorThree ]node [pos=1.1, right ]{\huge $\nu(x < 0 ; t = 0^{-})$ } ( 4.5  , 5 )	
+    % 	%(4,4) edge [thick,line width=1.8ex , color = \colorFour ]node [pos=1.1, right ]{\huge $\nu(x < 0 ; t = 0^{+} )$ } ( 4.5  , 4 )
+	% 	(0,0) edge [thick,line width=1.8ex,opacity = 1.0 , color = colorSix]node [scale = 1.5 , pos=1.1, right , font = \fontsize{150pt}{10pt}\selectfont \bfseries  ]{$\nu(x > 0 ) = \nu_0 $ } ( 1  , 0 )
+	% 	(0,0) edge [shift={(0,-1.5)}, thick,line width=1.8ex , dashed , color = colorFour ]node [scale = 1.5 , pos=1.1, right  , font = \fontsize{150pt}{10pt}\selectfont \bfseries ]{$\nu(x < 0 ) = 0 $ } ( 1 , 0 )	
+		
+    				
+    % ;	
+	\Axesdistribution[$\theta ~ (\mu m / {ms}) $]{$\nu_0(\theta) $}
+}
+
+%%Vide 
+\newcommand{\Vide}[0]{
+}
+
+
+% coupuur 1 O ms
+%% diagramme de phase 
+\newcommand{\CoupureUnZeroDiagram}[0]{
+	\begin{scope}
+	 	% Appliquer un rectangle décoré et clipper la zone
+    	%\clip[decorate, decoration={random steps, segment length=3pt, amplitude=1pt}](-8,-8) rectangle (8,8); 
+     	%\node at (0,0) [circle  ] {\begin{tikzpicture}[transform canvas={scale=1}] \Background \end{tikzpicture}};
+     	%\clip (0,-8) rectangle (10,8) ;
+		%\node at (0,0) [circle, ] {\pgfuseshading{Insitut}};
+		\node at (-0.95,-0.3) [circle, ]{\includegraphics[height = 1.6\textwidth]{data/graph_coupure_1_0_only.pdf}};
+		
+	\end{scope}
+
+				
+	\draw[opacity = 0.5 , dashed , dash pattern=on 6pt off 3pt, line width=1.8ex , color = \colorOne , fill = none] 
+		plot[smooth] file {data/bord_0_0.table}
+		(-7,7) edge []node [pos=1.1, right ]{\fontsize{100pt}{10}\selectfont \bfseries \color{\colorOne} $ x_{t=0}^b $ } ( -6.5  , 7 )	 
+	;
+				
+	\node at (0,0) [circle, ] {\begin{tikzpicture}[transform canvas={scale=1}] \Axesphase[$x ~ (\mu m)$]{$\theta ~ (\mu m / {ms}) $} \end{tikzpicture}};
+
+}
+
+\newcommand{\CoupureUnZeroDiagramP}[0]{
+	\begin{scope}
+	 	% Appliquer un rectangle décoré et clipper la zone
+    	%\clip[decorate, decoration={random steps, segment length=3pt, amplitude=1pt}](-8,-8) rectangle (8,8); 
+     	%\node at (0,0) [circle  ] {\begin{tikzpicture}[transform canvas={scale=1}] \Background \end{tikzpicture}};
+     	%\clip (0,-8) rectangle (10,8) ;
+		%\node at (0,0) [circle, ] {\pgfuseshading{Insitut}};
+		\node at (-1.15,-0.44) [circle, ]{\includegraphics[height = 1.6\textwidth]{data/graph_coupure_1_0_only.pdf}};
+		
+	\end{scope}
+	\begin{scope}[shift={(2,-0.3)}]
+		\clip[shift={(-0.5,0)}, decorate, decoration={random steps, segment length=3pt, amplitude=1pt}](9,-9) rectangle (13,10);
+		%\draw[red]  (9,-9) rectangle (13,10);	
+		%\node at (0,0) [circle, ]{\includegraphics[height = 1.6\textwidth ]{data/complete_graph_coupure_1_0.pdf}}; 
+	\end{scope}
+				
+	\draw[opacity = 1 , dashed , dash pattern=on 6pt off 3pt, line width=1.8ex , color = \colorOne , fill = none] 
+		plot[smooth] file {data/bord_0_0.table}
+		(0,0) edge [shift = {(-7.5cm , 6cm)} ]node [scale = 1.5 , pos=1.1, right , font = \fontsize{150pt}{10pt}\selectfont \bfseries , color = colorOne  ]{  $ x_{t=0}^b $ } ( 1  , 0 )	 
+	;
+	
+	%\node at (5,1.5) [scale = 1.5, circle, font = \fontsize{150pt}{10pt}\selectfont \bfseries , color = colorTwo  ] { $\nu(x,\theta ; 0)$ };
+	\node at (5,1.5) [scale = 1.5, circle, font = \fontsize{150pt}{10pt}\selectfont \bfseries , color = colorTwo  ] { $\nu_0(\theta)$ };
+
+	\node at (0,0) [circle, ] {\begin{tikzpicture}[transform canvas={scale=1}] \Axesphase[\color{\colorFour} $x ~ (\mu m)$]{$\theta ~ (\mu m / {ms}) $} \end{tikzpicture}};
+
+	%\drawgrid{-10}{10}{-10}{10}
+
+}
+
+\newcommand{\CoupureUnZeroDiagramRho}[0]{
+	\begin{scope}
+	 	% Appliquer un rectangle décoré et clipper la zone
+    	%\clip[decorate, decoration={random steps, segment length=3pt, amplitude=1pt}](-8,-8) rectangle (8,8); 
+     	%\node at (0,0) [circle  ] {\begin{tikzpicture}[transform canvas={scale=1}] \Background \end{tikzpicture}};
+     	%\clip (0,-8) rectangle (10,8) ;
+		%\node at (0,0) [circle, ] {\pgfuseshading{Insitut}};
+		\node at (-0.95,-0.3) [circle, ]{\includegraphics[height = 1.6\textwidth]{data/graph_coupure_rho_1_0_only.pdf}};
+	
+		
+	\end{scope}
+	\begin{scope}[shift={(2,-0.3)}]
+		\clip[decorate, decoration={random steps, segment length=3pt, amplitude=1pt}](9,-9) rectangle (13,10);
+		%\draw[red]  (9,-9) rectangle (13,10);	
+		\node at (0,0) [circle, ]{\includegraphics[height = 1.6\textwidth ]{data/complete_graph_coupure_rho_1_0.pdf}}; 
+	\end{scope}
+				
+	\draw[opacity = 0.5 , dashed , dash pattern=on 6pt off 3pt, line width=1.8ex , color = \colorOne , fill = none] 
+		plot[smooth] file {data/bord_0_0.table}
+		(-7,7) edge []node [pos=1.1, right ]{\fontsize{15}{10}\selectfont \bfseries \color{\colorOne} \huge $ x_{t=0}^b $ } ( -6.5  , 7 )	 
+	;
+				
+	\node at (0,0) [circle, ] {\begin{tikzpicture}[transform canvas={scale=1}] \Axesphase[$x ~ (\mu m)$]{$\theta ~ (\mu m / {ms}) $} \end{tikzpicture}};
+
+}
+% density
+\newcommand{\CoupureUnZeroDensity}[0]{
+	\begin{scope}
+		\clip[decorate, decoration={random steps, segment length=3pt, amplitude=1pt}](-9,-8) rectangle (8.5,8);
+ 					
+        \filldraw[line width=1.8ex , color = \colorFour , fill = none ] 
+			(-10 , 0 ) --  ( 0 , 0 ) -- ( 0 , 5 ) --(10 , 5 ) -- ( 10 , 0 )   
+		;
+		%\draw[opacity = 0.6 , line width=1.8ex , dashed , color = \colorThree , fill = none ] (-10 , 0 ) -- (-10 , 5 ) -- (10 , 5 ) -- ( 10, 0 )  ;
+					
+		\draw[line width=1.8ex , color = \colorFour] 
+        	(-0.3, 5 ) edge [thick,line width=0.8ex,, color = \colorThree ]node [pos=-0.01, left , scale = 1.0,  font = \fontsize{150pt}{10pt}\selectfont \bfseries , color = colorThree ]{ $56$ } ( 0.3  , 5 )	
+        	(-0.3, 0 ) edge [thick,line width=0.8ex,, color = \colorThree ]node [pos=-0.01, below left , scale = 1.0,  font = \fontsize{150pt}{10pt}\selectfont \bfseries , color = colorThree ]{ $0$ } ( 0.3  , 0 )	
+        ;				
+	\end{scope}
+				
+	\draw[shift={(-8,4)}]
+		%(-8,4) edge [thick,line width=1.8ex,opacity = 0.9 , dashed , color = \colorThree ]node [pos=1.1, right ]{\huge $n( t = 0^{-})$ } ( -7.5  , 4 )	
+    	%(-8,3) edge [thick,line width=1.8ex , color = \colorFour ]node [pos=1.1, right ]{\huge $n( t = 0^{+} )$ } ( -7.5  , 3 )
+		(0,0) edge [thick,line width=1.8ex , scale = 1.2,  font = \fontsize{150pt}{10pt}\selectfont \bfseries , color = colorFour ]node [pos=1.1, right ]{$n( t = 0 )$ } (1,0 )	
+    				
+    ;
+		
+	\Axesdensity[$x ~ (\mu m) $]{$n ~({\mu m}^{-1})$}
+	%\drawgrid{-10}{10}{-10}{10}
+
+}
+
+% distribution x < 0
+\newcommand{\CoupureUnZeroDistributionMinus}[0]{
+	\begin{scope}
+		\clip[decorate, decoration={random steps, segment length=3pt, amplitude=1pt}](-8.8,-8) rectangle (8.8,8);
+
+		%\filldraw[smooth , line width=1.8ex , color = \colorFour , fill = \colorThree] plot coordinates {(-10,0) (-5,0.5) (-4,4) (4,4) (5,0.5) (10 , 0 )};
+		%\filldraw[  smooth, line width=1.8ex, color=\colorFour, fill=\colorThree] (-10,0)  .. controls (0,0) and (-10,5) .. (0,5) .. controls (10,5) and (0,0) .. (10,0);	
+					
+
+    	\filldraw[opacity = 1.0 , smooth , dashed , line width=1.8ex , color = \colorFour , fill = none] plot coordinates {(-10,0)  (10 , 0 )};
+    	\draw[opacity = 1.0 ,  line width=1.8ex , color = \colorSix, fill = none] plot[smooth] file {data/insitut.table};
+    				
+    	\draw[line width=1.8ex , color = \colorFour]     	
+    		(-0.3, 5 ) edge [ thick,line width=0.8ex, color = colorThree ]node [shift ={(3.5, 0)}, pos=-0.01, left, scale = 1.2,  font = \fontsize{150pt}{10pt}\selectfont \bfseries  ]{ $1$ } ( 0.3  , 5 )	
+    		(-0.3, 0 ) edge [thick,line width=0.8ex,scale = 1.2,  color = colorThree ]node [pos=-0.01, below left, scale = 1.2,  font = \fontsize{150pt}{10pt}\selectfont \bfseries ]{$0$ } ( 0.3  , 0 )	
+    	;				
+	\end{scope}	
+				
+	\draw[shift={(4,5)}]
+		%(4,5) edge [thick,line width=1.8ex,opacity = 0.9 , dashed , color = \colorThree ]node [pos=1.1, right ]{\huge $\nu(x < 0 ; t = 0^{-})$ } ( 4.5  , 5 )	
+    	%(4,4) edge [thick,line width=1.8ex , color = \colorFour ]node [pos=1.1, right ]{\huge $\nu(x < 0 ; t = 0^{+} )$ } ( 4.5  , 4 )
+		(0,0) edge [thick,line width=1.8ex,opacity = 1.0 , color = colorSix]node [scale = 1.5 , pos=1.1, right , font = \fontsize{150pt}{10pt}\selectfont \bfseries  ]{$\nu(x > 0 ) = \nu_0 $ } ( 1  , 0 )
+		(0,0) edge [shift={(0,-1.5)}, thick,line width=1.8ex , dashed , color = colorFour ]node [scale = 1.5 , pos=1.1, right  , font = \fontsize{150pt}{10pt}\selectfont \bfseries ]{$\nu(x < 0 ) = 0 $ } ( 1 , 0 )	
+		
+    				
+    ;	
+	\Axesdistribution[$\theta ~ (\mu m / {ms}) $]{$\nu(\theta) $}
+}
+
+\newcommand{\CoupureUnZeroDistributionMinusRho}[0]{
+	\begin{scope}
+		\clip[decorate, decoration={random steps, segment length=3pt, amplitude=1pt}](-8.8,-8) rectangle (8.8,8);
+
+		%\filldraw[smooth , line width=1.8ex , color = \colorFour , fill = \colorThree] plot coordinates {(-10,0) (-5,0.5) (-4,4) (4,4) (5,0.5) (10 , 0 )};
+		%\filldraw[  smooth, line width=1.8ex, color=\colorFour, fill=\colorThree] (-10,0)  .. controls (0,0) and (-10,5) .. (0,5) .. controls (10,5) and (0,0) .. (10,0);	
+					
+
+    	\filldraw[opacity = 1.0 , smooth , dashed , line width=1.8ex , color = \colorFour , fill = none] plot coordinates {(-10,0)  (10 , 0 )};
+    	\draw[opacity = 1.0 ,  line width=1.8ex , color = \colorFour, fill = none] plot[smooth] file {data/insitut_rho.table};
+    				
+    	\draw[line width=1.8ex , color = \colorFour]     	
+    		(-0.3, 5 ) edge [ thick,line width=0.8ex, color = \colorThree ]node [shift ={(3.5, 0)}, pos=-0.01, left  ]{\huge $7.57$ } ( 0.3  , 5 )	
+    		(-0.3, 0 ) edge [thick,line width=0.8ex,, color = \colorThree ]node [pos=-0.01, below left ]{\huge $0$ } ( 0.3  , 0 )	
+    					;				
+	\end{scope}	
+				
+	\draw 
+		%(4,5) edge [thick,line width=1.8ex,opacity = 0.9 , dashed , color = \colorThree ]node [pos=1.1, right ]{\huge $\nu(x < 0 ; t = 0^{-})$ } ( 4.5  , 5 )	
+    	%(4,4) edge [thick,line width=1.8ex , color = \colorFour ]node [pos=1.1, right ]{\huge $\nu(x < 0 ; t = 0^{+} )$ } ( 4.5  , 4 )
+		(4,5) edge [thick,line width=1.8ex,opacity = 0.9 , color = \colorFour]node [pos=1.1, right ]{\huge $\rho(x > 0 )$ } ( 4.5  , 5 )
+		(4,4) edge [thick,line width=1.8ex , dashed , color = \colorFour ]node [pos=1.1, right ]{\huge $\rho(x < 0 )$ } ( 4.5  , 4 )	
+		
+    				
+    ;	
+	\Axesdistribution[$\theta ~ (\mu m / {ms}) $]{$\rho ( t = 0 ) $}
+}
+
+% distribution x > 0
+\newcommand{\CoupureUnZeroDistributionPlus}[0]{
+	\begin{scope}
+		\clip[decorate, decoration={random steps, segment length=3pt, amplitude=1pt}](-8.8,-8) rectangle (8.8,8);
+
+		%\filldraw[smooth , line width=1.8ex , color = \colorFour , fill = \colorThree] plot coordinates {(-10,0) (-5,0.5) (-4,4) (4,4) (5,0.5) (10 , 0 )};
+		%\filldraw[  smooth, line width=1.8ex, color=\colorFour, fill=\colorThree] (-10,0)  .. controls (0,0) and (-10,5) .. (0,5) .. controls (10,5) and (0,0) .. (10,0);	
+    	\draw[line width=1.8ex , color = \colorFour , fill = none] plot[smooth] file {data/insitut_minus.table};
+    	\draw[line width=1.8ex , color = \colorFour] 
+    		(-0.3, -5 ) edge [ thick,line width=0.8ex, color = \colorThree ]node [shift ={(3.5, 0)}, pos=-0.01, left  ]{\huge $1$ } ( 0.3  , -5 )	
+    		(-0.3, 0 ) edge [thick,line width=0.8ex,, color = \colorThree ]node [shift ={(0, -0.5)} , pos=-0.01, above left ]{\huge $0$ } ( 0.3  , 0 )	
+    	;			
+	\end{scope}	
+				
+	\draw
+		(-10, 0 ) edge [thick,line width=0.8ex,->,>=Triangle , color = \colorThree ]node [pos=1.01,right]{\huge $\theta ~ (\mu m / {ms}) $ } ( 10  , 0 )
+		(0, 1 ) edge [thick,line width=0.8ex,->,>=Triangle , color = \colorThree ]node [pos=1.01,left  ]{\huge $\nu ( x > 0 ) $ } ( 0  , -6 )
+	;	
+	%\Axesdistribution[$\theta ~ (\mu m / {ms}) $]{$\nu ( x > 0 ) $}
+}
+
+% coupuur 1 18 ms
+%% diagramme de phase 
+\newcommand{\CoupureUnVeffDiagram}[0]{
+	\begin{scope}
+	 	% Appliquer un rectangle décoré et clipper la zone
+    	%\clip[decorate, decoration={random steps, segment length=3pt, amplitude=1pt}](-8,-8) rectangle (8,8); 
+     	%\node at (0,0) [circle  ] {\begin{tikzpicture}[transform canvas={scale=1}] \Background \end{tikzpicture}};
+     	%\clip[smooth] plot coordinates {(-5,-10) (-2,-2.75) (2,2.75) (5,10) (10,10) (10 , -10 )} ;
+		%\node at (0,0) [circle, ] {\pgfuseshading{Insitut}};
+		\node at (-1.15,-0.44) [circle, ]{\includegraphics[height = 1.6\textwidth]{data/graph_coupure_1_18_only.pdf}};
+		
+	\end{scope}
+	\begin{scope}[shift={(2,-0.3)}]
+		\clip[shift={(-0.5,0)},decorate, decoration={random steps, segment length=3pt, amplitude=1pt}](9,-9) rectangle (13,10);
+		%\draw[red]  (9,-9) rectangle (13,10);	
+		%\node at (0,0) [circle, ]{\includegraphics[height = 1.6\textwidth ]{data/complete_graph_coupure_1_18.pdf}}; 
+		\node at (0,0) [circle, ]{\includegraphics[height = 1.6\textwidth ]{data/complete_graph_coupure_1_0_2.pdf}}; 
+	\end{scope}
+	\node at (0,0) [circle, ] {
+		\begin{tikzpicture}[transform canvas={scale=1}] 
+			\Axesphase[\color{\colorFour}  $x/t {~}\qquad  $]{$\theta ~ (\mu m / {ms}) $}
+			\draw
+    			(0.45, 0.2) edge[line width=2.8ex, color=colorFour] (0.45, -0.2)
+        		(0.2 , 1.45 ) edge[line width=2.8ex, color=colorFour] 
+        						node[pos=1.1, left , scale = 1.5 , font = \fontsize{150pt}{10pt}\selectfont \bfseries ]{ \color{colorFour} $\theta_b^\ast$} (-0.2 , 1.45 )
+				(0.45 , -9.0 ) edge[line width=1.8ex, color=colorFour ,  ] (0.45 , -3.9 )
+        		(0.45 , -0.5 ) edge[line width=1.8ex, color=colorFour , ] node[pos=0.0, left , rotate = 90 ,scale = 1.5,  font = \fontsize{150pt}{10pt}\selectfont \bfseries, color = colorFour ]{ $x_b/t$}  (0.45 , 9.0 )
+        		(-0.2 , 1.45 )  edge[line width=1.8ex, color=colorFour , ] (1.0  , 1.45 )
+        	;
+
+        					
+		\end{tikzpicture}
+		%\usetikzlibrary {decorations.text}
+		% \tikz \fill [decorate,decoration={text along path,
+		%                text=This is a text along a path. Note how the path is lost.}]
+		%   [fill=blue!20,draw=blue,thick] (0,0) -- (2,1) arc (90:-90:.5) -- cycle;
+		
+		};
+	% \draw[opacity = 0.5 , dashed , dash pattern=on 6pt off 3pt, line width=1.8ex , color = \colorOne , fill = none] 
+	% 	plot[smooth] file {data/bord_0_sur_18.table}
+	% 	(0,0) edge [shift = {(-7.5,7)}]node [ scale = 1.2, pos=1.1, right , font = \fontsize{150pt}{150pt}\selectfont  \bfseries ,  color = colorOne  ]{ $ x_t^b/t \, \& \, v^{\mathrm{eff}}_{[\nu^\ast]}(\theta^\ast)$ } ( 1  , 0)	 
+	% ;
+	\draw[opacity = 1 , dashed , dash pattern=on 6pt off 3pt, line width=1.8ex , color = \colorOne , fill = none] 
+		plot[smooth] file {data/bord_0_sur_18.table}
+		(0,0) edge [shift = {(-7.5,7)}]node [ scale = 1.5, pos=1.1, right , font = \fontsize{150pt}{150pt}\selectfont  \bfseries ,  color = colorOne  ]{ $ x_t^b/t $ } ( 1  , 0)	 
+	;
+
+	%\node at (5,1.5) [scale = 1.5, circle, font = \fontsize{150pt}{10pt}\selectfont \bfseries , color = colorTwo  ] { $\nu(x,\theta ; t)$ };
+	\node at (5,1.5) [scale = 1.5, circle, font = \fontsize{150pt}{10pt}\selectfont \bfseries , color = colorTwo  ] { $\nu_0(\theta)$ };
+	
+	% \node[
+    % 	rotate=90,
+    % 	shift={(0,-14)},
+    % 	fill=\colorTwo,        % couleur du fond
+    % 	draw=none,             % pas de contour
+    % 	inner sep=2mm,          % espace autour du texte
+    % 	rectangle
+	% ] at (0,0) {\fontsize{20pt}{10pt}\selectfont $\nu^\ast(x/t,\theta)$};
+
+	%\drawgrid{-10}{15}{-10}{10}
+}
+\newcommand{\CoupureUnVeffDiagramRho}[0]{
+	\begin{scope}
+	 	% Appliquer un rectangle décoré et clipper la zone
+    	%\clip[decorate, decoration={random steps, segment length=3pt, amplitude=1pt}](-8,-8) rectangle (8,8); 
+     	%\node at (0,0) [circle  ] {\begin{tikzpicture}[transform canvas={scale=1}] \Background \end{tikzpicture}};
+     	%\clip[smooth] plot coordinates {(-5,-10) (-2,-2.75) (2,2.75) (5,10) (10,10) (10 , -10 )} ;
+		%\node at (0,0) [circle, ] {\pgfuseshading{Insitut}};
+		\node at (-0.95,-0.3) [circle, ]{\includegraphics[height = 1.6\textwidth]{data/graph_coupure_rho_1_18_only.pdf}};
+		
+	\end{scope}
+	\begin{scope}[shift={(2,-0.3)}]
+		\clip[decorate, decoration={random steps, segment length=3pt, amplitude=1pt}](9,-9) rectangle (13,10);
+		%\draw[red]  (9,-9) rectangle (13,10);	
+		\node at (0,0) [circle, ]{\includegraphics[height = 1.6\textwidth ]{data/complete_graph_coupure_rho_1_18.pdf}}; 
+	\end{scope}
+	\node at (0,0) [circle, ] {
+		\begin{tikzpicture}[transform canvas={scale=1}] 
+			\Axesphase[ \color{\colorFour} $x/t ~ (\mu m / ms) $]{$\theta ~ (\mu m / {ms}) $}
+			\draw
+    			(0.45, 0.2) edge[line width=1.8ex, color=\colorFour] 
+        						node[pos=1.0, below]{ \color{\colorFour}\huge $x_b/t$} (0.45, -0.2)
+        		(0.2 , 1.45 ) edge[line width=1.8ex, color=\colorFour] 
+        						node[pos=1.1, left ]{ \color{\colorFour}\huge $\theta_b$} (-0.2 , 1.45 )
+        		(0.45 , -0.2 ) edge[line width=0.8ex, color=\colorFour , dashed ] (0.45 , 2.0 )
+        		(-0.2 , 1.45 )  edge[line width=0.8ex, color=\colorFour , dashed ] (1.0  , 1.45 )
+        	;
+        					
+		\end{tikzpicture}};
+	\draw[opacity = 0.5 , dashed , dash pattern=on 6pt off 3pt, line width=1.8ex , color = \colorOne , fill = none] 
+		plot[smooth] file {data/bord_0_sur_18.table}
+		(-7,7) edge []node [pos=1.1, right ]{\fontsize{15}{5}\selectfont \color{\colorOne} \huge $ x_t^b/t \, \& \, v^{\mathrm{eff}}_{[\rho]}(\theta^\ast)$ } ( -6.5  , 7 )	 
+	;
+	
+	\node[
+    	rotate=90,
+    	shift={(0,-14)},
+    	fill=\colorTwo,        % couleur du fond
+    	draw=none,             % pas de contour
+    	inner sep=2mm,          % espace autour du texte
+    	rectangle
+	] at (0,0) {\fontsize{20pt}{10pt}\selectfont $\rho^\ast(x/t,\theta)$};
+
+	%\drawgrid{-10}{15}{-10}{10}
+}
+%% density
+\newcommand{\CoupureUnVeffDensity}[0]{
+	\begin{scope}
+		\clip[decorate, decoration={random steps, segment length=3pt, amplitude=1pt}](-9,-8) rectangle (8.3,8);
+ 
+        %\filldraw[smooth , line width=1.8ex , color = \colorFour , fill = \colorThree ] plot coordinates {(-10,0) (-3,0.4) (2.,4.5) (10,5) 
+     	%(10 , 0 )};
+     	%\filldraw[smooth, line width=1.8ex, color=\colorFour, fill=\colorThree] (-10,0) -- (-2,0) .. controls (-1,0) and (2,5) .. (3,5) -- (10,5) -- (10,0);
+     	\draw[opacity = 1 , line width=1.8ex , color = colorFour , fill = none ] plot[] file {data/density_coupure_1_sur_18.table};
+     	\draw[line width=1.8ex , color = colorFour] 
+        	(-0.3, 5 ) edge [thick,line width=0.8ex, color = colorThree ]node [pos=-0.01, left , font = \fontsize{150pt}{10pt}\selectfont \bfseries , color = colorThree , scale = 1.2 ]{$56$ } ( 0.3  , 5 )	
+        	(-0.3, 0 ) edge [thick,line width=0.8ex, color = colorThree ]node [pos=-0.01, below left , font = \fontsize{150pt}{10pt}\selectfont \bfseries , color = colorThree , scale = 1.2  ]{ $0$ } ( 0.3  , 0 )	
+        ;
+        			
+        \draw
+    		(0.45, 0.2) edge[line width=1.8ex, color=\colorOne] 
+        						node[pos=1.0, left , rotate = 90 , font = \fontsize{150pt}{10pt}\selectfont \bfseries , color = colorOne , shift ={(0.2,0)} ]{  $x_b/t$} (0.45, -0.2)
+        	(0.45 , -0.2 ) edge[line width=0.8ex, color=\colorOne , dashed ] (0.45 , 4.0 )
+        ;	
+
+
+	\end{scope}
+		
+	\Axesdensity[$x/t ~ (\mu m / ms)$]{$n^\ast ~({\mu m}^{-1})$}
+				        				
+	%\drawgrid{-10}{10}{-10}{10}
+}
+%% Distribution
+\newcommand{\CoupureUnVeffDistribution}[0]{
+	\begin{scope}
+		\clip[decorate, decoration={random steps, segment length=3pt, amplitude=1pt}](-8.8,-8) rectangle (8.8,8);
+
+		%\filldraw[smooth , line width=1.8ex , color = \colorFour , fill = \colorThree] plot coordinates {(-10,0) (-5,0.5) (-4,4) (4,4) (5,0.5) (10 , 0 )};
+					
+		%\filldraw[ opacity = 0.5 , smooth, line width=1.8ex, color=\colorFour, fill=\colorThree] (-10,0)  .. controls (0,0) and (-10,5) .. (0,5) .. controls (10,5) and (0,0) .. (10,0);
+    				
+					
+		%\filldraw[  opacity = 1 , smooth, line width=1.8ex, color=\colorFour, fill=\colorThree] (-10,0)  .. controls (0,0) and (-10,5) .. (0,5) .. controls (1.3,5) and (1.3,5) .. (1.3,4.9) -- (1.3 , 0 )-- ( 10 , 0 ) ;
+    						
+    	\draw[opacity = 1 , line width=1.8ex , color = colorFour , fill = none ] plot[] file {data/coupure_1_sur_18.table};	
+    				
+    	\draw[opacity = 1 , line width=1.8ex , dashed ,  color = colorSix , fill = none] plot[smooth] file {data/insitut.table};
+    				
+    	% \draw[line width=1.8ex , color = \colorFour] 
+    	% 	(-0.3, 5 ) edge [thick,line width=0.8ex, font = \fontsize{150pt}{10pt}\selectfont \bfseries , color = colorThree ]node [ shift ={(3.5, 0)} , pos=-0.01, left , font = \fontsize{150pt}{10pt}\selectfont \bfseries , color = colorThree ]{ $1$ } ( 0.3  , 5 )	
+    	% 	(-0.3, 0 ) edge [shift ={(0, -0.5)} , thick,line width=0.8ex, color = colorThree  ]node [pos=-0.01, below left , font = \fontsize{150pt}{10pt}\selectfont \bfseries , color = colorThree ]{ $0$ } ( 0.3  , 0 )		
+    	% ;
+		
+		\draw[line width=1.8ex , color = \colorFour]     	
+    		(-0.3, 5 ) edge [ thick,line width=0.8ex, color = colorThree ]node [shift ={(3.5, 0)}, pos=-0.01, left, scale = 1.2,  font = \fontsize{150pt}{10pt}\selectfont \bfseries  ]{ $1$ } ( 0.3  , 5 )	
+    		(-0.3, 0 ) edge [thick,line width=0.8ex,scale = 1.2,  color = colorThree ]node [pos=-0.01, below left, scale = 1.2,  font = \fontsize{150pt}{10pt}\selectfont \bfseries ]{$0$ } ( 0.3  , 0 )	
+    	;
+	\end{scope}
+	\draw
+    	(1.45, 0.2) edge[line width=1.8ex, color=\colorThree] 
+        				node[pos=1.1, below , , scale = 1.5,  font = \fontsize{150pt}{10pt}\selectfont \bfseries ]{ $\theta_b^\ast$} (1.45, -0.2)
+        				
+        %(0,0) edge [shift = {(4,5)}, thick,line width=1.8ex,opacity = 1 , dashed , color = colorSix ]node [pos=1.1, right ,  scale = 1.5,  font = \fontsize{150pt}{10pt}\selectfont \bfseries ]{ $\nu(x_b; t = 0^{-}) = \nu_0 $ } ( 1  , 0 )	
+    	%(0,0) edge [shift = {(4,3.5)},thick,line width=1.8ex , color = \colorFour ]node [pos=1.1, right , scale = 1.5,  font = \fontsize{150pt}{10pt}\selectfont \bfseries ]{ $\nu(x_b; t = 18 ~ms )$ } ( 1  , 0 )	
+		(0,0) edge [shift = {(4,5)}, thick,line width=1.8ex,opacity = 1 , dashed , color = colorSix ]node [pos=1.1, right ,  scale = 1.5,  font = \fontsize{150pt}{10pt}\selectfont \bfseries ]{ $\nu_0 $ } ( 1  , 0 )	
+    	(0,0) edge [shift = {(4,3.5)},thick,line width=1.8ex , color = \colorFour ]node [pos=1.1, right , scale = 1.5,  font = \fontsize{150pt}{10pt}\selectfont \bfseries ]{ $\nu(x_b/t)$ } ( 1  , 0 )
+    ;		
+	\Axesdistribution[$\theta ~ (\mu m/ms)$]{$\nu ( x_b ) $}
+	
+	
+				
+	%\drawgrid{0}{10}{-10}{10}
+}
+
+\newcommand{\CoupureUnVeffDistributionRho}[0]{
+	\begin{scope}
+		\clip[decorate, decoration={random steps, segment length=3pt, amplitude=1pt}](-8.8,-8) rectangle (8.8,8);
+
+		%\filldraw[smooth , line width=1.8ex , color = \colorFour , fill = \colorThree] plot coordinates {(-10,0) (-5,0.5) (-4,4) (4,4) (5,0.5) (10 , 0 )};
+					
+		%\filldraw[ opacity = 0.5 , smooth, line width=1.8ex, color=\colorFour, fill=\colorThree] (-10,0)  .. controls (0,0) and (-10,5) .. (0,5) .. controls (10,5) and (0,0) .. (10,0);
+    				
+					
+		%\filldraw[  opacity = 1 , smooth, line width=1.8ex, color=\colorFour, fill=\colorThree] (-10,0)  .. controls (0,0) and (-10,5) .. (0,5) .. controls (1.3,5) and (1.3,5) .. (1.3,4.9) -- (1.3 , 0 )-- ( 10 , 0 ) ;
+    						
+    	\draw[opacity = 1 , line width=1.8ex , color = \colorFour , fill = none ] plot[] file {data/coupure_rho_1_sur_18.table};	
+    				
+    	\draw[opacity = 1 , line width=1.8ex , dashed ,  color = colorSix , fill = none] plot[smooth] file {data/insitut_rho.table};
+    				
+    	\draw[line width=1.8ex , color = \colorFour] 
+    		%(-0.3, 5 ) edge [thick,line width=0.8ex, color = \colorThree ]node [ shift ={(3.5, 0)} , pos=-0.01, left , font = \fontsize{150pt}{10pt}\selectfont \bfseries ]{ $7.57$ } ( 0.3  , 5 )	
+    		(-0.3, 0 ) edge [shift ={(0, -0.0)} , thick,line width=0.8ex , color = colorThree ]node [pos=-0.01, below left  , font = \fontsize{150pt}{10pt}\selectfont \bfseries]{ $0$ } ( 0.3  , 0 )		
+    	;			
+	\end{scope}
+	\draw
+    	(1.45, 0.2) edge[line width=1.8ex, color=colorThree] 
+        				node[pos=1.1, below, font = \fontsize{150pt}{10pt}\selectfont \bfseries]{ $\theta_b^\ast$} (1.45, -0.2)
+        				
+        (4,5) edge [thick,line width=1.8ex,opacity = 1 , dashed , color = colorSix ]node [pos=1.1, right , font = \fontsize{150pt}{10pt}\selectfont \bfseries ]{ $\rho(x_b; t = 0^{-})$ } ( 4.5  , 5 )	
+    	(4,3.5) edge [thick,line width=1.8ex , color = \colorFour ]node [pos=1.1, right , font = \fontsize{150pt}{10pt}\selectfont \bfseries ]{ $\rho(x_b; t = 18 ~ms )$ } ( 4.5  , 3.5 )	
+    ;		
+	\Axesdistribution[$\theta $]{$\rho ( x_b ) $}
+	
+	
+				
+	%\drawgrid{0}{10}{-10}{10}
+}
+
+% coupuur 2 0 ms
+%% Diagram
+\newcommand{\CoupureDeuxZeroDiagramOld}[0]{
+	\begin{scope}
+	 	% Appliquer un rectangle décoré et clipper la zone
+    	%\clip[decorate, decoration={random steps, segment length=3pt, amplitude=1pt}](-8,-8) rectangle (8,8); 
+     	%\node at (0,0) [circle  ] {\begin{tikzpicture}[transform canvas={scale=1}] \Background \end{tikzpicture}};
+     	%\clip[smooth] plot coordinates {(-5,-10) (-2,-2.75) (2,2.75) (5,10) (10,10)  (10 , -10 )} ;
+     	%\clip (0.75,-10) rectangle (1.25 , 10 ) ;
+		%\node at (0,0) [circle, ] {\pgfuseshading{Insitut}};
+		\node at (-0.95,-0.3) [circle, ]{\includegraphics[height = 1.6\textwidth]{data/graph_coupure_2_0_only_p.pdf}};
+		
+	\end{scope}
+	\begin{scope}[shift={(2,-0.3)}]
+		\clip[decorate, decoration={random steps, segment length=3pt, amplitude=1pt}](8.5,-9) rectangle (13,10);
+			%\draw[red]  (9,-9) rectangle (13,10);	
+		\node at (0,0) [circle, ]{\includegraphics[height = 1.6\textwidth ]{data/complete_graph_coupure_2_0.pdf}}; 
+	\end{scope}
+	\node at (0,0) [circle, ] {
+		\begin{tikzpicture}[transform canvas={scale=1}] 
+			\Axesphase[$x~(\mu m)$]{$\theta~(\mu m/ms)$}
+			\draw
+    			(0.45, 0.2) edge[line width=1.8ex, color=\colorOne] 
+        						node[pos=1.1, below]{ \color{\colorOne}\huge $x_b$} (0.45, -0.2)
+        		(0.2 , 1.4 ) edge[line width=1.8ex, color=\colorOne] 
+        						node[pos=1.1, left ]{ \color{\colorOne}\huge $\theta_g$} (-0.2 , 1.4 )
+        		(0.45 , -0.2 ) edge[line width=0.8ex, color=\colorOne , dashed ] (0.45 , 2 )
+        		(-0.2 , 1.4 )  edge[line width=0.8ex, color=\colorOne , dashed ] (1.0  , 1.4 )
+        					; 
+		\end{tikzpicture}};
+	\draw[opacity = 0.3 , dashed , dash pattern=on 6pt off 3pt, line width=0.5ex , color = \colorOne , fill = none] 
+		plot[smooth] file {data/bord_0_sur_18.table}
+		(-7,7) edge []node [pos=1.1, right ]{\huge $\partial \Gamma_{t = 18\, ms}^b$ } ( -6.5  , 7 )	 
+	;
+	\draw[opacity = 0.5 , dotted , dash pattern=on 2pt off 2pt, line width=0.5ex , color = \colorOne , fill = none] 
+		plot[smooth] file {data/bord_1_0.table}
+		(-7,6) edge []node [pos=1.1, right ]{\huge $\partial \Gamma_{\tau = 0}^g$ } ( -6.5  , 6 )	 
+	;
+	\draw[opacity = 0.5 , dash dot , dash pattern=on 8pt off 2pt on 2pt off 2pt, line width=0.5ex , color = \colorOne , fill = none] 
+		plot[smooth] file {data/bord_2_0.table}
+		(-7,5) edge []node [pos=1.1, right ]{\huge $\partial \Gamma_{\tau = 0}^d$ } ( -6.5  , 5 )	 
+	;
+	
+	\node[
+    	rotate=90,
+    	shift={(0,-14)},
+    	fill=\colorTwo,        % couleur du fond
+    	draw=none,             % pas de contour
+    	inner sep=2mm,          % espace autour du texte
+    	rectangle
+	] at (0,0) {\fontsize{20pt}{10pt}\selectfont $\ell\rho(x,\theta)~(ms/\mu s)$};
+	
+	%\drawgrid{-10}{10}{-10}{10}
+}
+%%%nouveau
+\newcommand{\CoupureDeuxZeroDiagram}[0]{
+	\begin{scope}
+	 	% Appliquer un rectangle décoré et clipper la zone
+    	%\clip[decorate, decoration={random steps, segment length=3pt, amplitude=1pt}](-8,-8) rectangle (8,8); 
+     	%\node at (0,0) [circle  ] {\begin{tikzpicture}[transform canvas={scale=1}] \Background \end{tikzpicture}};
+     	%\clip (0,-8) rectangle (10,8) ;
+		%\node at (0,0) [circle, ] {\pgfuseshading{Insitut}};
+		\node at (-1.15,-0.44) [circle, ]{\includegraphics[height = 1.6\textwidth]{data/graph_coupure_2_0_only_p_nu.pdf}};
+		
+	\end{scope}
+	\begin{scope}[shift={(2,-0.3)}]
+		\clip[shift={(-0.5,0)}, decorate, decoration={random steps, segment length=3pt, amplitude=1pt}](9,-9) rectangle (13,10);
+		%\draw[red]  (9,-9) rectangle (13,10);	
+		\node at (0,0) [circle, ]{\includegraphics[height = 1.6\textwidth ]{data/complete_graph_coupure_2_0_p_nu.pdf}}; 
+	\end{scope}
+				
+	\node at (0,0) [circle, ] {
+		\begin{tikzpicture}[transform canvas={scale=1}] 
+			%\Axesphase[\color{\colorFour}  $x/t {~}\qquad  $]{$\theta ~ (\mu m / {ms}) $}
+			\draw[opacity = 0.5]
+    			(0.45, 0.2) edge[line width=0.8ex, color=colorFour] (0.45, -0.2)
+        		(0.2 , 1.45 ) edge[line width=0.8ex, color=colorFour] 
+        						node[pos=1.1, left , font = \fontsize{150pt}{10pt}\selectfont \bfseries ]{ \color{colorFour} $\theta_g^\ast$} (-0.2 , 1.45 )
+				(0.45 , -9.0 ) edge[line width=0.8ex, color=colorFour , dashed ] (0.45 , 3.2 )
+        		(0.45 , 5.5 ) edge[line width=0.8ex, color=colorFour , dashed ] node[pos=0.0, left , rotate = 90 , font = \fontsize{150pt}{10pt}\selectfont \bfseries, color = colorFour ]{ $x_g$}  (0.45 , 8.5 )
+        		(-0.2 , 1.45 )  edge[line width=0.8ex, color=colorFour , dashed ] (1.0  , 1.45 )
+        	;
+
+        					
+		\end{tikzpicture}
+		%\usetikzlibrary {decorations.text}
+		% \tikz \fill [decorate,decoration={text along path,
+		%                text=This is a text along a path. Note how the path is lost.}]
+		%   [fill=blue!20,draw=blue,thick] (0,0) -- (2,1) arc (90:-90:.5) -- cycle;
+		
+		};
+	\draw[opacity = 0.5 , dashed , dash pattern=on 6pt off 3pt, line width=1.0ex , color = colorThree , fill = none] 
+		plot[smooth] file {data/bord_0_sur_18.table}
+		(0,0) edge [shift = {(-7.5,7)}]node [ scale = 1.0, pos=1.1, right , font = \fontsize{150pt}{150pt}\selectfont  \bfseries ,  color = colorOne  ]{ $ x^b$ } ( 1  , 0)	 
+	;
+	\draw[opacity = 0.5 , dotted , dash pattern=on 8pt off 2pt on 2pt off 2pt, line width=1.0ex , color = colorOne , fill = none] 
+		plot[smooth] file {data/bord_1_0.table}
+		(0,0) edge [shift = {(-7.5,5.5)}]node [pos=1.1, right , font = \fontsize{150pt}{150pt}\selectfont  \bfseries ,  ]{ $x_{\tau = 0}^g$ } ( 1  , 0)	 
+	;
+	\draw[opacity = 0.5 , dash dot , dash pattern=on 8pt off 2pt on 2pt off 2pt, line width=1.0ex , color = colorFour , fill = none] 
+		plot[smooth] file {data/bord_2_0.table}
+		(0,0) edge [shift = {(-7.5,4)}]node [pos=1.1, right , font = \fontsize{150pt}{150pt}\selectfont  \bfseries ,  ]{ $x_{\tau = 0}^d$ } ( 1  , 0)	 
+	;
+	
+	%\node at (5,1.5) [scale = 1.5, circle, font = \fontsize{150pt}{10pt}\selectfont \bfseries , color = colorTwo  ] { $\nu(x,\theta ; 0)$ };
+
+	\node at (0,0) [circle, ] {\begin{tikzpicture}[transform canvas={scale=1}] \Axesphase[\color{\colorFour} $x ~ (\mu m)$]{$\theta ~ (\mu m / {ms}) $} \end{tikzpicture}};
+
+	%\drawgrid{-10}{10}{-10}{10}
+}
+%% Density
+\newcommand{\CoupureDeuxZeroDensity}[0]{
+	\begin{scope}
+		\clip[decorate, decoration={random steps, segment length=3pt, amplitude=1pt}](-9,-8) rectangle (8.3,8);
+ 
+        			
+        \draw[opacity = 1 , line width=1.8ex , color = \colorFour , fill = none ] plot[] file {data/density_coupure_2_0.table};
+        \draw[opacity = 0.9 , line width=1.8ex , dashed ,  color = \colorThree , fill = none ] plot[] file {data/density_coupure_1_sur_18.table};
+     	\draw[line width=1.8ex , color = \colorFour] 
+        	(-0.3, 5 ) edge [thick,line width=0.8ex,, color = \colorThree ]node [pos=-0.01, left , font = \fontsize{150pt}{150pt}\selectfont  \bfseries   ]{ $56$ } ( 0.3  , 5 )	
+        	(-0.3, 0 ) edge [thick,line width=0.8ex,, color = \colorThree ]node [pos=-0.01, below left , font = \fontsize{150pt}{150pt}\selectfont  \bfseries  ]{ $0$ } ( 0.3  , 0 )	
+        ;
+
+		%\drawgrid{0}{10}{0}{10}
+	\end{scope}
+				
+	\draw 
+		(-8,4) edge [thick,line width=1.8ex,opacity = 0.9 , dashed , color = \colorThree ]node [pos=1.1, right , font = \fontsize{150pt}{150pt}\selectfont  \bfseries  ]{ $\tilde{n}( \tau = 0^{-})$ } ( -7.5  , 4 )	
+    	(-8,3) edge [thick,line width=1.8ex , color = \colorFour ]node [pos=1.1, right , font = \fontsize{150pt}{150pt}\selectfont  \bfseries  ]{$\tilde{n}( \tau = 0^{+} )$ } ( -7.5  , 3 )	
+    				
+    ;
+		
+	\Axesdensity[$x~(\mu m)$]{$\tilde{n} ~ ({\mu m}^{-1})$}
+				
+	\draw[yshift = -0.5 cm]
+		(0.1 , 0 )edge[line width=0.8ex, color=\colorThree , >-<, > = stealth,] node [pos = 0.5 , below , font = \fontsize{150pt}{150pt}\selectfont  \bfseries ]{$\ell$}  ( 0.9 , 0) 	
+	;
+	\draw
+    	(0.45, 0.2) edge[line width=1.8ex, color=\colorOne] 
+        						 (0.45, -0.2)
+        (0.45 , -0.2 ) edge[line width=0.8ex, color=\colorOne , dashed ] node[pos=1.0, above , font = \fontsize{150pt}{150pt}\selectfont  \bfseries ]{ \color{\colorOne} $x$}(0.45 , 4.0 )
+    ;
+				        				
+	%\drawgrid{-10}{10}{-10}{10}
+
+}
+%% Distribution
+\newcommand{\CoupureDeuxZeroDistribution}[0]{
+	\begin{scope}
+		\clip[decorate, decoration={random steps, segment length=3pt, amplitude=1pt}](-8.8,-8) rectangle (8.8,8);
+
+		%\filldraw[smooth , line width=1.8ex , color = \colorFour , fill = \colorThree] plot coordinates {(-10,0) (-5,0.5) (-4,4) (4,4) (5,0.5) (10 , 0 )};
+					
+		%\filldraw[ opacity = 0.5 , smooth, line width=1.8ex, color=\colorFour, fill=\colorThree] (-10,0)  .. controls (0,0) and (-10,5) .. (0,5) .. controls (10,5) and (0,0) .. (10,0);
+    	\draw[opacity = 1 , line width=1.8ex ,  color = \colorFive , fill = none ] plot[smooth] file {data/Pi_coupure_2_30.table};
+					
+		%\filldraw[  opacity = 1 , smooth, line width=1.8ex, color=\colorFour, fill=\colorThree] (-10,0)  .. controls (0,0) and (-10,5) .. (0,5) .. controls (1.3,5) and (1.3,5) .. (1.3,4.9) -- (1.3 , 0 )-- ( 10 , 0 ) ;
+    						
+    	\draw[opacity = 1 , line width=1.8ex , dashed , color = \colorFour , fill = none ] plot[] file {data/rho_coupure_2_30.table};	
+    				
+    	\draw[line width=1.8ex , color = \colorFour] 
+    		%(-0.3, 5 ) edge [thick,line width=0.8ex, color = \colorThree ]node [pos=-0.01, left , font = \fontsize{150pt}{150pt}\selectfont  \bfseries  ]{ $107$ } ( 0.3  , 5 )	
+    		(-0.3, 0 ) edge [thick,line width=0.8ex,, color = \colorThree ]node [pos=-0.01, below left , font = \fontsize{150pt}{150pt}\selectfont  \bfseries ]{$0$ } ( 0.3  , 0 )
+    		(4,5) edge [thick,line width=1.8ex,, color = \colorFive ]node [pos=1.1, right , font = \fontsize{150pt}{150pt}\selectfont  \bfseries  ]{$\Pi$ } ( 4.5  , 5 )	
+    		(4,4) edge [thick,line width=1.8ex, dashed , color = \colorFour ]node [pos=1.1, right , font = \fontsize{150pt}{150pt}\selectfont  \bfseries ]{ $ \ell \rho$ } ( 4.5  , 4 )	
+    	;			
+	\end{scope}
+	\draw
+    	(1.4, 0.2) edge[line width=1.8ex, color=\colorThree] 
+        				node[pos=1.1, below , font = \fontsize{150pt}{150pt}\selectfont  \bfseries ]{ \color{\colorThree}$\theta_g^\ast$} (1.4, -0.2);
+	\Axesdistribution[$\theta ~ (\mu m/ms)$]{$~(m s/\mu s)  $}
+				
+	%\drawgrid{0}{10}{-10}{10}
+	
+}
+
+% coupuur 2 30 ms
+%% Diagram
+\newcommand{\CoupureDeuxExpDiagram}[0]{
+	\begin{scope}
+	 	% Appliquer un rectangle décoré et clipper la zone
+    	%\clip[decorate, decoration={random steps, segment length=3pt, amplitude=1pt}](-8,-8) rectangle (8,8); 
+     	%\node at (0,0) [circle  ] {\begin{tikzpicture}[transform canvas={scale=1}] \Background \end{tikzpicture}};
+     	%\clip (-30,-10) -- (-30 , 1.) -- (-8 , 1 ) .. controls (0,1) and (0,1) .. ( 8 , 1.5 ) -- (30 , 1.5 ) -- (30 , -10 ) ;
+     	%\node at (0,0) [circle, draw] {\pgfuseshading{Insitut}};
+     	\node at (-1.15,-0.44) [circle, ]{\includegraphics[height = 1.6\textwidth]{data/graph_coupure_2_30_only_p_nu.pdf}};
+
+	\end{scope}
+	\begin{scope}[shift={(2,-0.3)}]
+		\clip[decorate, decoration={random steps, segment length=3pt, amplitude=1pt}](8.5,-9) rectangle (13,10);
+		%\draw[red]  (9,-9) rectangle (13,10);	
+		\node at (0,0) [circle, ]{\includegraphics[height = 1.6\textwidth ]{data/complete_graph_coupure_2_30_p_nu.pdf}}; 
+	\end{scope}
+	\node at (0,0) [circle, ] {
+		\begin{tikzpicture}[transform canvas={scale=1}] 
+			\Axesphase[$x ~ ( \mu m )$]{$\theta ~ ( \mu m / m s ) $};
+			\draw[opacity = 0.5]
+    			(1.9, 0.2) edge[line width=1.8ex, color=\colorOne] 
+        						node[pos=1.1, below]{ \color{\colorOne}\huge $x_b/\tau$} (1.9, -0.2)
+                (1.9 , -0.2 ) edge[line width=0.8ex, color=\colorOne , dashed ] (1.9 , 2 )
+        		(0.2 , 1.3 ) edge[line width=1.8ex, color=\colorOne]
+        						node[pos=1.1, left ]{ \color{\colorOne}\huge $\theta_g$} (-0.2 , 1.3 )
+        		(-0.2 , 1.3 )  edge[line width=0.8ex, color=\colorOne , dashed ] (3.5  , 1.3 )
+                (0.2 , 0.45 ) edge[line width=1.8ex, color=\colorOne]
+                                node[pos=1.1, left ]{ \color{\colorOne}\huge $\theta_d$} (-0.2 , 0.45 )
+                (-0.2 , 0.45 )  edge[line width=0.8ex, color=\colorOne , dashed ] (3.5  ,0.45 )
+        	;
+		\end{tikzpicture}};
+	% \draw[opacity = 1 , dotted ,dash pattern=on 8pt off 2pt on 2pt off 2p, line width=0.5ex , color = colorOne , fill = none] 
+	% 	plot[smooth] file {data/bord_1_30.table}
+	% 	(-7,6) edge []node [pos=1.1, right , font = \fontsize{150pt}{150pt}\selectfont  \bfseries]{$x_{\tau }^g$ } ( -6.5  , 6 )	 
+	% ;
+	% \draw[opacity = 1 , dash dot , dash pattern=on 8pt off 2pt on 2pt off 2pt,line width=0.5ex , color = colorFour , fill = none] 
+	% 	plot[smooth] file {data/bord_2_30.table}
+	% 	(-7,5) edge []node [pos=1.1, right , font = \fontsize{150pt}{150pt}\selectfont  \bfseries]{ $x_{\tau}^d$ } ( -6.5  , 5 )	 
+	% ;
+
+	\draw[opacity = 0.5 , dotted , dash pattern=on 8pt off 2pt on 2pt off 2pt, line width=1.0ex , color = colorOne , fill = none] 
+		plot[smooth] file {data/bord_1_30.table}
+		(0,0) edge [shift = {(-7.5,5.5)}]node [pos=1.1, right , font = \fontsize{150pt}{150pt}\selectfont  \bfseries ,  ]{ $x_{\tau}^g$ } ( 1  , 0)	 
+	;
+	\draw[opacity = 0.5 , dash dot , dash pattern=on 8pt off 2pt on 2pt off 2pt, line width=1.0ex , color = colorFour , fill = none] 
+		plot[smooth] file {data/bord_2_30.table}
+		(0,0) edge [shift = {(-7.5,4)}]node [pos=1.1, right , font = \fontsize{150pt}{150pt}\selectfont  \bfseries ,  ]{ $x_{\tau}^d$ } ( 1  , 0)	 
+	;
+	
+	% \node[
+    % 	rotate=90,
+    % 	shift={(0,-14)},
+    % 	fill=\colorTwo,        % couleur du fond
+    % 	draw=none,             % pas de contour
+    % 	inner sep=2mm,          % espace autour du texte
+    % 	rectangle
+	% ] at (0,0) {\fontsize{20pt}{10pt}\selectfont $\ell\rho(x,\theta)~(ms/\mu s)$};
+	%\drawgrid{-10}{10}{-10}{10}
+}
+%% Density
+\newcommand{\CoupureDeuxExpDensity}[0]{	
+	\begin{scope}
+		\clip[decorate, decoration={random steps, segment length=3pt, amplitude=1pt}](-9,-8) rectangle (8.5,8);
+ 
+        \draw[opacity = 1 , line width=1.8ex , color = \colorFour , fill = none ] plot[] file {data/density_coupure_2_30.table};
+     	\draw[line width=1.8ex , color = \colorFour] 
+        	%(-0.3, 5 ) edge [thick,line width=0.8ex,, color = \colorThree ]node [pos=-0.01, left , font = \fontsize{150pt}{150pt}\selectfont  \bfseries  ]{ $107$ } ( 0.3  , 5 )	
+        	(-0.3, 0 ) edge [thick,line width=0.8ex,, color = \colorThree ]node [pos=-0.01, below left , font = \fontsize{150pt}{150pt}\selectfont  \bfseries ]{ $0$ } ( 0.3  , 0 )	
+        ;
+		%\drawgrid{0}{10}{0}{10}
+	\end{scope}
+		
+	\Axesdensity[$x ~ ( \mu m ) $]{$\tau \tilde{n} ~( m s / \mu m )$}
+        				
+	%\drawgrid{-10}{10}{-10}{10}
+
+}
+%% Distribution
+\newcommand{\CoupureDeuxExpDistribution}[0]{	
+	\begin{scope}
+		\clip[decorate, decoration={random steps, segment length=3pt, amplitude=1pt}]
+        			(-9,-8) rectangle (8.5,8);
+
+		\draw[opacity = 1 , line width=1.8ex , color = \colorFive , fill = none ] plot[smooth] file {data/Pi_coupure_2_30.table};	
+		\draw[line width=1.8ex , color = \colorFour] 
+    		%(-0.3, 5 ) edge [thick,line width=0.8ex, color = \colorThree ]node [pos=-0.01, left , font = \fontsize{150pt}{150pt}\selectfont  \bfseries  ]{\huge $107$ } ( 0.3  , 5 )	
+    		(-0.3, 0 ) edge [thick,line width=0.8ex,, color = \colorThree ]node [pos=-0.01, below left , font = \fontsize{150pt}{150pt}\selectfont  \bfseries  ]{ $0$ } ( 0.3  , 0 )	
+    	;			
+	\end{scope}
+	\draw
+    	(1.4, 0.2) edge[line width=1.8ex, color=\colorThree] 
+        				node[pos=1.1, below , font = \fontsize{150pt}{150pt}\selectfont  \bfseries ]{ \color{\colorThree}$\theta_g$} (1.4, -0.2);
+	\Axesdistribution[$\theta ~ ( \mu m / m s )$]{$\Pi~(m s/\mu s)  $}
+				
+	%\drawgrid{0}{10}{-10}{10}
+}
+
+%DiagramDensityDistribution
+\newcommand{\DiagramDensityDistribution}[4]{
+	% diagrale de phase 
+	\node at (0,0) [circle, ] {
+		\begin{tikzpicture}[transform canvas={scale=1}] 
+			#1	
+		\end{tikzpicture}
+		};
+	
+	% density 
+	\node at (0,13) [circle, ] {
+		\begin{tikzpicture}[transform canvas={scale=1}] 
+			#2			
+		\end{tikzpicture}
+
+	};
+	
+	
+	% distribution
+	\node at (-13,0) [circle,   rotate = 90 , xscale = 1   ] {
+		\begin{tikzpicture}[transform canvas={scale=1}] 
+			#3
+		\end{tikzpicture}
+
+	};
+	% distribution
+	\node at (13,0) [circle,   rotate = 90 , yscale = 1 ] {
+		\begin{tikzpicture}[transform canvas={scale=1}] 
+			#4
+		\end{tikzpicture}
+
+	};
+
+}
+
+\begin{document}
+
+% insitu 
+\begin{tikzpicture}[scale=1]
+	\node at (0,0) [rectangle ]{
+		\begin{tikzpicture}[transform canvas={scale=1}] 
+			%\DiagramDensityDistribution{\CoupureUnZeroDiagramP}{\CoupureUnZeroDensity}{\CoupureUnZeroDistributionMinus}{\Vide}
+			\DiagramDensityDistribution{\InsitutDiagram}{\InsitutDensity}{\InsitutDistribution}{\Vide}
+		\end{tikzpicture}
+	};
+	%\drawgrid{-20}{13}{-11}{20}
+	\path (-20,-11) rectangle (15,20);
+\end{tikzpicture}
+
+\begin{tikzpicture}[scale=1]
+    % coupuur 1 O ms	
+	\node at (0,0) [rectangle ]{
+		\begin{tikzpicture}[transform canvas={scale=1.2}] 
+			\DiagramDensityDistribution{\CoupureUnZeroDiagramP}{\CoupureUnZeroDensity}{\CoupureUnZeroDistributionMinus}{\Vide}
+		\end{tikzpicture}
+	};
+
+
+	% coupuur 1 18 ms	
+	\node at (43,0) [rectangle ]{
+		\begin{tikzpicture}[transform canvas={scale=1.2}] 
+			\DiagramDensityDistribution{\CoupureUnVeffDiagram}{\CoupureUnVeffDensity}{\CoupureUnVeffDistribution}{\Vide}
+		\end{tikzpicture}
+	};
+
+	%axe temporel 
+	\node at (0, -13.5) [circle ]{
+		\begin{tikzpicture}[transform canvas={scale=1} ]
+			\Axetemps[Déformation : $t = 18 ~ms$]
+		\end{tikzpicture}
+	};
+	
+	%abcdefg
+	% \node at (-10,13) [circle]{\color{\colorOne} \fontsize{150pt}{10pt}\selectfont  \bfseries \bm{$a)$}};
+	% \node at (-10,23) [circle]{\color{\colorOne} \fontsize{150pt}{10pt}\selectfont  \bfseries \bm{$b)$}};
+	% \node at (-23,18) [circle]{\color{\colorOne} \fontsize{100pt}{10pt}\selectfont  \bfseries \bm{$c)$}};
+
+	\tikzset{
+  		biglabel/.style={
+			scale=1.5,
+    		font=\fontsize{300pt}{300pt}\selectfont\bfseries,
+    		color=\colorOne
+  		}
+	}
+
+	\node[biglabel] at (-9.5,10)  {(a)};
+	\node[biglabel] at (-9.5,23)  {(b)};
+	\node[biglabel] at (-23,10) {(c)};
+
+
+	%\node at (19,8) [circle]{\color{\colorOne} \fontsize{60pt}{10pt}\selectfont \bf  d)};
+	\begin{scope}[shift={(43cm,0)}]
+		\node[biglabel] at (-9.5,10)  {(e)};
+		\node[biglabel] at (-9.5,23)  {(f)};
+		\node[biglabel] at (-23,10) {(g)};
+	\end{scope}
+
+		
+	
+	%\drawgrid{-24}{61}{-14.6}{24}
+    %\draw[color = red ] (-24,-14.6) rectangle (61,24) ;
+    \path (-24,-14.6) rectangle (61,24);
+
+\end{tikzpicture}
+
+%coupure 2 
+\begin{tikzpicture}[scale=1]
+	
+	\node at (0,0) [rectangle ]{
+		\begin{tikzpicture}[transform canvas={scale=1.2}] 
+			\DiagramDensityDistribution{\CoupureDeuxZeroDiagram}{\CoupureDeuxZeroDensity}{\CoupureDeuxZeroDistribution}{\Vide}
+		\end{tikzpicture}
+	};
+
+
+	% coupuur 1 18 ms	
+	\node at (43,0) [rectangle ]{
+		\begin{tikzpicture}[transform canvas={scale=1.2}] 
+			\DiagramDensityDistribution{\CoupureDeuxExpDiagram}{\CoupureDeuxExpDensity}{\CoupureDeuxExpDistribution}{\Vide}
+		\end{tikzpicture}
+	};
+
+	%axe temporel 
+	\node at (0, -13.5) [circle ]{
+		\begin{tikzpicture}[transform canvas={scale=1} ]
+			\Axetemps[Expansion $\tau = 30 ~ms$]
+		\end{tikzpicture}
+	};
+	
+	\tikzset{
+  		biglabel/.style={
+			scale=1.5,
+    		font=\fontsize{300pt}{300pt}\selectfont\bfseries,
+    		color=\colorOne
+  		}
+	}
+
+	\node[biglabel] at (-9.5,10)  {(a)};
+	\node[biglabel] at (-9.5,23)  {(b)};
+	\node[biglabel] at (-23,10) {(c)};
+
+
+	%\node at (19,8) [circle]{\color{\colorOne} \fontsize{60pt}{10pt}\selectfont \bf  d)};
+	\begin{scope}[shift={(43cm,0)}]
+		\node[biglabel] at (-9.5,10)  {(e)};
+		\node[biglabel] at (-9.5,23)  {(f)};
+		\node[biglabel] at (-23,10) {(g)};
+	\end{scope}
+	
+	%\drawgrid{-24}{61}{-14.6}{24}
+    %\draw[color = red ] (-24,-14.6) rectangle (61,24) ;
+    \path (-24,-14.6) rectangle (61,24);
+
+\end{tikzpicture}
+
+
+%Coupure 1 
+
+\begin{tikzpicture}[scale=1]
+	\node at (0,0) [rectangle ]{
+		\begin{tikzpicture}[transform canvas={scale=1}] 
+			%\DiagramDensityDistribution{\CoupureUnZeroDiagramP}{\CoupureUnZeroDensity}{\CoupureUnZeroDistributionMinus}{\Vide}
+			\DiagramDensityDistribution{\CoupureUnZeroDiagramP}{\Vide}{\CoupureUnZeroDistributionMinus}{\Vide}
+		\end{tikzpicture}
+	};
+	%\drawgrid{-20}{13}{-11}{20}
+	\path (-20,-11) rectangle (15,20);
+\end{tikzpicture}
+
+\begin{tikzpicture}[scale=1]
+	\node at (0,0) [rectangle ]{
+		\begin{tikzpicture}[transform canvas={scale=1}] 
+			%\DiagramDensityDistribution{\CoupureUnVeffDiagram}{\CoupureUnVeffDensity}{\CoupureUnVeffDistribution}{\Vide}
+			\DiagramDensityDistribution{\CoupureUnVeffDiagram}{\Vide}{\CoupureUnVeffDistribution}{\Vide}
+		\end{tikzpicture}
+	};
+	%\drawgrid{-20}{13}{-11}{20}
+	\path (-20,-11) rectangle (15,20);
+\end{tikzpicture}
+
+%rho
+\begin{tikzpicture}[scale=1]
+	\node at (0,0) [rectangle ]{
+		\begin{tikzpicture}[transform canvas={scale=1}] 
+			\DiagramDensityDistribution{\CoupureUnZeroDiagramRho}{\CoupureUnZeroDensity}{\CoupureUnZeroDistributionMinusRho}{\Vide}
+		\end{tikzpicture}
+	};
+	%\drawgrid{-20}{13}{-11}{20}
+	\path (-20,-11) rectangle (15,20);
+\end{tikzpicture}
+
+%7
+\begin{tikzpicture}[scale=1]
+	\node at (0,0) [rectangle ]{
+		\begin{tikzpicture}[transform canvas={scale=1}] 
+			\DiagramDensityDistribution{\CoupureUnVeffDiagramRho}{\CoupureUnVeffDensity}{\CoupureUnVeffDistributionRho}{\Vide}
+		\end{tikzpicture}
+	};
+
+	\tikzset{
+  		biglabel/.style={
+			scale=1.5,
+    		font=\fontsize{300pt}{300pt}\selectfont\bfseries,
+    		color=\colorOne
+  		}
+	}
+
+	\node[biglabel] at (-8,8) {(a)};
+	\node[biglabel] at (-8,19) {(b)};
+	\node[biglabel] at (-19,8) {(c)};
+
+	%\drawgrid{-20}{13}{-11}{20}
+	\path (-20,-11) rectangle (15,20);
+\end{tikzpicture}
+
+\begin{tikzpicture}[scale=1]
+	\node at (0,0) [rectangle ]{
+		\begin{tikzpicture}[transform canvas={scale=1}] 
+	\begin{scope}
+		\clip[decorate, decoration={random steps, segment length=3pt, amplitude=1pt}](-8.8,-8) rectangle (8.8,8);
+
+		%\filldraw[smooth , line width=1.8ex , color = \colorFour , fill = \colorThree] plot coordinates {(-10,0) (-5,0.5) (-4,4) (4,4) (5,0.5) (10 , 0 )};
+					
+		%\filldraw[ opacity = 0.5 , smooth, line width=1.8ex, color=\colorFour, fill=\colorThree] (-10,0)  .. controls (0,0) and (-10,5) .. (0,5) .. controls (10,5) and (0,0) .. (10,0);
+    				
+					
+		%\filldraw[  opacity = 1 , smooth, line width=1.8ex, color=\colorFour, fill=\colorThree] (-10,0)  .. controls (0,0) and (-10,5) .. (0,5) .. controls (1.3,5) and (1.3,5) .. (1.3,4.9) -- (1.3 , 0 )-- ( 10 , 0 ) ;
+    						
+    	%\draw[opacity = 1 , line width=1.8ex , color = \colorFour , fill = none ] plot[] file {data/coupure_rho_1_sur_18.table};	
+    				
+    	\draw[opacity = 1 , line width=1.8ex , dashed ,  color = colorSix , fill = none] plot[smooth] file {data/insitut_rho.table};
+    				
+    	\draw[line width=1.8ex , color = \colorFour] 
+    		%(-0.3, 5 ) edge [thick,line width=0.8ex, color = \colorThree ]node [ shift ={(3.5, 0)} , pos=-0.01, left , font = \fontsize{150pt}{10pt}\selectfont \bfseries , color = colorThree  ]{ $7.57$ } ( 0.3  , 5 )	
+    		(-0.3, 0 ) edge [shift ={(0, -0.0)} , thick,line width=0.8ex,, color = colorThree  ]node [pos=-0.01, below left , font = \fontsize{150pt}{10pt}\selectfont \bfseries ]{$0$ } ( 0.3  , 0 )		
+    	;			
+	\end{scope}
+	\draw
+    	%(1.45, 0.2) edge[line width=1.8ex, color=\colorThree] node[pos=1.1, below]{ \color{\colorThree}\huge $\theta_b$} (1.45, -0.2)
+        				
+        (4,5) edge [thick,line width=1.8ex,opacity = 1 , dashed , color = colorSix , font = \fontsize{150pt}{10pt}\selectfont \bfseries  ]node [pos=1.1, right ]{\huge $\rho(x_b; t = 0^{-})$ } ( 4.5  , 5 )	
+    	%(4,4) edge [thick,line width=1.8ex , color = \colorFour ]node [pos=1.1, right ]{\huge $\rho(x_b; t = 18 ~ms )$ } ( 4.5  , 4 )	
+    ;		
+	\Axesdistribution[$\theta$]{$\rho ( x_b ) $}	
+	\end{tikzpicture}
+	};
+				
+	%\drawgrid{-11}{15}{-2}{7}
+	\path (-11,-2) rectangle (12,7);
+\end{tikzpicture}
+
+\begin{tikzpicture}[scale=1]
+	\node at (0,0) [rectangle ]{
+		\begin{tikzpicture}[transform canvas={scale=1}] 
+			\CoupureUnVeffDistributionRho
+		\end{tikzpicture}
+	};
+	%\drawgrid{-11}{15}{-2}{7}
+	\path (-11,-2) rectangle (12,7);
+\end{tikzpicture}
+
+%coupure 2 
+\begin{tikzpicture}[scale=1]
+	
+	\node at (0,0) [rectangle ]{
+		\begin{tikzpicture}[transform canvas={scale=1}] 
+			\DiagramDensityDistribution{\CoupureDeuxZeroDiagram}{\CoupureDeuxZeroDensity}{\CoupureDeuxZeroDistribution}{\Vide}
+		\end{tikzpicture}
+	};
+
+	%\drawgrid{-20}{13}{-11}{20}
+	\path (-20,-11) rectangle (15,20);
+\end{tikzpicture}
+
+\begin{tikzpicture}[scale=1]
+	
+	% coupuur 1 18 ms	
+	\node at (0,0) [rectangle ]{
+		\begin{tikzpicture}[transform canvas={scale=1}] 
+			\DiagramDensityDistribution{\CoupureDeuxExpDiagram}{\CoupureDeuxExpDensity}{\CoupureDeuxExpDistribution}{\Vide}
+		\end{tikzpicture}
+	};
+	%\drawgrid{-20}{13}{-11}{20}
+	\path (-20,-11) rectangle (15,20);
+\end{tikzpicture}
+
+\begin{tikzpicture}[scale=1]
+    % coupuur 1 O ms	
+	\node at (0,0) [rectangle ]{
+		\begin{tikzpicture}[transform canvas={scale=1}] 
+			\DiagramDensityDistribution{\CoupureUnZeroDiagram}{\CoupureUnZeroDensity}{\CoupureUnZeroDistributionMinus}{\Vide}
+		\end{tikzpicture}
+	};
+
+
+	% coupuur 1 18 ms	
+	\node at (43,0) [rectangle ]{
+		\begin{tikzpicture}[transform canvas={scale=1}] 
+			\DiagramDensityDistribution{\CoupureUnVeffDiagram}{\CoupureUnVeffDensity}{\CoupureUnVeffDistribution}{\Vide}
+		\end{tikzpicture}
+	};
+
+	%axe temporel 
+	\node at (0, -12) [circle ]{
+		\begin{tikzpicture}[transform canvas={scale=1} ]
+			\Axetemps[Déformation : $t = 18 ~ms$]
+		\end{tikzpicture}
+	};
+	
+	%abcdefg
+	\node at (-8,8) [circle]{\color{\colorTwo} \fontsize{60pt}{10pt}\selectfont \bf  a)};
+	\node at (-8,19) [circle]{\color{\colorOne} \fontsize{60pt}{10pt}\selectfont \bf  b)};
+	\node at (-19,8) [circle]{\color{\colorOne} \fontsize{60pt}{10pt}\selectfont \bf  c)};
+	\node at (19,8) [circle]{\color{\colorOne} \fontsize{60pt}{10pt}\selectfont \bf  d)};
+	\begin{scope}[shift={(43cm,0)}]
+		\node at (-8,8) [circle]{\color{\colorTwo} \fontsize{60pt}{10pt}\selectfont \bf  e)};
+		\node at (-8,19) [circle]{\color{\colorOne} \fontsize{60pt}{10pt}\selectfont \bf  f)};
+		\node at (-19,8) [circle]{\color{\colorOne} \fontsize{60pt}{10pt}\selectfont \bf  g)};	
+	\end{scope}
+
+		
+	
+	%\drawgrid{-20}{58}{-14}{20}
+    %\draw[color = red ] (-20,-14) rectangle (58,20) ;
+    \path (-20,-14) rectangle (58,20);
+
+\end{tikzpicture}
+
+
+
+%coupure 2 
+\begin{tikzpicture}[scale=1]
+	
+	\node at (0,0) [rectangle ]{
+		\begin{tikzpicture}[transform canvas={scale=1}] 
+			\DiagramDensityDistribution{\CoupureDeuxZeroDiagram}{\CoupureDeuxZeroDensity}{\CoupureDeuxZeroDistribution}{\Vide}
+		\end{tikzpicture}
+	};
+
+
+	% coupuur 1 18 ms	
+	\node at (43,0) [rectangle ]{
+		\begin{tikzpicture}[transform canvas={scale=1}] 
+			\DiagramDensityDistribution{\CoupureDeuxExpDiagram}{\CoupureDeuxExpDensity}{\CoupureDeuxExpDistribution}{\Vide}
+		\end{tikzpicture}
+	};
+
+	%axe temporel 
+	\node at (0, -12) [circle ]{
+		\begin{tikzpicture}[transform canvas={scale=1} ]
+			\Axetemps[Expansion $\tau = 30 ~ms$]
+		\end{tikzpicture}
+	};
+	
+	%abcdefg
+	\node at (-8,8) [circle]{\color{\colorTwo}\fontsize{60pt}{10pt}\selectfont \bf a)};
+	\node at (-8,19) [circle]{\color{\colorOne}\fontsize{60pt}{10pt}\selectfont \bf  b)};
+	\node at (-19,8) [circle]{\color{\colorOne} \fontsize{60pt}{10pt}\selectfont \bf  c)};
+	\begin{scope}[shift={(43cm,0)}]
+		\node at (-8,8) [circle]{\color{\colorTwo} \fontsize{60pt}{10pt}\selectfont \bf  d)};
+		\node at (-8,19) [circle]{\color{\colorOne}\fontsize{60pt}{10pt}\selectfont \bf  e)};
+		\node at (-19,8) [circle]{\color{\colorOne}\fontsize{60pt}{10pt}\selectfont \bf  f)};	
+	\end{scope}
+	
+	%\drawgrid{-20}{58}{-14}{20}
+    %\draw[color = red ] (-20,-14) rectangle (58,20) ;
+    \path (-20,-14) rectangle (58,20);
+
+\end{tikzpicture}
+
+% \begin{tikzpicture}
+
+% % Placement de l'axe défini dans un cercle avec une échelle globale
+% %\Axes 
+
+% %% Pour voir plus precisement 
+% \clip (-21 , -85) rectangle (58 , 21) ;\draw[color = red ] (-20 , -84) rectangle (58 , 20) ;
+% %\clip (-20 , -15) rectangle (20 , 20) ; \draw[color = red ] (-20 , -14) rectangle (20 , 18) ; % voire Insitut
+% %\clip (10 , -15) rectangle (55 , 20) ; \draw[color = red ] (10 , -15) rectangle (55 , 20) ; % voire coupure 1 0ms  
+% %\clip (53 , -15) rectangle (95 , 20) ; \draw[color = red ] (53 , -15) rectangle (95 , 20) ; % voire coupure 1 18ms 
+% %\clip (53 , -55) rectangle (95 , 20) ; \draw[color = red ] (53 , -55) rectangle (95 , 20) ; % voire coupure 1 18ms 
+
+
+
+% % palette de couleur 
+% \node at (40,6) [rectangle , rotate = -90] { \tikz \Palettes  ;}; 
+	
+
+% % Insitut 	
+% \node at (21,0) [rectangle ]{
+% 	\begin{tikzpicture}[transform canvas={scale=1}] 
+% 		\DiagramDensityDistribution{\InsitutDiagram}{\InsitutDensity}{\InsitutDistribution}{\Vide}
+% 	\end{tikzpicture}
+% };
+
+% % coupuur 1 O ms	
+% \node at (0,-35) [rectangle ]{
+% 	\begin{tikzpicture}[transform canvas={scale=1}] 
+% 		\DiagramDensityDistribution{\CoupureUnZeroDiagram}{\CoupureUnZeroDensity}{\CoupureUnZeroDistributionMinus}{\CoupureUnZeroDistributionPlus}
+% 	\end{tikzpicture}
+% };
+
+
+% % coupuur 1 18 ms	
+% \node at (43,-35) [rectangle ]{
+% 	\begin{tikzpicture}[transform canvas={scale=1}] 
+% 		\DiagramDensityDistribution{\CoupureUnVeffDiagram}{\CoupureUnVeffDensity}{\CoupureUnVeffDistribution}{\Vide}
+% 	\end{tikzpicture}
+% };
+
+% %axe temporel 
+% \node at (0, -47) [circle ]{
+% 	\begin{tikzpicture}[transform canvas={scale=1} ]
+% 		\Axetemps[Déformation : $t = 18 ~ms$]
+% 	\end{tikzpicture}
+% 	};
+
+
+% % coupuur 2 0 ms	
+% \node at (0,-70) [rectangle ]{
+% 	\begin{tikzpicture}[transform canvas={scale=1}] 
+% 		\DiagramDensityDistribution{\CoupureDeuxZeroDiagram}{\CoupureDeuxZeroDensity}{\CoupureDeuxZeroDistribution}{\Vide}
+% 	\end{tikzpicture}
+% };
+
+
+% % coupuur 2 30 ms	
+% \node at (43,-70) [rectangle ]{
+% 	\begin{tikzpicture}[transform canvas={scale=1}] 
+% 			\DiagramDensityDistribution{\CoupureDeuxExpDiagram}{\CoupureDeuxExpDensity}{\CoupureDeuxExpDistribution}{\Vide}
+% 	\end{tikzpicture}
+% };
+
+% %axe temporel 
+% \node at (0, -82) [circle ]{
+% 	\begin{tikzpicture}[transform canvas={scale=1} ]
+% 		\Axetemps[Expansion $\tau = 30 ~ms$]
+% 	\end{tikzpicture}
+% 	};
+
+
+% % gaduation tout 
+% %\drawgrid{-20}{58}{-84}{20}
+
+
+% \end{tikzpicture}
+
+% \begin{tikzpicture}
+%   \node[draw] at (0,0) {Un rectangle avec texte};
+% \end{tikzpicture}
+
+% % Palettes
+% \begin{tikzpicture}
+% 	\node at (40,6) [rectangle , rotate = -90] { \tikz \Palettes  ;}; 	
+% \end{tikzpicture}
+
+% %Insitut
+% \begin{tikzpicture}[scale=1]
+%     \DiagramDensityDistribution{\InsitutDiagram}{\InsitutDensity}{\InsitutDistribution}{\Vide}
+%     %abcd
+%     \node at (-8,8) [circle]{\color{\colorTwo} \fontsize{60pt}{10pt}\selectfont \bf  a)};
+% 	\node at (-8,19) [circle]{\color{\colorOne} \fontsize{60pt}{10pt}\selectfont \bf  b)};
+% 	\node at (-19,8) [circle]{\color{\colorOne} \fontsize{60pt}{10pt}\selectfont \bf  c)};
+% 	\node at (19,8) [circle]{\color{\colorOne} d)};
+	
+%     %\drawgrid{-20}{15}{-11}{20}
+%     %\draw[color = none ] (-20 , -11) rectangle (15 , 20) ;
+%     \path (-20,-11) rectangle (15,20);
+% \end{tikzpicture}
+
+% %Coupure 1 
+% \begin{tikzpicture}[scale=1]
+%     % coupuur 1 O ms	
+% 	\node at (0,0) [rectangle ]{
+% 		\begin{tikzpicture}[transform canvas={scale=1}] 
+% 			\DiagramDensityDistribution{\CoupureUnZeroDiagram}{\CoupureUnZeroDensity}{\CoupureUnZeroDistributionMinus}{\CoupureUnZeroDistributionPlus}
+% 		\end{tikzpicture}
+% 	};
+
+
+% 	% coupuur 1 18 ms	
+% 	\node at (43,0) [rectangle ]{
+% 		\begin{tikzpicture}[transform canvas={scale=1}] 
+% 			\DiagramDensityDistribution{\CoupureUnVeffDiagram}{\CoupureUnVeffDensity}{\CoupureUnVeffDistribution}{\Vide}
+% 		\end{tikzpicture}
+% 	};
+
+% 	%axe temporel 
+% 	\node at (0, -12) [circle ]{
+% 		\begin{tikzpicture}[transform canvas={scale=1} ]
+% 			\Axetemps[Déformation : $t = 18 ~ms$]
+% 		\end{tikzpicture}
+% 	};
+	
+% 	%abcdefg
+% 	\node at (-8,8) [circle]{\color{\colorTwo} \fontsize{60pt}{10pt}\selectfont \bf  a)};
+% 	\node at (-8,19) [circle]{\color{\colorOne} \fontsize{60pt}{10pt}\selectfont \bf  b)};
+% 	\node at (-19,8) [circle]{\color{\colorOne} \fontsize{60pt}{10pt}\selectfont \bf  c)};
+% 	\node at (19,8) [circle]{\color{\colorOne} \fontsize{60pt}{10pt}\selectfont \bf  d)};
+% 	\begin{scope}[shift={(43cm,0)}]
+% 		\node at (-8,8) [circle]{\color{\colorTwo} \fontsize{60pt}{10pt}\selectfont \bf  e)};
+% 		\node at (-8,19) [circle]{\color{\colorOne} \fontsize{60pt}{10pt}\selectfont \bf  f)};
+% 		\node at (-19,8) [circle]{\color{\colorOne} \fontsize{60pt}{10pt}\selectfont \bf  g)};	
+% 	\end{scope}
+
+		
+	
+% 	%\drawgrid{-20}{58}{-14}{20}
+%     %\draw[color = red ] (-20,-14) rectangle (58,20) ;
+%     \path (-20,-14) rectangle (58,20);
+
+% \end{tikzpicture}
+
+
+% %coupure 2 
+% \begin{tikzpicture}[scale=1]
+	
+% 	\node at (0,0) [rectangle ]{
+% 		\begin{tikzpicture}[transform canvas={scale=1}] 
+% 			\DiagramDensityDistribution{\CoupureDeuxZeroDiagram}{\CoupureDeuxZeroDensity}{\CoupureDeuxZeroDistribution}{\Vide}
+% 		\end{tikzpicture}
+% 	};
+
+
+% 	% coupuur 1 18 ms	
+% 	\node at (43,0) [rectangle ]{
+% 		\begin{tikzpicture}[transform canvas={scale=1}] 
+% 			\DiagramDensityDistribution{\CoupureDeuxExpDiagram}{\CoupureDeuxExpDensity}{\CoupureDeuxExpDistribution}{\Vide}
+% 		\end{tikzpicture}
+% 	};
+
+% 	%axe temporel 
+% 	\node at (0, -12) [circle ]{
+% 		\begin{tikzpicture}[transform canvas={scale=1} ]
+% 			\Axetemps[Expansion $\tau = 30 ~ms$]
+% 		\end{tikzpicture}
+% 	};
+	
+% 	%abcdefg
+% 	\node at (-8,8) [circle]{\color{\colorTwo}\fontsize{60pt}{10pt}\selectfont \bf a)};
+% 	\node at (-8,19) [circle]{\color{\colorOne}\fontsize{60pt}{10pt}\selectfont \bf  b)};
+% 	\node at (-19,8) [circle]{\color{\colorOne} \fontsize{60pt}{10pt}\selectfont \bf  c)};
+% 	\begin{scope}[shift={(43cm,0)}]
+% 		\node at (-8,8) [circle]{\color{\colorTwo} \fontsize{60pt}{10pt}\selectfont \bf  d)};
+% 		\node at (-8,19) [circle]{\color{\colorOne}\fontsize{60pt}{10pt}\selectfont \bf  e)};
+% 		\node at (-19,8) [circle]{\color{\colorOne}\fontsize{60pt}{10pt}\selectfont \bf  f)};	
+% 	\end{scope}
+	
+% 	%\drawgrid{-20}{58}{-14}{20}
+%     %\draw[color = red ] (-20,-14) rectangle (58,20) ;
+%     \path (-20,-14) rectangle (58,20);
+
+% \end{tikzpicture}
+
+
+% % Saut de page après le premier bloc TikZ
+% %\clearpage
+
+% % Un autre diagramme TikZ
+% %Insitut
+% %%diagram
+% \begin{tikzpicture}
+% 	\clip (-11 , -11) rectangle (15 , 11) ;
+%     \InsitutDiagram
+%     %\drawgrid{-11}{15}{-11}{11}
+%     %\draw[line width=2.5ex , color = red ] (-11 , -11) rectangle (15 , 11) ;
+%     \path (-11 , -11) rectangle (15 , 11);
+% \end{tikzpicture}
+% %%density
+% \begin{tikzpicture}
+% 	\clip (-11 , -2) rectangle (12 , 7) ;
+%     \InsitutDensity
+%     %\drawgrid{-11}{12}{-2}{7}
+%     %\draw[line width=2.5ex , color = red ] (-11 , -2) rectangle (12 , 7) ;
+%     \path (-11 , -2) rectangle (12 , 7);
+% \end{tikzpicture}
+% %%distribution
+% \begin{tikzpicture}
+% 	\clip (-11 , -2) rectangle (14 , 7) ;
+%     \InsitutDistribution
+%     %\drawgrid{-11}{14}{-2}{7}
+%     %\draw[line width=2.5ex , color = red ] (-11 , -2) rectangle (14 , 7) ;
+%     \path (-11 , -2) rectangle (14 , 7);
+% \end{tikzpicture}
+
+% %Coupure 1 0 
+% %%diagram
+% \begin{tikzpicture}
+% 	\clip (-11 , -11) rectangle (15 , 11) ;
+%     \CoupureUnZeroDiagram
+%     %\drawgrid{-11}{15}{-11}{11}
+%     %\draw[line width=2.5ex , color = red ] (-11 , -11) rectangle (15 , 11) ;
+%     \path (-11 , -11) rectangle (15 , 11);
+% \end{tikzpicture}
+% %%density
+% \begin{tikzpicture}
+% 	\clip (-11 , -2) rectangle (12 , 7) ;
+%     \CoupureUnZeroDensity
+%     %\drawgrid{-11}{12}{-2}{7}
+%     %\draw[line width=2.5ex , color = red ] (-11 , -2) rectangle (12 , 7) ;
+%     \path (-11 , -2) rectangle (12 , 7);
+% \end{tikzpicture}
+% %%distribution x<0
+% \begin{tikzpicture}
+% 	\clip (-11 , -2) rectangle (14 , 7) ;
+%     \CoupureUnZeroDistributionMinus
+%     %\drawgrid{-11}{14}{-2}{7}
+%     %\draw[line width=2.5ex , color = red ] (-11 , -2) rectangle (14 , 7) ;
+%     \path (-11 , -2) rectangle (14 , 7);
+% \end{tikzpicture}
+% %%distribution x>0
+% \begin{tikzpicture}
+% 	\clip (-11 , -7) rectangle (14 , 2) ;
+%     \CoupureUnZeroDistributionPlus
+%     %\drawgrid{-11}{14}{-7}{2}
+%     %\draw[line width=2.5ex , color = red ] (-11 , -7) rectangle (14 , 2) ;
+%     \path (-11 , -7) rectangle (14 , 2);
+% \end{tikzpicture}
+
+% %Coupure 1 18 
+% %%diagram
+% \begin{tikzpicture}
+% 	\clip (-11 , -11) rectangle (15 , 11) ;
+%     \CoupureUnVeffDiagram
+%     %\drawgrid{-11}{15}{-11}{11}
+%     %\draw[line width=2.5ex , color = red ] (-11 , -11) rectangle (15 , 11) ;
+%     \path (-11 , -11) rectangle (15 , 11);
+% \end{tikzpicture}
+% %%density
+% \begin{tikzpicture}
+% 	\clip (-11 , -2) rectangle (12 , 7) ;
+%     \CoupureUnVeffDensity
+%     %\drawgrid{-11}{12}{-2}{7}
+%     %\draw[line width=2.5ex , color = red ] (-11 , -2) rectangle (12 , 7) ;
+%     \path (-11 , -2) rectangle (12 , 7);
+% \end{tikzpicture}
+% %%distribution
+% \begin{tikzpicture}
+% 	\clip (-11 , -2) rectangle (14 , 7) ;
+%     \CoupureUnVeffDistribution
+%     %\drawgrid{-11}{14}{-2}{7}
+%     %\draw[line width=2.5ex , color = red ] (-11 , -2) rectangle (14 , 7) ;
+%     \path (-11 , -2) rectangle (14 , 7);
+% \end{tikzpicture}
+
+% \begin{tikzpicture}
+% 	\clip (-6 , -2) rectangle (52 , 2) ;
+% 	\Axetemps[Déformation : $t = 18 ~ms$]
+% 	%\drawgrid{-6}{52}{-2}{2}
+%     %\draw[line width=2.5ex , color = red ] (-6,-2) rectangle (52,2) ;
+%     \path (-6,-2) rectangle (52,2);
+% \end{tikzpicture}
+
+
+% %Coupure 2 0 
+% %%diagram
+% \begin{tikzpicture}
+% 	\clip (-11 , -11) rectangle (15 , 11) ;
+%     \CoupureDeuxZeroDiagram
+%     %\drawgrid{-11}{15}{-11}{11}
+%     %\draw[line width=2.5ex , color = red ] (-11 , -11) rectangle (15 , 11) ;
+%     \path (-11 , -11) rectangle (15 , 11);
+% \end{tikzpicture}
+% %%density
+% \begin{tikzpicture}
+% 	\clip (-11 , -2) rectangle (12 , 7) ;
+%     \CoupureDeuxZeroDensity
+%     %\drawgrid{-11}{12}{-2}{7}
+%     %\draw[line width=2.5ex , color = red ] (-11 , -2) rectangle (12 , 7) ;
+%     \path (-11 , -2) rectangle (12 , 7);
+% \end{tikzpicture}
+% %%distribution
+% \begin{tikzpicture}
+% 	\clip (-11 , -2) rectangle (14 , 7) ;
+%     \CoupureDeuxZeroDistribution
+%     %\drawgrid{-11}{14}{-2}{7}
+%     %\draw[line width=2.5ex , color = red ] (-11 , -2) rectangle (14 , 7) ;
+%     \path (-11 , -2) rectangle (14 , 7);
+% \end{tikzpicture}
+
+% %Coupure 2 30 
+% %%diagram
+% \begin{tikzpicture}
+% 	\clip (-11 , -11) rectangle (15 , 11) ;
+%     \CoupureDeuxExpDiagram
+%     %\drawgrid{-11}{15}{-11}{11}
+%     %\draw[line width=2.5ex , color = red ] (-11 , -11) rectangle (15 , 11) ;
+%     \path (-11 , -11) rectangle (15 , 11);
+% \end{tikzpicture}
+% %%density
+% \begin{tikzpicture}
+% 	\clip (-11 , -2) rectangle (12 , 7) ;
+%     \CoupureDeuxExpDensity
+%     %\drawgrid{-11}{12}{-2}{7}
+%     %\draw[line width=2.5ex , color = red ] (-11 , -2) rectangle (12 , 7) ;
+%     \path (-11 , -2) rectangle (12 , 7);
+% \end{tikzpicture}
+% %%distribution
+% \begin{tikzpicture}
+% 	\clip (-11 , -2) rectangle (14 , 7) ;
+%     \CoupureDeuxExpDistribution
+%     %\drawgrid{-11}{14}{-2}{7}
+%     %\draw[line width=2.5ex , color = red ] (-11 , -2) rectangle (14 , 7) ;
+%     \path (-11 , -2) rectangle (14 , 7);
+% \end{tikzpicture}
+
+% \begin{tikzpicture}
+% 	\clip (-6 , -2) rectangle (52 , 2) ;
+% 	\Axetemps[Expansion $\tau = 30 ~ms$]
+% 	%\drawgrid{-6}{52}{-2}{2}
+%     %\draw[line width=2.5ex , color = red ] (-6,-2) rectangle (52,2) ;
+%     \path (-6,-2) rectangle (52,2);
+% \end{tikzpicture}
+
+% %\tikz \InsitutDiagram ; 
+
+
+\end{document}

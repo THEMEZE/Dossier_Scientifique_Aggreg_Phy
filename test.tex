@@ -1,0 +1,25 @@
+\documentclass[tikz,border=10pt]{standalone}
+
+\usetikzlibrary{curvilinear}
+\usepgfmodule{nonlineartransformations}
+
+\begin{document}
+
+\begin{tikzpicture}
+  \draw [help lines] (0,0) grid (3,2);
+  {
+  \pgfsetcurvilinearbeziercurve
+  {\pgfpoint{0mm}{20mm}}
+  {\pgfpoint{10mm}{20mm}}
+  {\pgfpoint{10mm}{10mm}}
+  {\pgfpoint{20mm}{10mm}}
+  \pgftransformnonlinear{\pgfpointcurvilinearbezierpolar\pgf@x\pgf@y}%
+  \draw (0,-30pt) grid [step=10pt] (80pt,30pt);
+  % Add a "barb":
+  \draw [blue, very thick] (20pt,10pt) -- (0,0) -- (20pt,-10pt);
+  }
+  \draw[red, very thick]
+  (0mm,20mm) .. controls (10mm,20mm) and (10mm,10mm) .. (20mm,10mm);
+\end{tikzpicture}
+
+\end{document}

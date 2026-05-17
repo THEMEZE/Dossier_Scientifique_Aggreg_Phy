@@ -1,0 +1,1161 @@
+\documentclass{standalone} % Utilise la classe standalone pour compiler uniquement le TikZ
+%\include{pakage_tikz}
+\usepackage{tikz}          % Charge le package TikZ
+\usepackage{xcolor}        % Gestion avancée des couleurs
+\usepackage{amsmath}       % Gestion des formules mathématiques
+\usetikzlibrary{arrows.meta} % Pour gérer les flèches avec des formes spécifiées comme "triangle"
+\usetikzlibrary{decorations.pathmorphing}
+\usepackage{pgfplots}
+%\pgfplotsset{compat=1.18}
+\usepackage[active,tightpage]{preview}
+\PreviewEnvironment{tikzpicture}
+\setlength\PreviewBorder{5pt}
+%\usepgfplotslibrary{external}
+%\tikzexternalize
+
+\usetikzlibrary{3d,calc}
+\usetikzlibrary{perspective}
+\usepackage{tikz-3dplot}
+\usepackage{pgfmath}
+\usepackage{xifthen}
+
+
+%% Automatiser cela : une solution plus élégante  nouvelle page, tu peux utiliser la commande \newpage juste avant chaque \begin{tikzpicture}
+%\let\oldtikzpicture\tikzpicture
+%\let\endoldtikzpicture\endtikzpicture
+%\renewenvironment{tikzpicture}{\newpage\oldtikzpicture}{\endoldtikzpicture}
+%\usepackage{etoolbox} % dans le préambule, si pas encore utilisé
+%\pretocmd{\tikzpicture}{\clearpage}{}{}
+
+
+
+
+
+\newcommand{\Palette}[1][\colorOne]{
+	\clip[decorate, decoration={random steps, segment length=3pt, amplitude=3pt}]
+        	(-1,-1) rectangle (1,1);
+	\draw[fill=#1 , color = #1 ] (-2,-2) rectangle (2,2);
+}
+
+
+
+
+
+
+% Définition des couleurs avec les codes HTML
+\definecolor{colorOne}{HTML}{443E46}
+%\definecolor{colorTwo}{HTML}{F6DEB8}
+\definecolor{colorTwo}{HTML}{FFFFFF}
+\definecolor{colorThree}{HTML}{908CA4}
+\definecolor{colorFour}{HTML}{57659E}
+\definecolor{colorFive}{HTML}{C57284}
+\definecolor{colorSix}{HTML}{FF5B69}
+
+% Raccourcis pour les couleurs
+\def\colorOne{colorOne}
+\def\colorTwo{colorTwo}
+\def\colorThree{colorThree}
+\def\colorFour{colorFour}
+\def\colorFive{colorFive}
+\def\colorSix{colorSix}
+
+\definecolor{colorGold}{HTML}{FFD700}
+\def\colorGold{colorGold}
+
+
+
+
+
+
+
+%Palette 
+\newcommand{\Palettes}[0]{
+%\begin{tikzpicture}	
+	\node at (0,0) [rectangle, ] {
+		\begin{tikzpicture}
+			\Palette[\colorOne]
+		\end{tikzpicture}} ;
+	\node at (3,0) [rectangle, ] {
+		\begin{tikzpicture}
+			\Palette[\colorTwo]
+		\end{tikzpicture}} ;
+	\node at (6,0) [rectangle, ] {
+		\begin{tikzpicture}
+			\Palette[\colorThree]
+		\end{tikzpicture}} ;
+	\node at (9,0) [rectangle, ] {
+		\begin{tikzpicture}
+			\Palette[\colorFour]
+		\end{tikzpicture}} ;
+	\node at (12,0) [rectangle, ] {
+		\begin{tikzpicture}
+			\Palette[\colorFive]
+		\end{tikzpicture}} ;
+	\node at (15,0) [rectangle, ] {
+		\begin{tikzpicture}
+			\Palette[\colorSix]
+		\end{tikzpicture}} ;
+	\node at (18,0) [rectangle, ] {
+		\begin{tikzpicture}
+			\Palette[\colorGold]
+		\end{tikzpicture}} ;
+%\end{tikzpicture}
+}
+
+
+
+
+
+
+% Palettes
+\begin{tikzpicture}
+	\node at (40,6) [rectangle , rotate = -90] { \tikz \Palettes  ;}; 	
+\end{tikzpicture}
+
+\begin{tikzpicture}
+  \node[draw] at (0,0) {Setting the view};
+\end{tikzpicture}
+
+\begin{tikzpicture}[3d view]
+  \draw[->] (-1,0,0) -- (1,0,0) node[pos=1.1]{x};
+  \draw[->] (0,-1,0) -- (0,1,0) node[pos=1.1]{y};
+  \draw[->] (0,0,-1) -- (0,0,1) node[pos=1.1]{z};
+\end{tikzpicture}
+
+\begin{tikzpicture}[isometric view]
+  \draw[->] (-1,0,0) -- (1,0,0) node[pos=1.1]{x};
+  \draw[->] (0,-1,0) -- (0,1,0) node[pos=1.1]{y};
+  \draw[->] (0,0,-1) -- (0,0,1) node[pos=1.1]{z};
+\end{tikzpicture}
+
+
+\begin{tikzpicture}
+  \node[draw] at (0,0) {Defining the perspective};
+\end{tikzpicture}
+
+\newcommand\simplecuboid[3]{%
+  \fill[gray!80!white] (tpp cs:x=0,y=0,z=#3)
+    -- (tpp cs:x=0,y=#2,z=#3)
+    -- (tpp cs:x=#1,y=#2,z=#3)
+    -- (tpp cs:x=#1,y=0,z=#3) -- cycle;
+  \fill[gray]  (tpp cs:x=0,y=0,z=0)
+    -- (tpp cs:x=0,y=0,z=#3)
+    -- (tpp cs:x=0,y=#2,z=#3)
+    -- (tpp cs:x=0,y=#2,z=0) -- cycle;
+  \fill[gray!50!white] (tpp cs:x=0,y=0,z=0)
+    -- (tpp cs:x=0,y=0,z=#3)
+    -- (tpp cs:x=#1,y=0,z=#3)
+    -- (tpp cs:x=#1,y=0,z=0) -- cycle;}
+\newcommand{\simpleaxes}[3]{%
+  \draw[thick,line width=0.8ex,->,>=Stealth ] 
+  		(-0.5,0,0) edge node[pos=1.1]{x} (#1,0,0)   		
+  ;
+  \draw[thick,line width=0.8ex,->,>=Stealth ] 
+  		(0,-0.5,0) edge node[pos=1.1]{y} (0,#2,0) 
+  ;
+  \draw[thick,line width=0.8ex,->,>=Stealth ]
+  		(0,0,-0.5) edge node[pos=1.1]{z} (0,0,#3) 
+  ;
+ }
+
+\begin{tikzpicture}[3d view]
+  \simplecuboid{2}{2}{2}
+  \simpleaxes{2}{2}{2}
+\end{tikzpicture}
+
+\begin{tikzpicture}[3d view,perspective]
+  \simplecuboid{2}{2}{2}
+  \simpleaxes{2}{2}{2}
+\end{tikzpicture}
+
+\begin{tikzpicture}[
+  3d view,
+  perspective={
+    p = {(5,0,0)}}]
+  \simplecuboid{2}{2}{2}
+  \simpleaxes{2}{2}{2}
+\end{tikzpicture}
+
+\begin{tikzpicture}[
+  3d view,
+  perspective={
+    p = {(5,1,0)}}]
+  \simplecuboid{2}{2}{2}
+  \simpleaxes{2}{2}{2}
+\end{tikzpicture}
+
+\begin{tikzpicture}[
+  3d view,
+  perspective={
+    p = {(5,1,1)}}]
+  \simplecuboid{2}{2}{2}
+  \simpleaxes{2}{2}{2}
+\end{tikzpicture}
+
+\begin{tikzpicture}[
+  3d view,
+  perspective={
+    q = {(0,5,0)}}]
+  \simplecuboid{2}{2}{2}
+  \simpleaxes{2}{2}{2}
+\end{tikzpicture}
+
+\begin{tikzpicture}[
+  3d view,
+  perspective={
+    r = {(0,0,5)}}]
+  \simplecuboid{2}{2}{2}
+  \simpleaxes{2}{2}{2}
+\end{tikzpicture}
+
+\begin{tikzpicture}
+  \node[draw] at (0,0) {Lacunes};
+\end{tikzpicture}
+
+\begin{tikzpicture}
+  \node[draw] at (0,0) {Examples};
+\end{tikzpicture}
+
+\begin{tikzpicture}[
+  isometric view,
+  perspective={
+    p = {(8,0,0)},
+    q = {(0,8,0)},
+    r = {(0,0,-8)}}]
+
+  \simplecuboid{2}{2}{2}
+
+\end{tikzpicture}
+
+\begin{tikzpicture}[
+  isometric view,
+  perspective={
+    p = {(4,0,0)},
+    q = {(0,4,0)}}]
+
+    \node[fill=red,circle,inner sep=1.5pt,label=above:p] at (4,0,0){};
+
+    \foreach \i in {0,...,100}{
+      \filldraw[fill = gray] (tpp cs:x=\i,y=0,z=0)
+        -- (tpp cs:x=\i+0.5,y=0,z=0)
+        -- (tpp cs:x=\i+0.5,y=2,z=0)
+        -- (tpp cs:x=\i,y=2,z=0)
+        -- cycle;}
+\end{tikzpicture}
+
+\begin{tikzpicture}[
+  scale=0.7,
+  3d view,
+  perspective={
+    p = {(20,0,0)},
+    q = {(0,20,0)}}]
+
+  \filldraw[fill=brown] (tpp cs:x=0,y=0,z=0)
+    -- (tpp cs:x=0,y=4,z=0)
+    -- (tpp cs:x=0,y=4,z=2)
+    -- (tpp cs:x=0,y=2,z=4)
+    -- (tpp cs:x=0,y=0,z=2) -- cycle;
+  \filldraw[fill=red!70!black] (tpp cs:x=0,y=0,z=2)
+    -- (tpp cs:x=5,y=0,z=2)
+    -- (tpp cs:x=5,y=2,z=4)
+    -- (tpp cs:x=0,y=2,z=4) -- cycle;
+  \filldraw[fill=brown!80!white] (tpp cs:x=0,y=0,z=0)
+    -- (tpp cs:x=0,y=0,z=2)
+    -- (tpp cs:x=5,y=0,z=2)
+    -- (tpp cs:x=5,y=0,z=0) -- cycle;
+\end{tikzpicture}
+
+
+\begin{tikzpicture}[
+  3d view,
+  perspective={
+    p = {(2,0,0)},
+    q = {(0,2,0)},
+    r = {(0,0,2)}},
+  scale=4,
+  vanishing point/.style={fill,circle,inner sep=2pt}]
+
+  \simplecuboid{3}{1}{2}
+
+  \node[vanishing point,label = right:p] (p) at (2,0,0){};
+  \node[vanishing point,label = left:q] (q) at (0,2,0){};
+  \node[vanishing point,label = above:r] (r) at (0,0,2){};
+
+  \begin{scope}[dotted]
+    \foreach \y in {0,1}{
+      \foreach \z in {0,2}{
+        \draw (tpp cs:x=0,y=\y,z=\z) -- (p.center);}}
+    \foreach \x in {0,3}{
+      \foreach \z in {0,2}{
+        \draw (tpp cs:x=\x,y=0,z=\z) -- (q.center);}}
+    \foreach \x in {0,3}{
+      \foreach \y in {0,1}{
+        \draw (tpp cs:x=\x,y=\y,z=0) -- (r.center);}}
+  \end{scope}
+\end{tikzpicture}
+
+
+
+\begin{tikzpicture}
+	\clip (-11 , -11) rectangle (15 , 11) ;
+    %\InsitutDiagram
+    %\drawgrid{-11}{15}{-11}{11}
+    %\draw[line width=2.5ex , color = red ] (-11 , -11) rectangle (15 , 11) ;
+    \path (-11 , -11) rectangle (15 , 11);
+\end{tikzpicture}
+
+\begin{tikzpicture}[
+  3d view={20}{35.26},
+  perspective={
+    p = {(2,0,0)},
+    q = {(0,2,0)},
+    r = {(0,0,2)}},
+  scale=4,
+  vanishing point/.style={fill,circle,inner sep=2pt}]
+  
+  % Initialisation des points de fuite (doit être dans le tikzpicture)
+  \coordinate (Pp) at (2,0,0);
+  \coordinate (Pq) at (0,2,0);
+  \coordinate (Pr) at (0,0,2);
+
+  \simplecuboid{3}{1}{2}
+  
+  \filldraw[fill=brown] (tpp cs:x=0,y=0,z=0)
+    -- (tpp cs:x=0,y=4,z=0)
+    -- (tpp cs:x=0,y=4,z=2)
+    -- (tpp cs:x=0,y=2,z=4)
+    -- (tpp cs:x=0,y=0,z=2) -- cycle;
+  \filldraw[fill=red!70!black] (tpp cs:x=0,y=0,z=2)
+    -- (tpp cs:x=5,y=0,z=2)
+    -- (tpp cs:x=5,y=2,z=4)
+    -- (tpp cs:x=0,y=2,z=4) -- cycle;
+  \filldraw[fill=brown!80!white] (tpp cs:x=0,y=0,z=0)
+    -- (tpp cs:x=0,y=0,z=2)
+    -- (tpp cs:x=5,y=0,z=2)
+    -- (tpp cs:x=5,y=0,z=0) -- cycle;
+    
+  \simpleaxes{2}{2}{2}
+
+  \node[vanishing point,label = right:p] (p) at (Pp){};
+  \node[vanishing point,label = left:q] (q) at (Pq){};
+  \node[vanishing point,label = above:r] (r) at (Pr){};
+
+  \begin{scope}[dotted]
+    \foreach \y in {0,1}{
+      \foreach \z in {0,2}{
+        \draw (tpp cs:x=0,y=\y,z=\z) -- (p.center);}}
+    \foreach \x in {0,3}{
+      \foreach \z in {0,2}{
+        \draw (tpp cs:x=\x,y=0,z=\z) -- (q.center);}}
+    \foreach \x in {0,3}{
+      \foreach \y in {0,1}{
+        \draw (tpp cs:x=\x,y=\y,z=0) -- (r.center);}}
+  \end{scope}
+\end{tikzpicture}
+
+
+% Commande : \drawboxxyz{θ}{ϕ}{scale}{xlen}{ylen}{zlen}
+\newcommand{\drawboxxyz}[6]{%
+  % Définir la vue
+  \tdplotsetmaincoords{#2}{#1}
+  \begin{tikzpicture}[tdplot_main_coords, scale=#3]
+    % Dimensions du pavé
+    \def\xlen{#4}
+    \def\ylen{#5}
+    \def\zlen{#6}
+
+    % Sommets du cube
+    \coordinate (O) at (0,0,0);
+    \coordinate (X) at (\xlen,0,0);
+    \coordinate (Y) at (0,\ylen,0);
+    \coordinate (Z) at (0,0,\zlen);
+    \coordinate (XY) at (\xlen,\ylen,0);
+    \coordinate (XZ) at (\xlen,0,\zlen);
+    \coordinate (YZ) at (0,\ylen,\zlen);
+    \coordinate (XYZ) at (\xlen,\ylen,\zlen);
+
+    % Arêtes visibles
+    \draw[thick] (O) -- (X) -- (XY) -- (Y) -- cycle;
+    \draw[thick] (O) -- (Z) -- (XZ) -- (X);
+    \draw[thick] (Y) -- (YZ) -- (Z);
+    \draw[thick] (YZ) -- (XYZ) -- (XZ);
+    \draw[thick] (XY) -- (XYZ);
+  \end{tikzpicture}
+}
+
+\drawboxxyz{60}{30}{1.2}{3}{2}{1}
+
+
+
+% Commande : \drawboxxyzrot{θ}{ϕ}{γ}{scale}{xlen}{ylen}{zlen}
+\newcommand{\drawboxxyzrot}[7]{%
+  % Vue principale (azimut et élévation)
+  \tdplotsetmaincoords{#2}{#1}
+  % Rotation locale : γ = twist
+  \tdplotsetrotatedcoords{#2}{#1}{#3}
+
+  \begin{tikzpicture}[tdplot_main_coords, scale=#4]
+    \begin{scope}[tdplot_rotated_coords]
+      % Dimensions du pavé
+      \def\xlen{#5}
+      \def\ylen{#6}
+      \def\zlen{#7}
+
+      % Sommets
+      \coordinate (O) at (0,0,0);
+      \coordinate (X) at (\xlen,0,0);
+      \coordinate (Y) at (0,\ylen,0);
+      \coordinate (Z) at (0,0,\zlen);
+      \coordinate (XY) at (\xlen,\ylen,0);
+      \coordinate (XZ) at (\xlen,0,\zlen);
+      \coordinate (YZ) at (0,\ylen,\zlen);
+      \coordinate (XYZ) at (\xlen,\ylen,\zlen);
+
+      % Arêtes visibles
+      \draw[thick] (O) -- (X) -- (XY) -- (Y) -- cycle;
+      \draw[thick] (O) -- (Z) -- (XZ) -- (X);
+      \draw[thick] (Y) -- (YZ) -- (Z);
+      \draw[thick] (YZ) -- (XYZ) -- (XZ);
+      \draw[thick] (XY) -- (XYZ);
+    \end{scope}
+  \end{tikzpicture}
+}
+
+
+% θ=60, ϕ=30, γ=45, scale=1, x=3, y=2, z=1
+\drawboxxyzrot{-45}{40}{40}{1}{1}{1}{1}
+
+% Définir une clé TikZ pour gérer la rotation autour de r
+\makeatletter
+\tikzset{
+  perspective with rotation/.style={
+    /utils/exec={
+      % Paramètres de base
+      \def\angle{#1}
+      \pgfmathsetmacro{\c}{cos(\angle)}
+      \pgfmathsetmacro{\s}{sin(\angle)}
+      % Rotation des vecteurs p et q autour de r
+      \tikzset{
+        perspective={
+          p={(\c,\s,0)},
+          q={(-\s,\c,0)},
+          r={(0,0,1)}
+        }
+      }
+    }
+  }
+}
+\makeatother
+
+\begin{tikzpicture}
+
+  \begin{scope}[
+    3d view={-40}{35},
+    perspective with rotation=30, % <--- ici l'angle de twist
+    scale=2
+  ]
+
+    % Cube
+    \draw [thick, fill=blue!10]
+      (0,0,0) -- (1,0,0) -- (1,1,0) -- (0,1,0) -- cycle;
+
+    \draw [thick, fill=green!10]
+      (0,0,0) -- (0,1,0) -- (0,1,1) -- (0,0,1) -- cycle;
+
+    \draw [thick, fill=red!10]
+      (0,0,0) -- (1,0,0) -- (1,0,1) -- (0,0,1) -- cycle;
+
+    \draw [thick]
+      (1,1,0) -- (1,1,1) -- (0,1,1) -- (0,1,0);
+
+    \draw [thick]
+      (1,1,1) -- (1,0,1) -- (0,0,1);
+
+  \end{scope}
+\end{tikzpicture}
+
+
+
+\begin{tikzpicture}
+	\clip (-11 , -11) rectangle (15 , 11) ;
+    %\InsitutDiagram
+    %\drawgrid{-11}{15}{-11}{11}
+    %\draw[line width=2.5ex , color = red ] (-11 , -11) rectangle (15 , 11) ;
+    \path (-11 , -11) rectangle (15 , 11);
+\end{tikzpicture}
+
+\begin{tikzpicture}[
+  3d view={-45}{35.26},
+  perspective={
+    p = {(10,0,0)},
+    q = {(0,10,0)},
+    r = {(0,0,20)}},
+  scale=4,
+  vanishing point/.style={fill,circle,inner sep=2pt}]
+  
+  % Initialisation des points de fuite (doit être dans le tikzpicture)
+  \coordinate (Pp) at (10,0,0);
+  \coordinate (Pq) at (0,10,0);
+  \coordinate (Pr) at (0,0,20);
+
+  \simplecuboid{3}{1}{2}
+  
+  \filldraw[ shift={(0,0)} , fill=brown ,line width=1ex,rounded corners = 1.5ex, color=blue,] (tpp cs:x=0,y=0,z=0)
+    -- (tpp cs:x=0,y=4,z=0)
+    -- (tpp cs:x=0,y=4,z=2)
+    -- (tpp cs:x=0,y=2,z=4)
+    -- (tpp cs:x=0,y=0,z=2) -- cycle;
+  \filldraw[fill=red!70!black] (tpp cs:x=0,y=0,z=2)
+    -- (tpp cs:x=5,y=0,z=2)
+    -- (tpp cs:x=5,y=2,z=4)
+    -- (tpp cs:x=0,y=2,z=4) -- cycle;
+  \filldraw[fill=brown!80!white] (tpp cs:x=0,y=0,z=0)
+    -- (tpp cs:x=0,y=0,z=2)
+    -- (tpp cs:x=5,y=0,z=2)
+    -- (tpp cs:x=5,y=0,z=0) -- cycle;
+    
+  \simpleaxes{2}{2}{2}
+
+  \node[vanishing point,label = right:p] (p) at (Pp){};
+  \node[vanishing point,label = left:q] (q) at (Pq){};
+  \node[vanishing point,label = above:r] (r) at (Pr){};
+
+  \begin{scope}[dotted]
+    \foreach \y in {0,1}{
+      \foreach \z in {0,2}{
+        \draw (tpp cs:x=0,y=\y,z=\z) -- (p.center);}}
+    \foreach \x in {0,3}{
+      \foreach \z in {0,2}{
+        \draw (tpp cs:x=\x,y=0,z=\z) -- (q.center);}}
+    \foreach \x in {0,3}{
+      \foreach \y in {0,1}{
+        \draw (tpp cs:x=\x,y=\y,z=0) -- (r.center);}}
+  \end{scope}
+\end{tikzpicture}
+
+
+% Définition de la fonction pour générer la grille
+\newcommand{\drawgrid}[4]{
+
+
+	\begin{scope}[opacity = 0.2]
+	
+	
+    	% Paramètres : #1=xmin, #2=xmax, #3=ymin, #4=ymax
+
+   	 	% Grille principale en cm
+    	\draw[very thin, gray] (#1,#3) grid (#2,#4); % Grille de base (1 cm)
+    
+    	\draw[very thin, gray] (#1,#3) grid[step=0.1] (#2,#4);
+
+    	\draw[thin, black] (#1,#3) edge[thick,line width=0.8ex,->,>=Stealth ] (#2,#3); 
+    
+    	\foreach \x in {#1,..., #2} {
+        	\draw[shift={(\x, #3)}] (0,-0.1) edge[line width=0.8ex] node[pos = -1 , below] {\x} (0,0.1); % Lignes verticales en mm
+    	}
+
+    	\draw[thin, black] (#1,#3)edge[thick,line width=0.8ex,->,>=Stealth ] (#1,#4); 
+    
+    	\foreach \y in {#3,..., #4} {
+        	\draw[shift={(#1, \y)}] (-0.1 , 0 ) edge[line width=0.8ex] node[pos = -1 , left ] {\y} (0.1 , 0); % Lignes verticales en mm
+    	}
+    
+    \end{scope}
+
+
+}
+
+
+% Grille 3D dans un plan à coordonnée constante (x, y ou z)
+% #1 : variable fixe (x, y ou z)
+% #2 : valeur fixe de cette variable
+% #3 : min de la première coordonnée (variante1)
+% #4 : max de la première coordonnée (variante1)
+% #5 : min de la seconde coordonnée (variante2)
+% #6 : max de la seconde coordonnée (variante2)
+
+\newcommand{\drawgridxyzzz}[6]{%
+  \begin{scope}[opacity=0.5]
+  
+  \pgfmathtruncatemacro{\imax}{#4 - 1}
+  \pgfmathtruncatemacro{\jmax}{#6 - 1}
+   % Valeurs flottantes pour les graduations
+  \pgfmathsetmacro{\itraiminus}{#5 - 0.1}
+  \pgfmathsetmacro{\itraiplus}{#5 + 0.1}
+  \pgfmathsetmacro{\jtraiminus}{#3 - 0.1}
+  \pgfmathsetmacro{\jtraiplus}{#3 + 0.1}
+  
+
+  % Petite grille millimétrée (pas = 0.1)
+  \foreach \i in {#3, ..., \imax} {
+    \foreach \di in {0.1,0.2,...,0.9} {
+      \pgfmathsetmacro{\iiTemp}{\i+\di}
+      \edef\ii{\iiTemp}
+      \draw[very thin, gray!50] 
+        (tpp cs:#1=#2,%
+          \ifx#1x y=\ii,z=#5 \fi%
+          \ifx#1y x=\ii,z=#5 \fi%
+          \ifx#1z x=\ii,y=#5 \fi) --
+        (tpp cs:#1=#2,%
+          \ifx#1x y=\ii,z=#6 \fi%
+          \ifx#1y x=\ii,z=#6 \fi%
+          \ifx#1z x=\ii,y=#6 \fi);
+    }
+  }
+
+  \foreach \j in {#5, ..., \jmax} {
+    \foreach \dj in {0.1,0.2,...,0.9} {
+      \pgfmathsetmacro{\jjTemp}{\j+\dj}
+      \edef\jj{\jjTemp}
+      \draw[very thin, gray!50] 
+        (tpp cs:#1=#2,%
+          \ifx#1x y=#3,z=\jj \fi%
+          \ifx#1y x=#3,z=\jj \fi%
+          \ifx#1z x=#3,y=\jj \fi) --
+        (tpp cs:#1=#2,%
+          \ifx#1x y=#4,z=\jj \fi%
+          \ifx#1y x=#4,z=\jj \fi%
+          \ifx#1z x=#4,y=\jj \fi);
+    }
+  }
+
+  % Grille principale (pas = 1)
+  \foreach \i in {#3,...,#4} {
+    \draw[very thin, gray] 
+      (tpp cs:#1=#2,%
+        \ifx#1x y=\i,z=#5 \fi%
+        \ifx#1y x=\i,z=#5 \fi%
+        \ifx#1z x=\i,y=#5 \fi) --
+      (tpp cs:#1=#2,%
+        \ifx#1x y=\i,z=#6 \fi%
+        \ifx#1y x=\i,z=#6 \fi%
+        \ifx#1z x=\i,y=#6 \fi);
+  }
+
+  \foreach \j in {#5,...,#6} {
+    \draw[very thin, gray]
+      (tpp cs:#1=#2,%
+        \ifx#1x y=#3,z=\j \fi%
+        \ifx#1y x=#3,z=\j \fi%
+        \ifx#1z x=#3,y=\j \fi) --
+      (tpp cs:#1=#2,%
+        \ifx#1x y=#4,z=\j \fi%
+        \ifx#1y x=#4,z=\j \fi%
+        \ifx#1z x=#4,y=\j \fi);
+  }
+
+  % Axe 1
+  \draw[thick,line width=0.8ex,->,>=Stealth ] 
+    (tpp cs:#1=#2,%
+      \ifx#1x y=#3,z=#5 \fi%
+      \ifx#1y x=#3,z=#5 \fi%
+      \ifx#1z x=#3,y=#5 \fi) --
+    (tpp cs:#1=#2,%
+      \ifx#1x y=#4,z=#5 \fi%
+      \ifx#1y x=#4,z=#5 \fi%
+      \ifx#1z x=#4,y=#5 \fi);
+
+  % Axe 2
+  \draw[thick,line width=0.8ex,->,>=Stealth ] 
+    (tpp cs:#1=#2,%
+      \ifx#1x y=#3,z=#5 \fi%
+      \ifx#1y x=#3,z=#5 \fi%
+      \ifx#1z x=#3,y=#5 \fi) --
+    (tpp cs:#1=#2,%
+      \ifx#1x y=#3,z=#6 \fi%
+      \ifx#1y x=#3,z=#6 \fi%
+      \ifx#1z x=#3,y=#6 \fi);
+
+ % Graduation sur axe 1 (avec petit trait)
+\foreach \i in {#3,...,#4} {
+  % Petit trait de graduation
+  %\draw[gray, line width=0.8ex] 
+  %  (tpp cs:#1=#2,%
+  %    \ifx#1x y=\i,z=#5 \fi%
+  %    \ifx#1y x=\i,z=#5 \fi%
+  %    \ifx#1z x=\i,y=#5 \fi) --
+  %  ++(
+  %    \ifx#1x 0pt, -2pt \fi%
+  %    \ifx#1y -2pt, 0pt \fi%
+  %    \ifx#1z -2pt, 0pt \fi);
+  %\draw[gray, line width=0.8ex] 
+  %  (tpp cs:#1=#2,%
+  %    \ifx#1x y=\i,z=#5 \fi%
+  %    \ifx#1y x=\i,z=#5 \fi%
+  %    \ifx#1z x=\i,y=#5 \fi) --
+  %  ++(
+  %    \ifx#1x 0pt, +2pt \fi%
+  %    \ifx#1y +2pt, 0pt \fi%
+  %    \ifx#1z +2pt, 0pt \fi);
+
+  % Texte de graduation
+ % \node[font=\large, anchor=north] at 
+ %   (tpp cs:#1=#2,%
+ %     \ifx#1x y=\i,z=#5 \fi%
+ %     \ifx#1y x=\i,z=#5 \fi%
+ %     \ifx#1z x=\i,y=#5 \fi) {\i};
+      
+  %\draw[
+  %	shift={
+  %		(tpp cs:#1=#2,%
+  %    		\ifx#1x y=\i,z=#5 \fi%
+  %    		\ifx#1y x=\i,z=#5 \fi%
+  %    		\ifx#1z x=\i,y=#5 \fi)
+  %		}
+  %	] 
+  %	(tpp cs:#1=#2,%
+  %    	\ifx#1x y=\i,z=-0.1 \fi%
+  %    	\ifx#1y x=\i,z=-0.1 \fi%
+  %    	\ifx#1z x=\i,y=-0.1 \fi
+  %    ) 
+  %		edge[line width=0.8ex] node[pos = -1 , left ] {\i} 
+  %	(tpp cs:#1=#2,%
+  %    	\ifx#1x y=\i,z=0.1 \fi%
+  %    	\ifx#1y x=\i,z=0.1 \fi%
+  %    	\ifx#1z x=\i,y=0.1 \fi
+  %    ) ; % Lignes verticales en mm
+      
+   \draw[
+  	%shift={
+  	%	(tpp cs:#1=#2,%
+    %  		\ifx#1x y=\i,z=#5 \fi%
+    %  		\ifx#1y x=\i,z=#5 \fi%
+    %  		\ifx#1z x=\i,y=#5 \fi)
+  	%	}
+  	]
+      (tpp cs:#1=#2,%
+        \ifx#1x y=\i,z=\itraiminus \fi%
+        \ifx#1y x=\i,z=\itraiminus \fi%
+        \ifx#1z x=\i,y=\itraiminus \fi) edge[line width=0.8ex] node[pos = -0 , left ] {\i}
+      (tpp cs:#1=#2,%
+        \ifx#1x y=\i,z=\itraiplus \fi%
+        \ifx#1y x=\i,z=\itraiplus \fi%
+        \ifx#1z x=\i,y=\itraiplus \fi);
+}
+
+
+  % Graduation axe 2
+  \foreach \j in {#5,...,#6} {
+  	 % Petit trait de graduation
+  \draw[
+  	%shift={
+  	%	(tpp cs:#1=#2,%
+    %  		\ifx#1x y=\i,z=#5 \fi%
+    %  		\ifx#1y x=\i,z=#5 \fi%
+    %  		\ifx#1z x=\i,y=#5 \fi)
+  	%	}
+  	]
+      (tpp cs:#1=#2,%
+        \ifx#1x z=\j,y=\jtraiminus \fi%
+        \ifx#1y z=\j,x=\jtraiminus \fi%
+        \ifx#1z y=\j,x=\jtraiminus \fi) edge[line width=0.8ex] node[pos = -0 , left ] {\j}
+      (tpp cs:#1=#2,%
+        \ifx#1x z=\j,y=\jtraiplus \fi%
+        \ifx#1y z=\j,x=\jtraiplus \fi%
+        \ifx#1z y=\j,x=\jtraiplus \fi);
+}
+
+  \end{scope}
+}
+
+\newcommand{\drawgridxyz}[7]{%
+  \begin{scope}[opacity=0.5]
+  
+  \pgfmathtruncatemacro{\imax}{#4 - 1}
+  \pgfmathtruncatemacro{\jmax}{#6 - 1}
+   % Valeurs flottantes pour les graduations
+  \pgfmathsetmacro{\itraiminus}{#5 - 0.1}
+  \pgfmathsetmacro{\itraiplus}{#5 + 0.1}
+  \pgfmathsetmacro{\jtraiminus}{#3 - 0.1}
+  \pgfmathsetmacro{\jtraiplus}{#3 + 0.1}
+  
+
+  % Petite grille millimétrée (pas = 0.1)
+  \foreach \i in {#3, ..., \imax} {
+    \foreach \di in {0.1,0.2,...,0.9} {
+      \pgfmathsetmacro{\iiTemp}{\i+\di}
+      \edef\ii{\iiTemp}
+      \draw[very thin, gray!50] 
+        (tpp cs:#1=#2,%
+          \ifx#1x y=\ii,z=#5 \fi%
+          \ifx#1y x=\ii,z=#5 \fi%
+          \ifx#1z x=\ii,y=#5 \fi) --
+        (tpp cs:#1=#2,%
+          \ifx#1x y=\ii,z=#6 \fi%
+          \ifx#1y x=\ii,z=#6 \fi%
+          \ifx#1z x=\ii,y=#6 \fi);
+    }
+  }
+
+  \foreach \j in {#5, ..., \jmax} {
+    \foreach \dj in {0.1,0.2,...,0.9} {
+      \pgfmathsetmacro{\jjTemp}{\j+\dj}
+      \edef\jj{\jjTemp}
+      \draw[very thin, gray!50] 
+        (tpp cs:#1=#2,%
+          \ifx#1x y=#3,z=\jj \fi%
+          \ifx#1y x=#3,z=\jj \fi%
+          \ifx#1z x=#3,y=\jj \fi) --
+        (tpp cs:#1=#2,%
+          \ifx#1x y=#4,z=\jj \fi%
+          \ifx#1y x=#4,z=\jj \fi%
+          \ifx#1z x=#4,y=\jj \fi);
+    }
+  }
+
+  % Grille principale (pas = 1)
+  \foreach \i in {#3,...,#4} {
+    \draw[very thin, gray] 
+      (tpp cs:#1=#2,%
+        \ifx#1x y=\i,z=#5 \fi%
+        \ifx#1y x=\i,z=#5 \fi%
+        \ifx#1z x=\i,y=#5 \fi) --
+      (tpp cs:#1=#2,%
+        \ifx#1x y=\i,z=#6 \fi%
+        \ifx#1y x=\i,z=#6 \fi%
+        \ifx#1z x=\i,y=#6 \fi);
+  }
+
+  \foreach \j in {#5,...,#6} {
+    \draw[very thin, gray]
+      (tpp cs:#1=#2,%
+        \ifx#1x y=#3,z=\j \fi%
+        \ifx#1y x=#3,z=\j \fi%
+        \ifx#1z x=#3,y=\j \fi) --
+      (tpp cs:#1=#2,%
+        \ifx#1x y=#4,z=\j \fi%
+        \ifx#1y x=#4,z=\j \fi%
+        \ifx#1z x=#4,y=\j \fi);
+  }
+
+  % Axe 1
+  \draw[#7 , ,->,>=Stealth ] 
+    (tpp cs:#1=#2,%
+      \ifx#1x y=#3,z=#5 \fi%
+      \ifx#1y x=#3,z=#5 \fi%
+      \ifx#1z x=#3,y=#5 \fi) --
+    (tpp cs:#1=#2,%
+      \ifx#1x y=#4,z=#5 \fi%
+      \ifx#1y x=#4,z=#5 \fi%
+      \ifx#1z x=#4,y=#5 \fi);
+
+  % Axe 2
+  \draw[#7,->,>=Stealth] 
+    (tpp cs:#1=#2,%
+      \ifx#1x y=#3,z=#5 \fi%
+      \ifx#1y x=#3,z=#5 \fi%
+      \ifx#1z x=#3,y=#5 \fi) --
+    (tpp cs:#1=#2,%
+      \ifx#1x y=#3,z=#6 \fi%
+      \ifx#1y x=#3,z=#6 \fi%
+      \ifx#1z x=#3,y=#6 \fi);
+
+ % Graduation sur axe 1 (avec petit trait)
+\foreach \i in {#3,...,#4} {     
+   \draw[
+  	]
+      (tpp cs:#1=#2,%
+        \ifx#1x y=\i,z=\itraiminus \fi%
+        \ifx#1y x=\i,z=\itraiminus \fi%
+        \ifx#1z x=\i,y=\itraiminus \fi) edge[#7] node[pos = -0.1  ] {\i}
+      (tpp cs:#1=#2,%
+        \ifx#1x y=\i,z=\itraiplus \fi%
+        \ifx#1y x=\i,z=\itraiplus \fi%
+        \ifx#1z x=\i,y=\itraiplus \fi);
+}
+
+
+  % Graduation axe 2
+  \foreach \j in {#5,...,#6} {
+  	 % Petit trait de graduation
+  \draw[
+  	]
+      (tpp cs:#1=#2,%
+        \ifx#1x z=\j,y=\jtraiminus \fi%
+        \ifx#1y z=\j,x=\jtraiminus \fi%
+        \ifx#1z y=\j,x=\jtraiminus \fi) edge[#7] node[pos = -0.1 ] {\j}
+      (tpp cs:#1=#2,%
+        \ifx#1x z=\j,y=\jtraiplus \fi%
+        \ifx#1y z=\j,x=\jtraiplus \fi%
+        \ifx#1z y=\j,x=\jtraiplus \fi);
+}
+
+  \end{scope}
+}
+
+ 
+\newcommand{\Axex}[5]{
+	\pgfmathsetmacro{\xmax}{#1 +#4}
+	\draw[#5] (tpp cs: x=#1, y=#2, z= #3) edge[] node[pos=1.1]{$x$}(tpp cs: x=\xmax,y=#2,z=#3) ;
+	\let\xmax\relax
+}
+
+\newcommand{\Axey}[5]{
+	\pgfmathsetmacro{\ymax}{#2 +#4}
+	\draw[#5] (tpp cs: x=#1, y=#2, z= #3) edge[] node[pos=1.1]{$y$}(tpp cs: x=#1,y=\ymax,z=#3) ;
+	\let\ymax\relax
+}
+
+\newcommand{\Axez}[5]{
+	\pgfmathsetmacro{\zmax}{#3 +#4}
+	\draw[#5] (tpp cs: x=#1, y=#2, z= #3) edge[] node[pos=1.1]{$z$}(tpp cs: x=#1,y=#2,z=\zmax) ;
+	\let\zmax\relax
+}
+
+\newcommand{\Axes}[7]{
+	\Axex{#1}{#2}{#3}{#4}{#7}
+	\Axey{#1}{#2}{#3}{#5}{#7}
+	\Axez{#1}{#2}{#3}{#6}{#7}
+}
+
+\newcommand{\AxesSimples}[5]{
+	\Axes{#1}{#2}{#3}{#4}{#4}{#4}{#5}
+}
+
+\newcommand{\drawrectxyz}[7]{%
+  \begin{scope}
+    \draw[#7]
+      (tpp cs:%
+        \ifx#1x x=#2,y=#3,z=#5 \fi%
+        \ifx#1y x=#3,y=#2,z=#5 \fi%
+        \ifx#1z x=#3,y=#5,z=#2 \fi)
+      --
+      (tpp cs:%
+        \ifx#1x x=#2,y=#4,z=#5 \fi%
+        \ifx#1y x=#4,y=#2,z=#5 \fi%
+        \ifx#1z x=#4,y=#5,z=#2 \fi)
+      --
+      (tpp cs:%
+        \ifx#1x x=#2,y=#4,z=#6 \fi%
+        \ifx#1y x=#4,y=#2,z=#6 \fi%
+        \ifx#1z x=#4,y=#6,z=#2 \fi)
+      --
+      (tpp cs:%
+        \ifx#1x x=#2,y=#3,z=#6 \fi%
+        \ifx#1y x=#3,y=#2,z=#6 \fi%
+        \ifx#1z x=#3,y=#6,z=#2 \fi)
+      -- cycle;
+  \end{scope}
+}
+
+\newcommand{\drawparallelepiped}[7]{%
+  % #1 = x0, #2 = y0, #3 = z0
+  % #4 = dx, #5 = dy, #6 = dz
+  % #7 = style
+
+  \pgfmathsetmacro{\xmax}{#1 + #4}
+  \pgfmathsetmacro{\ymax}{#2 + #5}
+  \pgfmathsetmacro{\zmax}{#3 + #6}
+
+  % Faces arrière (dessinées en premier)
+  \drawrectxyz{x}{#1}{#2}{\ymax}{#3}{\zmax}{#7}  % face en x = x0
+  \drawrectxyz{y}{#2}{#1}{\xmax}{#3}{\zmax}{#7}  % face en y = y0
+  \drawrectxyz{z}{#3}{#1}{\xmax}{#2}{\ymax}{#7}  % face en z = z0
+
+  % Faces avant (dessinées ensuite pour être visibles au-dessus)
+  \drawrectxyz{x}{\xmax}{#2}{\ymax}{#3}{\zmax}{#7}  % x = x0 + dx
+  \drawrectxyz{y}{\ymax}{#1}{\xmax}{#3}{\zmax}{#7}  % y = y0 + dy
+  \drawrectxyz{z}{\zmax}{#1}{\xmax}{#2}{\ymax}{#7}  % z = z0 + dz
+
+  % Nettoyage
+  \pgfmathsetmacro{\xmax}{0}
+  \pgfmathsetmacro{\ymax}{0}
+  \pgfmathsetmacro{\zmax}{0}
+}
+
+\newcommand{\drawparallelepipedcenter}[7]{%
+  % #1 = xc, #2 = yc, #3 = zc (centre)
+  % #4 = dx, #5 = dy, #6 = dz (dimensions)
+  % #7 = style
+
+  \pgfmathsetmacro{\xmin}{#1 - #4/2}
+  \pgfmathsetmacro{\xmax}{#1 + #4/2}
+  \pgfmathsetmacro{\ymin}{#2 - #5/2}
+  \pgfmathsetmacro{\ymax}{#2 + #5/2}
+  \pgfmathsetmacro{\zmin}{#3 - #6/2}
+  \pgfmathsetmacro{\zmax}{#3 + #6/2}
+
+  % Faces arrière
+  \drawrectxyz{x}{\xmin}{\ymin}{\ymax}{\zmin}{\zmax}{#7}  % face en x = xmin
+  \drawrectxyz{y}{\ymin}{\xmin}{\xmax}{\zmin}{\zmax}{#7}  % face en y = ymin
+  \drawrectxyz{z}{\zmin}{\xmin}{\xmax}{\ymin}{\ymax}{#7}  % face en z = zmin
+
+  % Faces avant
+  \drawrectxyz{x}{\xmax}{\ymin}{\ymax}{\zmin}{\zmax}{#7}  % face en x = xmax
+  \drawrectxyz{y}{\ymax}{\xmin}{\xmax}{\zmin}{\zmax}{#7}  % face en y = ymax
+  \drawrectxyz{z}{\zmax}{\xmin}{\xmax}{\ymin}{\ymax}{#7}  % face en z = zmax
+}
+
+
+
+
+\begin{document}
+
+\begin{tikzpicture}
+
+\begin{scope}[
+  3d view={45}{30},
+  perspective={
+    p = {(100,0,0)},
+    q = {(0,100,0)},
+    r = {(0,0,100)}},
+  scale=1, 
+  vanishing point/.style={fill,circle,inner sep=2pt}]
+  
+  	
+  
+	
+	%\drawgridxyz{x}{0}{0}{5}{0}{3}
+	%\simpleaxes{2}{2}{2}
+	%\simplecuboid{1}{1}{1}
+	%\drawrectxyz{z}{3}{0}{5}{0}{5}{  thick,line width=0.8ex,->,>=Stealth , line width=1ex,rounded corners = 1.5ex, color=blue , fill = brown,}
+	
+	
+	\drawparallelepiped{-2.5}{-2.5}{-0.4}{5}{5}{0.4}{thick, line width=0.1ex,rounded corners = 0.1ex, color=\colorOne , fill = \colorGold,}
+	
+	
+	\drawparallelepiped{-2.25}{-2.25}{0}{0.25}{4.5}{0.25}{thick, line width=0.1ex,rounded corners = 0.1ex, color=black , fill = \colorSix,}
+	
+	\drawparallelepiped{2.25}{2.25}{0}{-0.25}{-4.5}{0.25}{thick, line width=0.1ex,rounded corners = 0.1ex, color=black , fill = \colorSix,}
+	
+	\drawparallelepiped{-1.9}{-2.25}{0}{0.25}{4.5}{0.25}{thick, line width=0.1ex,rounded corners = 0.1ex, color=black , fill = \colorSix,}
+	
+	\drawparallelepiped{1.9}{2.25}{0}{-0.25}{-4.5}{0.25}{thick, line width=0.1ex,rounded corners = 0.1ex, color=black , fill = \colorSix,}
+	
+	
+	
+	\drawparallelepipedcenter{0}{0}{0}{3}{0.1}{0.1}{thick, line width=0.1ex,rounded corners = 0.1ex, color=red , fill = \colorFour,}
+	
+	\drawparallelepipedcenter{0}{0.2}{0}{3}{0.1}{0.1}{thick, line width=0.1ex,rounded corners = 0.1ex, color=red , fill = \colorFour,}
+	
+	\drawparallelepipedcenter{0}{-0.2}{0}{3}{0.1}{0.1}{thick, line width=0.1ex,rounded corners = 0.1ex, color=red , fill = \colorFour,}
+	
+	
+	
+	
+	
+	
+
+	%\begin{scope}[shift={(tpp cs: x = 0 , y = 0 , z = -1 )}]\simplecuboid{1}{1}{1}\end{scope}
+	
+	\drawgridxyz{z}{-1}{-3.}{3.}{-3.}{3.}{line width=0.1ex }
+	\drawgridxyz{x}{3}{-3}{3}{-3}{3}{line width=0.1ex}
+	\drawgridxyz{y}{3}{-3}{3}{-3}{3}{line width=0.1ex}
+	
+	\AxesSimples{-2.5}{-2.5}{0}{2}{draw = none, thick,line width=0.5ex,->,>=Stealth , color=gray}
+
+
+  %\node[vanishing point,label = right:p] (p) at (10,0,0){};
+  %\node[vanishing point,label = left:q] (q) at (0,10,0){};
+  %\node[vanishing point,label = above:r] (r) at (0,0,200){};
+
+  %\begin{scope}[dotted]
+  %  \foreach \y in {0,1}{
+  %    \foreach \z in {0,1}{
+  %      \draw (tpp cs:x=0,y=\y,z=\z) -- (p.center);}}
+  %  \foreach \x in {0,1}{
+  %    \foreach \z in {0,1}{
+  %      \draw (tpp cs:x=\x,y=0,z=\z) -- (q.center);}}
+  %  \foreach \x in {0,1}{
+  %    \foreach \y in {0,1}{
+  %      \draw (tpp cs:x=\x,y=\y,z=0) -- (r.center);}}
+  %\end{scope}
+\end{scope}
+
+%\drawgrid{-20}{20}{-20}{20}
+\end{tikzpicture}
+
+\tdplotsetmaincoords{70}{30} % Azimut et élévation de la caméra
+
+\begin{tikzpicture}[tdplot_main_coords, scale=3]
+
+% Rayons de l'ellipsoïde
+\def\a{1} % axe x
+\def\b{0.7} % axe y
+\def\c{0.4} % axe z
+
+% Maille angulaire (plus petit => plus de détails)
+\def\dtheta{10}
+\def\dphi{10}
+
+% Tracer les méridiens
+\foreach \phi in {0,\dphi,...,360} {
+  \draw[gray!70] plot[domain=1:179, samples=40, variable=\theta] 
+    ({\a*sin(\theta)*cos(\phi)},
+     {\b*sin(\theta)*sin(\phi)},
+     {\c*cos(\theta)});
+}
+
+% Tracer les parallèles
+\foreach \theta in {10,20,...,170} {
+  \draw[gray!50] plot[domain=0:360, samples=60, variable=\phi]
+    ({\a*sin(\theta)*cos(\phi)},
+     {\b*sin(\theta)*sin(\phi)},
+     {\c*cos(\theta)});
+}
+
+% Axes
+\draw[->] (0,0,0) -- (1.2,0,0) node[anchor=north east]{$x$};
+\draw[->] (0,0,0) -- (0,1.2,0) node[anchor=north west]{$y$};
+\draw[->] (0,0,0) -- (0,0,1.0) node[anchor=south]{$z$};
+
+\end{tikzpicture}
+
+\begin{tikzpicture}
+  \begin{scope}[
+      3d view={-40}{25}, % azimut / élévation
+      perspective={
+        p={(1,0,0)},
+        q={(0,1,0)},
+        r={(0,0,1)}},
+      scale=2
+    ]
+
+    % Paramètres de l'ellipsoïde
+    \def\a{2}   % rayon x
+    \def\b{1.5} % rayon y
+    \def\c{1}   % rayon z
+
+    % Maillage
+    \foreach \theta in {0,10,...,179} {
+      \foreach \phi in {0,15,...,359} {
+        % Point courant
+        \pgfmathsetmacro\x{\a*sin(\theta)*cos(\phi)}
+        \pgfmathsetmacro\y{\b*sin(\theta)*sin(\phi)}
+        \pgfmathsetmacro\z{\c*cos(\theta)}
+
+        % Point suivant en phi
+        \pgfmathsetmacro\xn{\a*sin(\theta)*cos(\phi+15)}
+        \pgfmathsetmacro\yn{\b*sin(\theta)*sin(\phi+15)}
+        \pgfmathsetmacro\zn{\c*cos(\theta)}
+
+        \draw[gray!60] (tpp cs:x=\x,y=\y,z=\z) -- (tpp cs:x=\xn,y=\yn,z=\zn);
+      }
+    }
+
+    \foreach \phi in {0,30,...,359} {
+      \foreach \theta in {0,10,...,169} {
+        % Point courant
+        \pgfmathsetmacro\x{\a*sin(\theta)*cos(\phi)}
+        \pgfmathsetmacro\y{\b*sin(\theta)*sin(\phi)}
+        \pgfmathsetmacro\z{\c*cos(\theta)}
+
+        % Point suivant en theta
+        \pgfmathsetmacro\xn{\a*sin(\theta+10)*cos(\phi)}
+        \pgfmathsetmacro\yn{\b*sin(\theta+10)*sin(\phi)}
+        \pgfmathsetmacro\zn{\c*cos(\theta+10)}
+
+        \draw[gray!60] (tpp cs:x=\x,y=\y,z=\z) -- (tpp cs:x=\xn,y=\yn,z=\zn);
+      }
+    }
+
+    % Axes
+    %\draw[->,thick] (tpp origin) -- (tpp cs:x=2.5,y=0,z=0) node[right] {$x$};
+    %\draw[->,thick] (tpp origin) -- (tpp cs:x=0,y=2,z=0) node[above] {$y$};
+    %\draw[->,thick] (tpp origin) -- (tpp cs:x=0,y=0,z=1.5) node[above] {$z$};
+
+  \end{scope}
+\end{tikzpicture}
+
+
+\end{document}

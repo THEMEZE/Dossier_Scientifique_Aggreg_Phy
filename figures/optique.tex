@@ -1,0 +1,461 @@
+\tikzset{
+  lens/.style={draw, thick, ellipse, minimum width=0.2cm, minimum height=1.2cm},
+  mirror/.style={draw, thick, rectangle, minimum width=0.1cm, minimum height=1cm, fill=gray!40},
+  laser/.style={draw, thick, rectangle, minimum width=1cm, minimum height=0.4cm, fill=red!20},
+}
+
+%\usepackage{tikzoptics}
+
+%\ProvidesPackage{tikzoptics}[2025/07/13 TikZ Optics Elements]
+%\RequirePackage{tikz}
+\usetikzlibrary{arrows.meta, positioning, calc, decorations.pathmorphing}
+\usetikzlibrary{shapes.geometric}
+
+% Couleurs par défaut
+\definecolor{laserred}{RGB}{220,20,60}
+\definecolor{glassblue}{RGB}{100,100,255}
+\definecolor{mirrorgray}{gray}{0.6}
+
+\usepgflibrary {shadings}
+% Source laser (boîte)
+\tikzset{
+  laser source/.style={
+    draw, thick, rectangle,
+    minimum width=1.2cm, minimum height=0.7cm,
+    shading=axis,
+    left color=black, right color=black, middle color=colorTwo,
+    %top color=black, middle color=white, bottom color=black,
+    %outer color=black,inner color=white,
+    shading angle=0
+  }
+}
+
+% Style pour faisceau laser
+\tikzset{
+  laser beam/.style={
+    thick,
+    %draw=laserred,
+    draw=colorSix, 
+    %decoration={snake, amplitude=0.5mm, segment length=2mm},
+    %decorate
+  }
+}
+\tikzset{
+  sond beam/.style={
+    dashed,
+    %draw=laserred,
+    draw=colorSix, 
+    %decoration={snake, amplitude=0.5mm, segment length=2mm},
+    %decorate
+  }
+}
+
+
+% Fibre optique (cercle)
+\tikzset{
+  fiber/.style={
+    draw = none, thick, circle, minimum size=2.4cm,
+    fill= none,
+    color = colorSix, 
+    path picture={
+      \draw[->, thick]
+        ([shift={(-0.2,0)}]path picture bounding box.center)
+        arc[start angle=-90, end angle=300, radius=0.5cm];
+      \draw[->, thick]
+        ([shift={(0.2,0)}]path picture bounding box.center)
+        arc[start angle=-90, end angle=300, radius=0.5cm];
+    }
+  }
+}
+
+
+% Lentille convergente (symbole)
+\tikzset{
+  lens/.style={
+    draw = none , thick, fill= none ,
+    minimum width=0.2cm, minimum height=1.4cm,
+    shape=ellipse,
+    path picture={
+      \draw[ thick , shading=axis , color = colorFour , left color=colorFour, right color=colorFour, middle color=colorTwo, shading angle=0]
+        ([shift={(-0.1,0)}]path picture bounding box.center)
+        arc[start angle=180, end angle=170, radius=3.5cm] --++ (0.1, 0 ) 
+        arc[start angle=10, end angle=-10, radius=3.5cm] --++ (-0.1 , 0 )
+        arc[start angle=-170, end angle=-180, radius=3.5cm] 
+       ;
+       %\drawgrid{-3}{3}{-1}{3};
+    }
+  }
+}
+
+\usetikzlibrary{patterns.meta}
+ %Miroir plan (rectangle vertical incliné)
+%\tikzset{
+%  mirror/.style={
+%    draw = none , thick, fill= none ,
+%    minimum width=0.4cm, minimum height=1.4cm,
+%    shape=rectangle, rotate=0,
+%    path picture={
+%      \draw[thick , line width=0.2ex,
+%      	color = colorFour , left color=colorFour, right color=white, shading angle=90
+%      	]
+%        ([shift={(-0.,-0.6)}]path picture bounding box.center)
+%        rectangle (0.1,0.6);
+%      \fill[
+%  		pattern=north west lines,
+%  		pattern color=colorFour,
+%  		%pattern line width = 0.3pt,     % finesse des traits
+%		%pattern scale = 0.5             % plus petit motif
+%  		]
+%        ([shift={(0.1,-0.6)}]path picture bounding box.center)
+%        rectangle ([shift={(0.15,0.6)}]path picture bounding box.center);
+%      %\drawgrid{-3}{3}{-1}{3};
+%    } 
+%  }
+%}
+
+%\tikzset{
+%  mirror/.style={
+%    draw=none, thick, fill=none,
+%    minimum width=0.4cm, minimum height=1.4cm,
+%    shape=rectangle, rotate=0,
+%    path picture={
+%      % Bande colorée
+%      \draw[thick, line width=0.2ex,
+%        color=colorFour, left color=colorFour, right color=white, shading angle=90]
+%        ([shift={(-0.,-0.6)}]path picture bounding box.center)
+%        rectangle (0.1,0.6);
+%
+%      % Zone hachurée avec un clip
+%      \scope
+%        \clip
+%          ([shift={(0.1,-0.6)}]path picture bounding box.center)
+%          rectangle
+%          ([shift={(0.15,0.6)}]path picture bounding box.center);
+%
+%        % Hachures à 45°
+%        \foreach \t in {-1.0,-0.8,...,1.0} {
+%          \draw[color=colorFour, line width=0.2pt]
+%            ({\t-1},-1) -- ({\t+1},1);
+%        }
+%      \endscope
+%    }
+%  }
+%}
+
+\tikzset{
+  mirror/.style={
+    draw=none, line width=1.0pt, fill=none,
+    minimum width=0.4cm, minimum height=1.4cm,
+    shape=rectangle, rotate=0,
+    path picture={
+      % Bande colorée
+      \draw[thick, line width=0.2ex,
+        color=colorFour, left color=colorFour, right color=colorTwo, shading angle=90]
+        ([shift={(-0.0,-0.6)}]path picture bounding box.center)
+        rectangle (0.1,0.6)
+        ([shift={(0.12,-0.615)}]path picture bounding box.center) -- ([shift={(0.12,0.615)}]path picture bounding box.center)
+      ;        
+      % Hachures à 45° (pas de ligne vide ni de \par)
+      \scope
+        \clip
+          ([shift={(0.1,-0.6)}]path picture bounding box.center)
+          rectangle
+          ([shift={(0.2,0.6)}]path picture bounding box.center);
+        % Hachures à 45°
+        \foreach \t in {-1.0,-0.9,...,1.0} {
+          \draw[color=colorFour, line width=1.0pt]
+            ({\t-1},-1) -- ({\t+1},1);
+        }
+      \endscope
+    }
+  }
+}
+
+
+\tikzset{
+  sep/.style={
+    draw=none, line width=1.0pt, fill=none,
+    minimum width=0.4cm, minimum height=1.4cm,
+    shape=rectangle, rotate=0,
+    path picture={
+      % Bande colorée
+      \draw[thick, line width=0.2ex,
+        rounded corners=0.2ex , color = colorFour , left color=colorFour, right color=colorFour , middle color=colorTwo, shading angle=90]
+        ([shift={(-0.0,-0.6)}]path picture bounding box.center)
+        rectangle (0.15,0.6)
+        %([shift={(0.12,-0.615)}]path picture bounding box.center) -- ([shift={(0.12,0.615)}]path picture bounding box.center)
+      ; 
+   }
+   } 
+}
+
+
+
+% Lame demi-onde (rectangle avec double flèche)
+\tikzset{
+  halfwave plate/.style={
+    draw , thick, rectangle,
+    minimum width=0.2cm, minimum height=1.2cm,
+    fill = none,
+    line width=0.2ex , rounded corners=0.2ex , color = colorFive , left color=colorFive, right color=colorFive , middle color=colorTwo , shading angle=90,
+%    path picture={
+%      \draw[ line width=0.2ex , rounded corners=0.5ex , color = colorFive , left color=colorFive, right color=colorFive , middle color=white , shading angle=90]
+%        ([xshift=0.1cm, yshift=0.1cm]path picture bounding box.south west)
+%          rectangle
+%        ([xshift=-0.1cm, yshift=-0.1cm]path picture bounding box.north east);
+%    }
+  }
+}
+
+
+
+% TA
+\tikzset{
+  TA/.style={
+    draw = none , thick, rectangle,
+    minimum width=1.2cm, minimum height=0.6cm,
+    fill = none,
+    line width=0.2ex , rounded corners=0.0ex , color = colorOne , left color=colorOne, right color=colorOne , middle color=colorTwo , shading angle=0,
+    rotate = 0, 
+    path picture={
+%       \draw[ line width=0.2ex , rounded corners=0.0ex , color = colorFive , left color=colorFive, right color=colorFive , middle color=colorSix , shading angle=90]
+%        ([xshift=0.0cm, yshift=0.01cm]path picture bounding box.west)
+%          -- ([xshift=0.0cm, yshift=0.01cm]path picture bounding box.center) --
+%        ([xshift=-0.0cm, yshift=0.2cm]path picture bounding box.east) -- ([xshift=-0.0cm, yshift=-0.2cm]path picture bounding box.east) -- ([xshift=0.0cm, yshift=-0.01cm]path picture bounding box.center) --  ([xshift=0.0cm, yshift=-0.01cm]path picture bounding box.west)
+%       ;
+       \draw[ line width=0.2ex , rounded corners=0.0ex , color = colorFive , left color=colorFive, right color=colorFive , middle color=colorSix , shading angle=90]
+        ([xshift=0.0cm, yshift=0.2cm]path picture bounding box.west)
+          -- ([xshift=0.0cm, yshift=0.01cm]path picture bounding box.center) --
+        ([xshift=-0.0cm, yshift=0.01cm]path picture bounding box.east) -- ([xshift=-0.0cm, yshift=-0.01cm]path picture bounding box.east) -- ([xshift=0.0cm, yshift=-0.01cm]path picture bounding box.center) --  ([xshift=0.0cm, yshift=-0.2cm]path picture bounding box.west)
+       ;
+    }
+  }
+}
+
+%      \draw[ line width=0.2ex , rounded corners=0.0ex , color = colorOne , left color=colorOne, right color=colorOne , middle color=colorTwo , shading angle=90]
+%        ([xshift=0.1cm, yshift=0.1cm]path picture bounding box.south west)
+%          rectangle
+%        ([xshift=-0.1cm, yshift=-0.1cm]path picture bounding box.north east)
+%       ;
+
+% Lentille cylindrique (ellipse aplatie)
+\tikzset{
+  cylindrical lens/.style={
+    draw = none , thick, fill= none ,
+    minimum width=0.2cm, minimum height=1.4cm,
+    shape=ellipse,
+    path picture={
+      \draw[ thick , line width=0.2ex , shading=axis , color = colorFour , left color=colorFour, right color=colorFour, middle color=white, shading angle=0]
+        ([shift={(-0.1,0)}]path picture bounding box.center)
+        arc[start angle=180, end angle=170, radius=3.5cm] --++ (0.1, 0 ) 
+        arc[start angle=10, end angle=-10, radius=3.5cm] --++ (-0.1 , 0 )
+        arc[start angle=-170, end angle=-180, radius=3.5cm] 
+       ;
+       %\drawgrid{-3}{3}{-1}{3};
+    }
+  }
+}
+
+% pignol
+\tikzset{
+  pignol/.style={
+    draw = none , thick, fill= none ,
+    minimum width=0.2cm, minimum height=1.4cm,
+    shape=ellipse,
+    path picture={
+      \draw[ thick , line width=0.2ex , color = colorOne]
+        ([shift={(0,0)}]path picture bounding box.north) -- ([shift={(0,0.1cm)}]path picture bounding box.center) 
+       ;
+      \draw[ thick , line width=0.2ex ,  , color = colorOne]
+        ([shift={(0,0)}]path picture bounding box.south) -- ([shift={(0,-0.1cm)}]path picture bounding box.center) 
+       ;
+       %\drawgrid{-3}{3}{-1}{3};
+    }
+  }
+}
+
+% Isolateur optique (boîte avec flèche croisée)
+\tikzset{
+  optical isolator/.style={
+    draw, thick, rectangle, minimum width=1cm, minimum height=0.7cm,
+    fill=none ,
+    line width=0.2ex , rounded corners=0.0ex , color = colorOne , left color=colorOne, right color=colorOne , middle color=colorTwo , shading angle=90,
+    path picture={
+      \draw[<-, thick] 
+        ([shift={(-0.3,0.2)}]path picture bounding box.center)
+        -- ([shift={(0.3,0.2)}]path picture bounding box.center);
+        \draw[<-, thick] 
+        ([shift={(-0.3,-0.2)}]path picture bounding box.center)
+        -- ([shift={(0.3,-0.2)}]path picture bounding box.center);
+%      \draw[<-, thick, red] 
+%        ([shift={(0.3,-0.3)}]path picture bounding box.center)
+%        -- ([shift={(-0.3,-0.3)}]path picture bounding box.center);
+    }
+  }
+}
+
+% Modulateur AOM (boîte avec flèche diagonale)
+\tikzset{
+  AOM/.style={
+    draw, thick, minimum width=0.4cm, minimum height=1cm,
+    shape=rectangle, fill=none,
+    line width=0.2ex , rounded corners=0.0ex , color = colorOne , left color=colorOne, right color=colorOne , middle color=colorTwo , shading angle=90,
+    path picture={
+      \fill[pattern=horizontal lines,
+  		pattern color=colorOne] 
+        ([shift={(0.1,0.1)}]path picture bounding box.south west)
+        rectangle ([shift={(-0.1,-0.1)}]path picture bounding box.north east);
+    }
+  }
+}
+
+
+% Polariseur (rectangle fin + symbole)
+\tikzset{
+  polarizer/.style={
+    draw, thick, minimum width=0.3cm, minimum height=1.4cm,
+    fill=gray!30,
+    path picture={
+      \draw[path picture bounding box]
+        ([xshift=-2pt]path picture bounding box.south)
+        -- ([xshift=2pt]path picture bounding box.north);
+      
+    }
+  }
+}
+
+% Collimateur
+\tikzset{
+  collimator/.style={
+    draw, thick, trapezium, trapezium angle=60,
+    minimum height=1cm, fill=blue!10
+  }
+}
+
+
+% Miroir dichroïque
+\tikzset{
+  dichroic/.style={
+    draw, thick, fill=yellow!30, rectangle,
+    minimum width=0.2cm, minimum height=1.4cm, rotate=45
+  }
+}
+
+% Détecteur photodiode
+\tikzset{
+  photodiode/.style={
+    draw, thick, regular polygon, regular polygon sides=3, fill=orange!30,
+    minimum size=1.2cm, rotate=270
+  }
+}
+
+
+% Pinhole (trou)
+\tikzset{
+  pinhole/.style={
+    draw, thick, circle, minimum size=0.3cm, fill=black
+  }
+}
+
+
+%DMD
+\tikzset{
+  DMD/.style={
+    draw=none, line width=1.0pt, fill=none,
+    minimum width=0.5cm, minimum height=1.5cm,
+    shape=rectangle, rotate=0,
+    path picture={
+      % Bande colorée
+      \draw[thick, line width=0.2ex,
+        color=colorPrune, left color=colorPrune, right color=white, shading angle=90]
+        ([shift={(-0.,-0.7)}]path picture bounding box.center)
+        rectangle (0.1,0.7);
+      % Hachures à 45° (pas de ligne vide ni de \par)
+      \scope
+        %\clip
+%        \draw[thick]
+%          ([shift={(0.1,-0.6)}]path picture bounding box.center)
+%          rectangle
+%          ([shift={(0.15,0.6)}]path picture bounding box.center);
+        % Hachures à 45°
+        \def\listetrais{-1.0,-0.9,...,-0.2, 0.1 ,0.2,...,1.0 }
+        \def\traity{0.05}
+        \def\alpha{12}
+        \foreach \t in \listetrais {
+		\draw[shift={(1,\t)}, rotate=12, color=colorPrune, line width=0.5pt] 
+          ({0.18 - \traity*sin(\alpha)},{\t- \traity*cos(\alpha)}) -- ({0.18 + \traity*sin(\alpha)},{\t+ \traity*cos(\alpha)});
+		}
+		\def\listetrais{-0.2,-0.1,...,0}
+		\foreach \t in \listetrais {
+		\draw[shift={(1,\t)}, rotate=12, color=colorPrune, line width=0.5pt] 
+          ({0.18 - \traity*sin(-\alpha)},{\t- \traity*cos(-\alpha)}) -- ({0.18 + \traity*sin(-\alpha)},{\t+ \traity*cos(-\alpha)});
+		}
+      \endscope
+    }
+  }
+}
+
+%lens deme
+\tikzset{
+  lensd/.style={
+    draw = none , thick, fill= none ,
+    minimum width=0.2cm, minimum height=1.4cm,
+    shape=ellipse,
+    path picture={
+      \draw[ thick , line width=0.2ex , shading=axis , color = colorFour , left color=colorFour, right color=colorFour, middle color=white, shading angle=0]
+        ([shift={(0.0,0.6)}]path picture bounding box.center)
+         --++ (0.05, 0 ) 
+        arc[start angle=10, end angle=-10, radius=3.5cm] --++ (-0.05 , 0 ) -- cycle
+       ;
+       %\drawgrid{-3}{3}{-1}{3};
+    }
+  }
+}
+
+
+%lens deme
+\tikzset{
+  lensbess/.style={
+    draw = none , thick, fill= none ,
+    minimum width=1.2cm, minimum height=2.4cm,
+    shape=ellipse,
+    path picture={
+      	\node[lens] (L) {}; 
+      	\node[lensd ,  right=-2mm of L]  {};
+      	\node[lensd , rotate = 180,  right=-1.5mm of L]  {};
+       %\drawgrid{-3}{3}{-1}{3};
+    }
+  }
+}
+
+%lens deme
+\tikzset{
+  atome/.style={
+    draw = red , thick, fill= none ,
+    %minimum width=0.1cm, minimum height=0.1cm,
+    inner sep=0pt,    % pas de padding interne
+    outer sep=0pt,    % pas de marge externe
+    %minimum width=0pt, 
+    %minimum height=0pt,
+    shape=ellipse,
+    path picture={
+      	\draw[ thick , line width=0.2ex , shading=axis , color = colorFour , left color=colorFour, right color=colorFour, middle color=colorFour, shading angle=0]
+      	([shift={(0.0,0)}]path picture bounding box.center) circle (0.3);
+       %\drawgrid{-3}{3}{-1}{3};
+    }
+  }
+}
+
+
+\tikzset{
+  CCD/.style={
+    draw, thick, rectangle,
+    minimum width=1.2cm, minimum height=0.7cm,
+    shading=axis,
+    left color=colorOne, right color=colorOne, middle color=colorTwo,
+    %top color=black, middle color=white, bottom color=black,
+    %outer color=black,inner color=white,
+    shading angle=0
+  }
+}
+
