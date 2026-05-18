@@ -11,12 +11,24 @@
   \arrowfill@\leftarrow\relbar\rightarrow}
 \makeatother
 
+% \hypersetup{
+%   linkcolor=linkcolor,
+%   citecolor=linkcolor, 
+%   urlcolor=linkcolor   
+% }
+\definecolor{linkcolor}{RGB}{140,0,0}
+
 \hypersetup{
-  linkcolor=linkcolor, % couleur des liens internes (acronymes, toc, refs…)
+  colorlinks=true, % active les liens
+  linkcolor=linkcolor,  % couleur des liens internes (acronymes, toc, refs…)
   citecolor=linkcolor, % couleur des citations
-  urlcolor=linkcolor   % couleur des URLs
+  urlcolor=linkcolor % couleur des URLs
 }
 
-\geometry{margin=1.0cm}
+\geometry{
+  margin=1.0cm,
+  includefoot,
+  footskip=8pt
+}
 \setlist[itemize]{topsep=3pt,parsep=0pt,partopsep=0pt}
 

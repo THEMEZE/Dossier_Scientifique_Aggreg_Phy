@@ -394,10 +394,12 @@ détails microscopiques, est au cœur de la physique statistique.
 
 \smallskip
 
-On dit alors que le système est \emph{ergodique} ou \emph{chaotique} : au cours
-du temps, il explore efficacement son espace des phases, ce qui permet la
-thermalisation et l’apparition d’un comportement universel à grande échelle.
+On dit alors que le système est \emph{\textsf{ergodique}} ou
+\emph{\textsf{chaotique}} : au cours du temps, il explore efficacement son
+espace des phases, ce qui permet la thermalisation et l’apparition d’un
+comportement universel à grande échelle.
 
+\vspace{-0.5cm}
 \begin{figure}[h]
     \centering
     \begin{tikzpicture}
@@ -415,7 +417,7 @@ thermalisation et l’apparition d’un comportement universel à grande échell
                     width=0.33\linewidth,
                     %buttonsize=1em,
                     poster=first
-                ]{60}{figures/00_PreRemInt/frames_2D_positions_animation/frame_}{00001}{00600}
+                ]{60}{figures/00_PreRemInt/frames_2D_positions_animation/frame_}{00001}{00010}
             }; \node[above=-0.2cm of a , shift={(-2 , 0)}]
             {\fontsize{12pt}{14pt}\selectfont \bfseries a)};
 
@@ -443,7 +445,7 @@ thermalisation et l’apparition d’un comportement universel à grande échell
                     autoplay,
                     %loop,
                     width=0.33\linewidth, buttonsize=1em,
-                ]{60}{figures/00_PreRemInt/frames_2D_velocity_distribution/frame_}{00001}{00600}
+                ]{60}{figures/00_PreRemInt/frames_2D_velocity_distribution/frame_}{00001}{00010}
             };%
             %   \node[draw = none  , rectangle , right = 0.1cm of b  ] (c)  { %at (6,1.5)
             %     \includegraphics[width=0.33\linewidth]{figures/00_PreRemInt/frames_2D_velocity_distribution/frame_00600}
@@ -451,6 +453,8 @@ thermalisation et l’apparition d’un comportement universel à grande échell
 
             \node[above=-0.2cm of c, shift={(-2 , 0)}]  {\fontsize{12pt}{14pt}\selectfont \bfseries c)};
 
+            %\node[]  at (0,0) {
+            %\begin{tikzpicture}[overlay]
             \newcommand{\curve}{($(b)!0.1!(c) + (0,3.2)$) to[out=50,in=130] ($(b)!0.9!(c) + (0,3.2)$)}
 
             %Type 1
@@ -481,6 +485,8 @@ thermalisation et l’apparition d’un comportement universel à grande échell
             % \draw[->,>=Computer Modern Rightarrow,trim left=1pt,trim right=1pt,line width=0.1ex,Prune!50!colorFour] \curve ;
 
             % \draw[decorate,decoration={text along path,reverse path,text align=center, text color=Prune!50!colorFour, text={ {|\sffamily\fontsize{10pt}{12pt}\selectfont\bfseries| Thermalisation || . } },pre length=1cm},draw=none]\curve ;
+            %\end{tikzpicture}
+            %};
 
         \end{scope}
 
@@ -529,7 +535,7 @@ du système.
                             width=0.95\linewidth,
                             %buttonsize=1em,
                             poster=first
-                        ]{60}{figures/00_PreRemInt/frames_1D_positions_animation/frame_}{00001}{00600}
+                        ]{60}{figures/00_PreRemInt/frames_1D_positions_animation/frame_}{00001}{00010}
                     }; \node[above=-0.2cm of a , shift={(-4 , 0)}] (nomA)
                     {\fontsize{12pt}{14pt}\selectfont \bfseries a)};
 
@@ -541,7 +547,7 @@ du système.
                             autoplay,
                             loop,
                             width=0.45\linewidth, buttonsize=1em, poster=1
-                        ]{60}{figures/00_PreRemInt/frames_Newton/frame_}{00001}{00043} }; %}
+                        ]{60}{figures/00_PreRemInt/frames_Newton/frame_}{00001}{00013} }; %}
 
                     \node[below = 1.0cm of nomA , shift={(0 , 0)}] (nomB) {\fontsize{12pt}{14pt}\selectfont \bfseries b)};
 
@@ -921,7 +927,7 @@ directement à la distribution de rapidités.
 \smallskip
 
 \subparagraph{La distribution de rapidités ressemble a quoi ?}
-À l’état fondamental, le facteur d’occupation $\nu$ vaut $1$ pour $|\theta|<\theta_F$ et $0$ ailleurs (cf. fig.~??), où $\theta_F$
+À l’état fondamental, le facteur d’occupation $\nu$ vaut $1$ pour $|\theta|<\theta_F$ et $0$ ailleurs (cf. fig.~\ref{fig:eqBA}), où $\theta_F$
 désigne la rapidité de Fermi. La forme de la distribution de rapidités est
 contrôlée par le paramètre d’interaction de Lieb--Liniger
 \(
@@ -1234,6 +1240,7 @@ $f_2(\theta) = \tfrac{1}{2} m \theta^2$.
 %\(q_{[f_i]}(x;t)= \mathcal{Q} \big[ (x',\theta) \mapsto \delta(x' - x) \,
 %    f_i(\theta) \big] \) .
 
+\vspace{-0.5cm}
 \paragraph{Formalisme de l'équation d'\emph{Hydrodynamique Généralisé} (GHD).}
 
 Dans chaque tranche $[\theta , \theta + \delta \theta [$ , le nombre de
@@ -1327,6 +1334,8 @@ où le flux $j_{[f]}$ et le terme de force $F_{[f]}$ (provenant d’éventuels c
 \end{equation}
 avec $m \, v^{\mathrm{eff}}_{[\nu]} = (\partial_\theta h )^{\mathrm{dr}}_{[\nu]}/1^{\mathrm{dr}}_{[\nu]}$ et $m \, a^{\mathrm{eff}}_{[\nu]} = -(\partial_x h )^{\mathrm{dr}}_{[\nu]}/1^{\mathrm{dr}}_{[\nu]}$.
 }
+
+%\vspace{-0.5cm}
 \EncadreDeux
 {Formalisme}{{\bf \textsf{} \textsf{(GHD)}}}{woodChene}{
     De manière analogue, pour la distribution de rapidité à l’équilibre
@@ -1371,12 +1380,12 @@ avec $m \, v^{\mathrm{eff}}_{[\nu]} = (\partial_\theta h )^{\mathrm{dr}}_{[\nu]}
 
         \node[
             below=-0.2cm of fig,
-            shift={(-0.5 , -0)}
+            shift={(-0.0, -0)}
         ] {
 
             \begin{minipage}{0.9\linewidth}
                 \captionof{figure}{
-                    Schéma de la collision entre deux quasi-particules illustrant le décalage spatial $\Delta(\theta_1 - \theta_2)$.(a)description classique (sphère dure) ; (b) description quantique.
+                    Schéma de la collision entre deux quasi-particules illustrant le décalage spatial $\Delta(\theta_1 - \theta_2)$. (a) description classique (sphère dure) ; (b) description quantique.
                 }
                 \label{fig:Pi12}
             \end{minipage}
@@ -1464,6 +1473,7 @@ $n(x/t)$, en accord avec les prédictions de l’hydrodynamique généralisée.
 Ce dernier protocole permettent également de préparer des distributions présentant
 des bords raides, correspondant à des états proches de la température nulle (expliqué plus haut).
 
+\vspace{-0.5cm}
 \paragraph{Comparaison avec la théorie}
 
 Une partie importante de ce travail consiste à comparer les mesures
@@ -1476,8 +1486,9 @@ L’objectif principal est de tester la validité de la description en termes du
     {\bf\textsf{(GGE)}}, en comparant les valeurs moyennes mesurées aux prédictions
 théoriques.
 
-\medskip
+%\medskip
 
+\vspace{-0.5cm}
 \subsection{Fluctuations et au-delà des moyennes}
 
 Au-delà des valeurs moyennes, un test plus fin du {\bf\textsf{(GGE)}}, consiste
@@ -1510,8 +1521,10 @@ Au-delà des valeurs moyennes, un test plus fin du {\bf\textsf{(GGE)}}, consiste
 % \end{eqnarray}
 
 % ------
+\vspace{-0.5cm}
 \subsubsection{Formalismes}
 
+%\vspace{-0.5cm}
 \EncadreDeux
 {Formalisme}{{\bf \textsf{Dérivée fonct} \textsf{}}}{woodChene}{
 La {\bf dérivée fonctionnelle dans la direction d’une fonction test} $\lambda$,
@@ -1665,7 +1678,7 @@ On en déduit les corrélations de fluctuations gaussienne
     ;
 
     \draw[  opacity = 1 ]
-    (Xi) edge[line width=0.2ex ,color = colorThree ,arrows = {Computer Modern Rightarrow[sharp ,length=0.1cm]-},  , out = -90 , in = 180  ]node[pos=1, draw = none , right=0.00cm , rectangle  , shift = {(0.00cm , -0.0cm)} , text width=6.4cm,align=center ]{\color{colorThree} \fontsize{4pt}{2pt} \linespread{0.2} \selectfont \baselineskip=4pt \bfseries $ \displaysyle \Xi[A,J] = \int d \vex{x} \, \exp\left({-\frac{1}{2} \langle\vec{x}, A \vec{x} \rangle + \langle \vec{J} , \vec{x} \rangle  }\right) = \frac{\exp\left({\frac{1}{2} \langle\vec{J}, A \vec{J} \rangle  }}{ \sqrt{\det \left ( \frac{A}{2\pi} \right ) } \right ) } $ }($(Xi) + (0.5cm,-1.0cm)$)
+    (Xi) edge[line width=0.2ex ,color = colorThree ,arrows = {Computer Modern Rightarrow[sharp ,length=0.1cm]-},  , out = -90 , in = 180  ]node[pos=1, draw = none , right=0.00cm , rectangle  , shift = {(0.00cm , -0.0cm)} , text width=6.5cm,align=center ]{\color{colorThree} \fontsize{4pt}{2pt} \linespread{0.2} \selectfont \baselineskip=4pt \bfseries $ \displaysyle \Xi[A,J] = \int d \vex{x} \, \exp\left({-\frac{1}{2} \langle\vec{x}, A \vec{x} \rangle + \langle \vec{J} , \vec{x} \rangle  }\right) = \frac{\exp\left({\frac{1}{2} \langle\vec{J}, A \vec{J} \rangle  }}{ \sqrt{\det \left ( \frac{A}{2\pi} \right ) } \right ) } $ }($(Xi) + (0.5cm,-1.0cm)$)
     ;
 
     %\drawgrid{15}{25}{-1}{1};
@@ -1718,7 +1731,8 @@ mieux contrôlés, et donc à une mesure plus précise des fluctuations,
 constituant un test approfondi de la validité du formalisme du {\bf
         \textsf{(GGE)}}.
 
-\smallskip
+%\smallskip
+\vspace{-0.5cm}
 
 \paragraph{Apport didactique}
 La recherche en physique quantique impose la construction de modèles simplifiés
@@ -1834,14 +1848,14 @@ tester un modèle.
 {woodChene}
 {
     %\subsection{Activité 2 : Complexité expérimentale et physique des atomes froids}
-    \textbf{Niveau : L1–L3 / CPGE — Thèmes : physique expérimentale, ordres de grandeur, interaction lumière-matière.}
+    \textbf{Niveau : Lycée L1–L3 / CPGE — Thèmes : physique expérimentale, ordres de grandeur, interaction lumière-matière.}
 
     \textbf{Objectif :} faire comprendre concrètement les contraintes expérimentales
     liées à la physique quantique moderne, à travers l’exemple des gaz d’atomes froids.
 
     \begin{enumerate}[label =\textbf{\arabic*.}, ref=\arabic*]
 
-        \item {\bf \textsf{Ordres de grandeur :}}
+        \item {\bf \textsf{Ordres de grandeur}}. {\bf \textsf{Niveau :}} {\em Lycée-Licence}.
               Étude des conditions expérimentales extrêmes :
               \begin{itemize}
                   \item pression $\sim 10^{-13}\,\mathrm{mbar}$,
@@ -1851,15 +1865,15 @@ tester un modèle.
               Objectif : situer ces valeurs par rapport aux conditions terrestres et
               comprendre leur rôle dans l’observation des effets quantiques.
 
-        \item {\bf \textsf{Piégeage des atomes :}}
+        \item {\bf \textsf{Piégeage des atomes.}} . {\bf \textsf{Niveau :}} {\em Licence}.
               Étude des forces en jeu dans un piège laser et magnétique.
               \begin{itemize}
                   \item estimation de la puissance laser nécessaire pour extraire un atome du piège,
-                  \item discussion des transitions atomiques et des effets de structure fine/hyperfine.
+                        %\item discussion des transitions atomiques et des effets de structure fine/hyperfine.
               \end{itemize}
 
-        \item {\bf \textsf{Approche expérimentale concrète :}}
-              Présentation (ou visite) d’un laboratoire :
+        \item {\bf \textsf{Approche expérimentale concrète}}. {\bf \textsf{Niveau :}} {\em Lycée-Licence}.
+              Présentation (ou visite) d’un Laboratoire Charle Fabry d’atomes froids, avec une immersion dans les dispositifs expérimentaux :
               \begin{itemize}
                   \item observation des dispositifs (vide, lasers, électronique),
                   \item compréhension des contraintes techniques (stabilité, bruit, alignement).
@@ -1878,148 +1892,162 @@ tester un modèle.
 
 \EncadreDeux
 {Activité 2}
-{{\bf \textsf{Ergodicité et thermalisation}}}
+{{\bf \textsf{Activité 2 : Effets colectifs et Ergodicité}}}
 {woodChene}
 {
 
-    \textbf{Niveau : L2--L3 / CPGE — Thèmes : mécanique statistique, dynamique des systèmes, modélisation numérique.}
+\textbf{Niveau : L2--L3 / CPGE — Thèmes : mécanique statistique, dynamique des systèmes, modélisation numérique.}
 
-    \textbf{Objectif :}
-    Cette activité a pour objectif d’introduire les notions d’intégrabilité, de chaos et de thermalisation à partir de modèles simples inspirés de la physique des gaz quantiques. Elle permet de montrer que le comportement collectif d’un système dépend fortement de la présence ou non de quantités conservées.
+\textbf{Objectif :}
+%Cette activité a pour objectif d’introduire concrète à plusieurs notionsimportantes de physique statistique comme  l’{\bf ergodicité} (l’oubli des conditionsinitiales et l’émergence de l’équilibre thermodynamique), le {\bf chaos} et de {\bf thermalisation} en les comparant avec des situation d'{\bf intégrabilité} à partir de modèles simples. Elle permet de montrer que le comportement collectif d’un système dépend fortement de la présence ou non de quantités conservées.
 
-    L’activité constitue également une introduction concrète à plusieurs notions
-    importantes de physique statistique, comme l’ergodicité, l’oubli des conditions
-    initiales et l’émergence de l’équilibre thermodynamique. Elle permet enfin
-    d’ouvrir vers des thématiques de recherche actuelles, comme le ({\bf
-            \textsf{GGE}}) et ({\bf \textsf{GHD}}).
+Cette activité vise à introduire de manière concrète plusieurs concepts
+fondamentaux de la physique statistique hors équilibre, notamment l’{\bf
+ergodicité} (perte d’information sur les conditions initiales et relaxation
+vers l’équilibre thermodynamique), le {\bf chaos dynamique} et la {\bf
+        thermalisation}. Ces notions sont mises en perspective à travers leur
+confrontation avec des systèmes {\bf intégrables}, à partir de modèles jouets
+explicitant le rôle des lois de conservation. On met ainsi en évidence que la
+dynamique collective d’un système dépend de manière cruciale de la structure de
+ses constantes du mouvement et de leur suffisance pour contraindre l’espace des
+phases.
 
-    \begin{enumerate}[label =\textbf{\arabic*.}, ref=\arabic*]
+%L’activité constitue également une introduction concrète à plusieurs notionsimportantes de physique statistique, comme l’{\bf ergodicité}, l’oubli des conditions initiales et l’émergence de l’équilibre thermodynamique. Elle permet enfin d’ouvrir vers des thématiques de recherche actuelles, comme le ({\bf \textsf{GGE}}) et ({\bf \textsf{GHD}}).
 
-        \item {\bf \textsf{Modélisation de gaz de sphères dures.}} {\em L2--L3}
+\begin{enumerate}[label =\textbf{\arabic*.}, ref=\arabic*]
 
-              Simulation numérique d’un gaz de particules en interaction élastique, en une et
-              deux dimensions. Cette activité peut être réalisée sous Python pour des
-              étudiants de L3 ou de CPGE, ou être présentée sous forme de démonstration
-              numérique pour des niveaux plus élémentaires (cf fig~
-              \ref{fig:hard_spheres_1D_animation} et \ref{fig:hard_spheres_1D_animation}).
+    \item {\bf \textsf{Modélisation de gaz de sphères dures.}} \textbf{Niveau :} {\em L2--L3}. \textbf{Notion:} {\em Effets colectifs}.
 
-              \vspace{0.0cm}
+          Simulation numérique d’un gaz de sphères dures en interaction élastique, en une
+          et deux dimensions (cf figs~ \ref{fig:hard_spheres_1D_animation},
+          \ref{fig:hard_spheres_2D_animation} et \ref{fig:Pi12} b)) pour faire un premère
+          aperçu de la notion d'{\bf intégrabilité} et d'{\bf ergodicité} et les effets
+          du diametres des sphères dures sur leur vitesse effective. Simulation de
+          trajectoires 1D de sphères dures en interaction élastique. Cette activité peut
+          être réalisée sous Python pour des étudiants de L3 ou de CPGE, ou être
+          présentée sous forme de démonstration numérique pour des niveaux plus
+          élémentaires .
 
-        \item {\bf \textsf{Problème à deux corps et interactions.}} {\em L2--L3 (avec
-              accompagnement sur les distributions)}
+          \vspace{0.0cm}
 
-              Étude du problème quantique à deux corps à partir du passage au référentiel du centre de masse, permettant de ramener le système à un problème effectif à une particule.
+          % \item {\bf \textsf{Problème à deux corps et interactions.}} {\em L2--L3 (avec
+          %       accompagnement sur les distributions)}
+          %     (Après les cours de mécanique du point.) Étude du problème à deux corps à partir du passage au référentiel du centre de masse, permettant de ramener le système à un problème effectif à une particule. Ajouter les éffets du diametre finie de sphère dure.
 
-              Après les cours de mécanique quantique, les étudiants peuvent comparer la
-              version $N=2$ du modèle de {\bf \textsf{(LL)}} (eq.~\eqref{eq.LL}) avec
-              l’équation de {\bf \textsf{Schrödinger}} associée à deux particules en
-              interaction. On montre alors que la solution peut s’écrire sous la forme d’une
-              superposition d’ondes planes, dont les coefficients de réflexion et de
-              transmission sont déterminés par les conditions aux limites imposées par le
-              potentiel de contact. Les étudiants peuvent également comparer cette solution
-              avec la version $N=2$ de l’état stationnaire \eqref{eq.StationaryState}.
+          %       (Après les cours de mécanique quantique.) Comparer l’équation de {\bf \textsf{Schrödinger}} à une particule avec la version $N=2$ du modèle de {\bf \textsf{(LL)}} (eq.~\eqref{eq.LL}). Ramener  cette dernière équation, problème à deux corps en un problème à une particule (comment en mécanique classique) et en deduire les solution stationnaire pour $N=2$. Comparer cette solution avec l'état \eqref{eq.StationaryState}.
 
-              Dans le cas périodique, on peut ensuite introduire la quantification des
-              nombres d’onde pour $N=1$ puis $N=2$, et montrer comment les interactions
-              modifient les états accessibles du système en comparant les résultats obtenus
-              avec les équations {\bf \textsf{(BA)}}(eq.~\eqref{eq.BA}).
+          %       Dans le cas périodique, on peut ensuite introduire la quantification des
+          %       nombres d’onde pour $N=1$ puis $N=2$ et comparer avec les équations {\bf \textsf{(BA)}}(eq.~\eqref{eq.BA}).
+          %       Que devien (eq.~\eqref{eq.BA}) pour une gaz parfaits (sans intéraction et dans diamètre). Conclure sur l'effat intéractions collectifs sur les états accessibles.
 
-              \begin{itemize}[label=$\bullet$]
+    \item {\bf \textsf{Problème à deux corps et interactions.}}  \textbf{Niveau :} {\em L2--L3 (avec accompagnement sur les distributions)} . \textbf{Notion:} {\em Effets colectifs}.
+          (Après les cours de mécanique du point.) Étude du problème à deux corps via le passage au référentiel du centre de masse, permettant de ramener la dynamique à un problème effectif à une particule soumise à une interaction centrale. On introduit également les effets d’un potentiel de sphères dures de diamètre fini.
 
-                  \item \textbf{Objectif pédagogique :} Montrer que les modèles étudiés en thermodynamique ou en mécanique statistique reposent souvent sur l’hypothèse de gaz parfaits, et que l’introduction d’interactions modifie profondément le comportement collectif.
+          (Après les cours de mécanique quantique.) Comparaison entre l’équation de {\bf \textsf{Schrödinger}} à une particule et la version à $N=2$ du modèle de {\bf \textsf{(LL)}} (eq.~\eqref{eq.LL}). On montre comment cette dernière se ramène, dans le cas $N=2$, à un problème effectif à une particule, de manière analogue au traitement classique, et on en déduit les états stationnaires. On compare ensuite ces solutions avec l’état \eqref{eq.StationaryState}.
 
-              \end{itemize}
+          Dans le cas périodique, on introduit la quantification des nombres d’onde pour
+          $N=1$ puis $N=2$, et on compare avec les équations de {\bf \textsf{(BA)}}
+          (eq.~\eqref{eq.BA}). On discute enfin la limite de gaz parfait (absence
+          d’interaction et diamètre nul), et l’on met en évidence l’impact des
+          interactions sur la structure des états accessibles et sur la dynamique
+          collective.
 
-        \item {\bf \textsf{Ouverture mathématique : matrices aléatoires de Wigner.}} {\em CPGE (MP)}
+          %   \begin{itemize}[label=$\bullet$]
 
-              Étude numérique des valeurs propres de matrices symétriques aléatoires à coefficients gaussiens et mise en évidence de la loi du demi-cercle de Wigner.\textbf{Lien avec le cours :} statistiques des systèmes complexes et chaos quantique.
+          %       \item \textbf{Objectif pédagogique :} Montrer que les modèles étudiés en thermodynamique ou en mécanique statistique reposent souvent sur l’hypothèse de gaz parfaits, et que l’introduction d’interactions modifie profondément le comportement collectif.
 
-        \item {\bf \textsf{Comparaison hydrodynamique.}} {\em L2--L3}
+          %   \end{itemize}
 
-              En utilisant les équation d'Euler Généralisés \eqref{chap:GHD:eq.conserv.2},
-              \eqref{chap:GHD:eq.conserv.2.1}, dans le cas simplifié où l’application de
-              \textit{dressing} est réduite à l’identité : \( f^{\rm dr}_{[\nu]} = f. \) ;
-              retrouver les équations classiques de l’hydrodynamique d’Euler
-              \begin{center}
-                  \begin{minipage}{0.52\linewidth}
-                      \begin{eqnarray}\label{chap:3:eq:hydro.1}
-                          \left\{
-                          \begin{array}{rcl}
-                              \partial_t n + \partial_x (n u)                      & = & 0,                    \\
-                              \partial_t (n u) + \partial_x (nu^2 + \mathcal{P})   & = & -\, n\partial_x V(x), \\
-                              \partial_t E + \partial_x \big(u(E+\mathcal{P})\big) & = & 0,
-                          \end{array}
-                          \right .
-                      \end{eqnarray}
-                  \end{minipage}
-                  \hfill
-                  \begin{minipage}{0.45\linewidth}
-                      où la densité de particules est donnée par $n = q_{[1]}$, la vitesse moyenne du fluide par
-                      $u = q_{[\theta]}/q_{[1]}$, la pression cinétique par
-                      \(
-                      \mathcal{P} = q_{[\theta^2]} - {q_{[\theta]}^2}/{q_{[1]}},
-                      \)
-                      et l’énergie totale par
-                      \(
-                      E = \frac{n u^2}{2} + nV + ne_{\rm int},
-                      \)
-                      avec
-                      \(
-                      e_{\rm int} = q_{[\theta^2/2]}
-                      \)
-                      l’énergie interne par particule.
-                  \end{minipage}
-              \end{center}
+    \item {\bf \textsf{Ouverture mathématique : matrices aléatoires de Wigner.}} \textbf{Niveau :} {\em CPGE (MP)}
 
-              \begin{itemize}[label=$\bullet$]
+          Étude numérique des valeurs propres de matrices symétriques aléatoires à coefficients gaussiens et mise en évidence de la loi du demi-cercle de Wigner.\textbf{Lien :} Distribution de rapidité vs valeur propre.
 
-                  \item  \textbf{Objectif pédagogique :} Mettre  en
-                        évidence que, dans un système ergodique, une partie de l’information
-                        microscopique est perdue au cours de la thermalisation, conduisant à une
-                        description macroscopique simple en termes de variables hydrodynamiques.
+    \item {\bf \textsf{Comparaison hydrodynamique.}}  \textbf{Niveau :} {\em L2--L3} . \textbf{Notion:} {\em Effets colectifs \& Ergodicité }.
 
-              \end{itemize}
+          En utilisant les équation d'Euler Généralisés \eqref{chap:GHD:eq.conserv.2},
+          \eqref{chap:GHD:eq.conserv.2.1}, dans le cas simplifié où l’application de
+          \textit{dressing} est réduite à l’identité : \( f^{\rm dr}_{[\nu]} = f. \) ;
+          retrouver les équations classiques de l’hydrodynamique d’Euler
+          \begin{center}
+              \begin{minipage}{0.52\linewidth}
+                  \begin{eqnarray}\label{chap:3:eq:hydro.1}
+                      \left\{
+                      \begin{array}{rcl}
+                          \partial_t n + \partial_x (n u)                      & = & 0,                    \\
+                          \partial_t (n u) + \partial_x (nu^2 + \mathcal{P})   & = & -\, n\partial_x V(x), \\
+                          \partial_t E + \partial_x \big(u(E+\mathcal{P})\big) & = & 0,
+                      \end{array}
+                      \right .
+                  \end{eqnarray}
+              \end{minipage}
+              \hfill
+              \begin{minipage}{0.45\linewidth}
+                  où la densité de particules $n = q_{[1]}$, la vitesse moyenne du fluide
+                  $u = q_{[\theta]}/q_{[1]}$, la pression cinétique par
+                  \(
+                  \mathcal{P} = q_{[\theta^2]} - {q_{[\theta]}^2}/{q_{[1]}},
+                  \)
+                  et l’énergie totale
+                  \(
+                  E = \frac{n u^2}{2} + nV + ne_{\rm int},
+                  \)
+                  avec l’énergie interne par particule
+                  \(
+                  e_{\rm int} = q_{[\theta^2/2]}
+                  \)
+                  .
+              \end{minipage}
+          \end{center}
 
-        \item {\bf \textsf{Fluctuations et ensembles statistiques.}} {\em L2--L3}
+          %   \begin{itemize}[label=$\bullet$]
 
-              Retrouver les fonctions de partition canonique, puis grand-canonique, en
-              injectant \( w(\theta)=\beta \varepsilon(\theta) \) (respectivement \(
-              w(\theta)=\beta\big(\varepsilon(\theta)-\mu\big) \)) dans l’équation
-              \eqref{chap:GHD:eq.charge.global.2}.
+          %       \item  \textbf{Objectif pédagogique :} Mettre  en
+          %             évidence que, dans un système ergodique, une partie de l’information
+          %             microscopique est perdue au cours de la thermalisation, conduisant à une
+          %             description macroscopique simple en termes de variables hydrodynamiques.
 
-              Les étudiants peuvent ensuite retrouver les expressions de la moyenne et de
-              l’écart-type des fluctuations thermodynamiques dans les ensembles canonique et
-              grand-canonique en injectant \( g_i=\varepsilon(\theta) \) (respectivement \(
-              g_i=\varepsilon(\theta)-\mu \)) dans l’équation
-              \eqref{chap4:eq.moment.charge.q.1}.
+          %   \end{itemize}
 
-              \begin{itemize}[label=$\bullet$]
-                  \item \textbf{Objectif pédagogique :} Comprendre l'égodicité et les variables conjuguées.
-              \end{itemize}
+    \item {\bf \textsf{Fluctuations et ensembles statistiques.}} \textbf{Niveau :} {\em L2--L3} . \textbf{Notion:} {\em Ergodicité }
 
-              %Elle constitue également une ouverture vers l’interprétation physique del’ergodicité : dans un système ergodique, les moyennes temporelles etstatistiques coïncident, ce qui justifie l’utilisation des ensemblesstatistiques usuels.
+          Retrouver les fonctions de partition canonique, puis grand-canonique, en
+          injectant \( w(\theta)=\beta \varepsilon(\theta) \) (respectivement \(
+          w(\theta)=\beta\big(\varepsilon(\theta)-\mu\big) \)) dans l’équation
+          \eqref{chap:GHD:eq.charge.global.2}.
 
-              %       % \item \textit{6. Synthèse :}
+          Les étudiants peuvent ensuite retrouver les expressions de la moyenne et de
+          l’écart-type des fluctuations thermodynamiques dans les ensembles canonique et
+          grand-canonique en injectant \( g_i=\varepsilon(\theta) \) (respectivement \(
+          g_i=\varepsilon(\theta)-\mu \)) dans l’équation
+          \eqref{chap4:eq.moment.charge.q.1}.
 
-              %       %       Discussion finale autour des notions de thermalisation, d’ergodicité, de
-              %       %       conservation de l’information et du rôle des interactions dans les systèmes à
-              %       %       plusieurs corps.
+          %   \begin{itemize}[label=$\bullet$]
+          %       \item \textbf{Objectif pédagogique :} Comprendre l'égodicité et les variables conjuguées.
+          %   \end{itemize}
 
-    \end{enumerate}
+          %Elle constitue également une ouverture vers l’interprétation physique del’ergodicité : dans un système ergodique, les moyennes temporelles etstatistiques coïncident, ce qui justifie l’utilisation des ensemblesstatistiques usuels.
 
-    % \textbf{Apports pédagogiques :}
+          %       % \item \textit{6. Synthèse :}
 
-    % Cette activité permet de relier mécanique classique, mécanique quantique et
-    % physique statistique autour d’exemples concrets inspirés de la recherche
-    % actuelle.
+          %       %       Discussion finale autour des notions de thermalisation, d’ergodicité, de
+          %       %       conservation de l’information et du rôle des interactions dans les systèmes à
+          %       %       plusieurs corps.
 
-    % Elle met en évidence les limites des modèles de gaz parfaits habituellement
-    % étudiés dans les cours introductifs et montre comment des comportements
-    % collectifs complexes émergent à partir d’interactions microscopiques simples.
+\end{enumerate}
 
-    % L’approche numérique permet également d’introduire les étudiants à la
-    % modélisation et à l’exploration computationnelle des systèmes physiques
-    % modernes.
+% \textbf{Apports pédagogiques :}
+
+% Cette activité permet de relier mécanique classique, mécanique quantique et
+% physique statistique autour d’exemples concrets inspirés de la recherche
+% actuelle.
+
+% Elle met en évidence les limites des modèles de gaz parfaits habituellement
+% étudiés dans les cours introductifs et montre comment des comportements
+% collectifs complexes émergent à partir d’interactions microscopiques simples.
+
+% L’approche numérique permet également d’introduire les étudiants à la
+% modélisation et à l’exploration computationnelle des systèmes physiques
+% modernes.
 
 }
 
